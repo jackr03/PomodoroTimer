@@ -8,7 +8,7 @@
 import Foundation
 import Observation
 
-@Observable 
+@Observable
 class PomodoroTimer {
     let workDuration: Int
     let breakDuration: Int
@@ -60,6 +60,8 @@ class PomodoroTimer {
     
     func startTimer() {
         isActive = true
+        isTimerFinished = false
+        
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
             self?.countdown()
         }
@@ -92,8 +94,9 @@ class PomodoroTimer {
         if remainingTime > 0 {
             remainingTime -= 1
         } else {
-            isWorkSession.toggle()
+            self.stopTimer()
             isTimerFinished = true
+            isWorkSession.toggle()
             remainingTime = isWorkSession ? workDuration : breakDuration
         }
     }

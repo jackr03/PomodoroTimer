@@ -10,7 +10,7 @@ import SwiftUI
 import Observation
 
 struct PomodoroView: View {
-    @State private var pomodoroViewModel: PomodoroViewModel
+    private var pomodoroViewModel: PomodoroViewModel
     
     @State private var showFinishedAlert = false
     @State private var hapticTimer: Timer? = nil
@@ -22,9 +22,10 @@ struct PomodoroView: View {
     var body: some View {
         VStack {
             Text(pomodoroViewModel.currentSession)
+                .font(.headline)
             
             Text(pomodoroViewModel.formattedRemainingTime)
-                .font(.largeTitle)
+                .font(.system(size: 50))
             
             Spacer()
             
@@ -33,43 +34,44 @@ struct PomodoroView: View {
                     pomodoroViewModel.isActive ? pomodoroViewModel.pauseTimer() : pomodoroViewModel.startTimer()
                 }) {
                     Image(systemName: pomodoroViewModel.isActive ? "pause.fill" : "play.fill")
+                        .font(.body)
                 }
 
                 Button(action: {
                     pomodoroViewModel.stopTimer()
                 }) {
                     Image(systemName: "stop.fill")
+                        .font(.body)
                 }
             }
         }
         .onChange(of: pomodoroViewModel.isTimerFinished) { _, newValue in
             if newValue {
-                startHapticTimer()
+                startHaptics()
                 showFinishedAlert = true
             }
         }
         .alert("Timer finished", isPresented: $showFinishedAlert) {
             Button("OK") {
-                pomodoroViewModel.stopTimer()
-                stopHapticTimer()
+                stopHaptics()
             }
         }
     }
     
-    func startHapticTimer() {
-        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { _ in
-            WKInterfaceDevice.current().play(.success)
+    func startHaptics() {
+        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            WKInterfaceDevice.current().play(.stop)
         }
     }
     
-    func stopHapticTimer() {
+    func stopHaptics() {
         hapticTimer?.invalidate()
         hapticTimer = nil
     }
 }
 
 #Preview {
-    let pomodoroTimer: PomodoroTimer = PomodoroTimer(workDuration: 5, breakDuration: 5)
+    let pomodoroTimer: PomodoroTimer = PomodoroTimer(workDuration: 3, breakDuration: 5)
     
     let pomodoroViewModel: PomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
     
