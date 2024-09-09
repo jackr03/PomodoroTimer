@@ -8,32 +8,54 @@
 import Foundation
 import Observation
 
-@Observable class PomodoroTimer {
-    private let workDuration: Int
-    private let breakDuration: Int
+@Observable 
+class PomodoroTimer {
+    let workDuration: Int
+    let breakDuration: Int
     
-    private var remainingTime: Int
-    private var isActive: Bool = false
-    private var isWorkSession: Bool = true
-    var timerFinished: Bool = false
+    private var _remainingTime: Int
+    private var _isActive: Bool = false
+    private var _isWorkSession: Bool = true
+    private var _isTimerFinished: Bool = false
+    
     private var timer: Timer?
         
     init(workDuration: Int, breakDuration: Int) {
         self.workDuration = workDuration
         self.breakDuration = breakDuration
-        self.remainingTime = workDuration
+        self._remainingTime = workDuration
     }
     
-    var currentRemainingTime: Int {
-        return remainingTime
+    var remainingTime: Int {
+        get {
+            return _remainingTime
+        } set {
+            _remainingTime = newValue
+        }
     }
     
-    var currentIsActive: Bool {
-        return isActive
+    var isActive: Bool {
+        get {
+            return _isActive
+        } set {
+            _isActive = newValue
+        }
+    }
+        
+    var isWorkSession: Bool {
+        get {
+            return _isWorkSession
+        } set {
+            _isWorkSession = newValue
+        }
     }
     
-    var currentIsWorkSession: Bool {
-        return isWorkSession
+    var isTimerFinished: Bool {
+        get {
+            return _isTimerFinished
+        } set {
+            _isTimerFinished = newValue
+        }
     }
     
     func startTimer() {
@@ -71,7 +93,7 @@ import Observation
             remainingTime -= 1
         } else {
             isWorkSession.toggle()
-            timerFinished = true
+            isTimerFinished = true
             remainingTime = isWorkSession ? workDuration : breakDuration
         }
     }

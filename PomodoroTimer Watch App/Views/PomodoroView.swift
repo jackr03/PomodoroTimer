@@ -38,7 +38,7 @@ struct PomodoroView: View {
                 }
             }
         }
-        .onChange(of: pomodoroViewModel.timerFinished) { newValue in
+        .onChange(of: pomodoroViewModel.isTimerFinished) { oldValue, newValue in
             if newValue {
                 startHapticTimer()
                 showFinishedAlert = true
