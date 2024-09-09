@@ -59,10 +59,6 @@ class PomodoroTimer {
     }
     
     func startTimer() {
-        if isActive { 
-            return
-        }
-        
         isActive = true
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
             self?.countdown()
@@ -71,6 +67,7 @@ class PomodoroTimer {
     
     func stopTimer() {
         isActive = false
+        remainingTime = isWorkSession ? workDuration : breakDuration
         
         guard let timer = timer else {
             return
@@ -81,14 +78,17 @@ class PomodoroTimer {
     }
     
     func pauseTimer() {
-
-    }
-    
-    func resetTimer() {
+        isActive = false
+        
+        guard let timer = timer else {
+            return
+        }
+        
+        timer.invalidate()
+        self.timer = nil
     }
     
     private func countdown() {
-        print(remainingTime)
         if remainingTime > 0 {
             remainingTime -= 1
         } else {
@@ -97,6 +97,4 @@ class PomodoroTimer {
             remainingTime = isWorkSession ? workDuration : breakDuration
         }
     }
-
-    
 }

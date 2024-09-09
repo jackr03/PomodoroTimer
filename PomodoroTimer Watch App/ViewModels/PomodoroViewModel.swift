@@ -22,8 +22,12 @@ final class PomodoroViewModel {
         return String(format: "%02d:%02d", remainingTimeMinutes, remainingTimeSeconds)
     }
     
+    var isActive: Bool {
+        return pomodoroTimer.isActive
+    }
+    
     var isTimerFinished: Bool {
-        pomodoroTimer.isTimerFinished
+        return pomodoroTimer.isTimerFinished
     }
     
     var currentSession: String {
@@ -34,13 +38,11 @@ final class PomodoroViewModel {
         pomodoroTimer.startTimer()
     }
     
-    func pauseTimer() {
-    }
-    
-    func resetTimer() {
-    }
-    
     func stopTimer() {
         pomodoroTimer.stopTimer()
+    }
+    
+    func pauseTimer() {
+        pomodoroTimer.pauseTimer()
     }
 }

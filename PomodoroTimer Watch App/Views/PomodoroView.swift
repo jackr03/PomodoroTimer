@@ -29,16 +29,20 @@ struct PomodoroView: View {
             Spacer()
             
             HStack {
-                Button("Start") {
-                    pomodoroViewModel.startTimer()
+                Button(action: {
+                    pomodoroViewModel.isActive ? pomodoroViewModel.pauseTimer() : pomodoroViewModel.startTimer()
+                }) {
+                    Image(systemName: pomodoroViewModel.isActive ? "pause.fill" : "play.fill")
                 }
-                
-                Button("Stop") {
+
+                Button(action: {
                     pomodoroViewModel.stopTimer()
+                }) {
+                    Image(systemName: "stop.fill")
                 }
             }
         }
-        .onChange(of: pomodoroViewModel.isTimerFinished) { oldValue, newValue in
+        .onChange(of: pomodoroViewModel.isTimerFinished) { _, newValue in
             if newValue {
                 startHapticTimer()
                 showFinishedAlert = true
