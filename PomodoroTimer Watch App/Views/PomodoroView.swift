@@ -75,7 +75,7 @@ struct PomodoroView: View {
                 showFinishedAlert = true
             }
         }
-        .alert("Timer finished", isPresented: $showFinishedAlert) {
+        .alert("Time's up!", isPresented: $showFinishedAlert) {
             Button("OK") {
                 stopHaptics()
                 pomodoroViewModel.resetIsTimerFinished()

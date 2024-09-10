@@ -49,7 +49,7 @@ class PomodoroTimer {
     
     let maxSessions: Int = 4
     private var session: SessionType = .work
-    private var sessionsDone: Int = 3
+    private var sessionNumber: Int = 3
     
     var currentRemainingTime: Int {
         return remainingTime
@@ -59,8 +59,8 @@ class PomodoroTimer {
         return session
     }
     
-    var currentSessionsDone: Int {
-        return sessionsDone
+    var currentsessionNumber: Int {
+        return sessionNumber
     }
     
     var isTimerTickingStatus: Bool {
@@ -88,30 +88,29 @@ class PomodoroTimer {
     }
     
     func stopTimer() {
-        isTimerTicking = false
-        remainingTime = self.session.duration
-        
-        guard let timer = timer else {
-            return
-        }
-        
-        timer.invalidate()
-        self.timer = nil
+        session = .work
+        sessionNumber = 0
+        remainingTime = session.duration
+        stopTimerObject()
     }
     
     func pauseTimer() {
-        isTimerTicking = false
-        
-        guard let timer = timer else {
-            return
-        }
-        
-        timer.invalidate()
-        self.timer = nil
+        stopTimerObject()
     }
     
     func resetTimer() {
         remainingTime = session.duration
+    }
+    
+    private func stopTimerObject() {
+        isTimerTicking = false
+        
+        guard let timer = timer else {
+            return
+        }
+        
+        timer.invalidate()
+        self.timer = nil
     }
         
     private func countdown() {
@@ -119,24 +118,26 @@ class PomodoroTimer {
             remainingTime -= 1
         } else {
             isTimerFinished = true
-            self.stopTimer()
             self.nextSession()
         }
     }
     
     private func nextSession() {
-        if session.isWorkSession {
-            sessionsDone += 1
-        }
+        stopTimerObject()
         
-        if session.isWorkSession && sessionsDone == maxSessions {
-            session = .longBreak
-        } else if session.isWorkSession && sessionsDone != maxSessions {
-            session = .shortBreak
+        if session.isWorkSession {
+            sessionNumber += 1
+            
+            if sessionNumber == maxSessions {
+                session = .longBreak
+            } else {
+                session = .shortBreak
+            }
         } else {
             session = .work
-            if sessionsDone == maxSessions {
-                sessionsDone = 0
+            
+            if sessionNumber == maxSessions {
+                sessionNumber = 0
             }
         }
         

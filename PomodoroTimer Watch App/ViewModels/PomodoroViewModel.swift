@@ -43,7 +43,7 @@ final class PomodoroViewModel {
     }
     
     var currentSessionsDone: Int {
-        return pomodoroTimer.currentSessionsDone
+        return pomodoroTimer.currentsessionNumber
     }
     
     var isWorkSession: Bool {
