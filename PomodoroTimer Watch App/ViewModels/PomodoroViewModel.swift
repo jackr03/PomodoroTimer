@@ -62,5 +62,7 @@ final class PomodoroViewModel {
         pomodoroTimer.pauseTimer()
     }
     
-
+    func resetTimer() {
+        pomodoroTimer.resetTimer()
+    }
 }

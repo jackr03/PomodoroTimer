@@ -109,6 +109,10 @@ class PomodoroTimer {
         timer.invalidate()
         self.timer = nil
     }
+    
+    func resetTimer() {
+        remainingTime = session.duration
+    }
         
     private func countdown() {
         if remainingTime > 0 {

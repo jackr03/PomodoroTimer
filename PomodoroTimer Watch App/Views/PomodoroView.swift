@@ -60,6 +60,13 @@ struct PomodoroView: View {
                     Image(systemName: "stop.fill")
                         .font(.body)
                 }
+                
+                Button(action: {
+                    pomodoroViewModel.resetTimer()
+                }) {
+                    Image(systemName: "arrow.circlepath")
+                        .font(.body)
+                }
             }
         }
         .onChange(of: pomodoroViewModel.isTimerFinished) { _, newValue in
