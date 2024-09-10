@@ -21,11 +21,25 @@ struct PomodoroView: View {
     
     var body: some View {
         VStack {
-            Text(pomodoroViewModel.currentSession)
-                .font(.headline)
+            HStack {
+                Text(pomodoroViewModel.currentSession)
+                    .font(.headline)
+                
+                HStack {
+                    ForEach(0..<pomodoroViewModel.maxSessions, id: \.self) { number in
+                        if number < pomodoroViewModel.currentSessionsDone {
+                            Image(systemName: "circle.fill")
+                                .font(.subheadline)
+                        } else {
+                            Image(systemName: "circle.dotted")
+                                .font(.subheadline)
+                        }
+                    }
+                }
+            }
             
             Text(pomodoroViewModel.formattedRemainingTime)
-                .font(.system(size: 50))
+                .font(.system(size: 60))
             
             Spacer()
             

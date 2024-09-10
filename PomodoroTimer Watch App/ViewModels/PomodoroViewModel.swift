@@ -22,6 +22,14 @@ final class PomodoroViewModel {
         return String(format: "%02d:%02d", remainingTimeMinutes, remainingTimeSeconds)
     }
     
+    var maxSessions: Int {
+        return pomodoroTimer.maxSessions
+    }
+    
+    var currentSessionsDone: Int {
+        return pomodoroTimer.currentSessionsDone
+    }
+    
     var isActive: Bool {
         return pomodoroTimer.isActiveStatus
     }

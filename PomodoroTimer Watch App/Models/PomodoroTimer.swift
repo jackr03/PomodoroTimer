@@ -12,8 +12,10 @@ import Observation
 class PomodoroTimer {
     let workDuration: Int
     let breakDuration: Int
+    let maxSessions: Int = 4
     
     private var remainingTime: Int
+    private var sessionsDone: Int = 3
     private var isActive: Bool = false
     private var isWorkSession: Bool = true
     private var isTimerFinished: Bool = false
@@ -28,6 +30,10 @@ class PomodoroTimer {
     
     var currentRemainingTime: Int {
         return remainingTime
+    }
+    
+    var currentSessionsDone: Int {
+        return sessionsDone
     }
     
     var isActiveStatus: Bool {
