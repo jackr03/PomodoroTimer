@@ -46,6 +46,10 @@ final class PomodoroViewModel {
         return pomodoroTimer.currentSessionsDone
     }
     
+    var isWorkSession: Bool {
+        return pomodoroTimer.isWorkSessionStatus
+    }
+    
     func startTimer() {
         pomodoroTimer.startTimer()
     }

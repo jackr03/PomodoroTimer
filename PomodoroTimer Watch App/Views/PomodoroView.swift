@@ -30,7 +30,7 @@ struct PomodoroView: View {
                         if number < pomodoroViewModel.currentSessionsDone {
                             Image(systemName: "circle.fill")
                                 .font(.subheadline)
-                        } else if number == pomodoroViewModel.currentSessionsDone {
+                        } else if number == pomodoroViewModel.currentSessionsDone && pomodoroViewModel.isWorkSession {
                             Image(systemName: "circle.dotted.circle")
                                 .font(.subheadline)
                         } else {
@@ -90,7 +90,6 @@ struct PomodoroView: View {
 
 #Preview {
     let pomodoroTimer: PomodoroTimer = PomodoroTimer()
-    
     let pomodoroViewModel: PomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
     
     return PomodoroView(pomodoroViewModel: pomodoroViewModel)
