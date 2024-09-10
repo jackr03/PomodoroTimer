@@ -39,7 +39,7 @@ final class PomodoroViewModel {
     }
     
     var currentSession: String {
-        return pomodoroTimer.isWorkSessionStatus ? "Work" : "Break"
+        return pomodoroTimer.currentSession.displayName
     }
     
     func startTimer() {

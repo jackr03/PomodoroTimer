@@ -11,7 +11,7 @@ import SwiftUI
 struct PomodoroTimer_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            let pomodoroTimer: PomodoroTimer = PomodoroTimer(workDuration: 5, breakDuration: 5)
+            let pomodoroTimer: PomodoroTimer = PomodoroTimer()
             
             let pomodoroViewModel: PomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
             

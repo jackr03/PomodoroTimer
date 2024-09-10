@@ -8,28 +8,55 @@
 import Foundation
 import Observation
 
+enum SessionType: String {
+    case work = "Work"
+    case shortBreak = "Break"
+    case longBreak = "Long Break"
+    
+    var displayName: String {
+        return self.rawValue
+    }
+
+    var duration: Int {
+        switch self {
+        case .work:
+            return 1
+        case .shortBreak:
+            return 2
+        case .longBreak:
+            return 3
+        }
+    }
+    
+    var isWorkSession: Bool {
+        switch self {
+        case .work:
+            return true
+        case .shortBreak:
+            return false
+        case .longBreak:
+            return false
+        }
+    }
+}
+
 @Observable
 class PomodoroTimer {
-    let workDuration: Int
-    let breakDuration: Int
     let maxSessions: Int = 4
-    
-    private var remainingTime: Int
+    private var session: SessionType = .work
     private var sessionsDone: Int = 3
-    private var isActive: Bool = false
-    private var isWorkSession: Bool = true
-    private var isTimerFinished: Bool = false
-    
+
     private var timer: Timer?
-        
-    init(workDuration: Int, breakDuration: Int) {
-        self.workDuration = workDuration
-        self.breakDuration = breakDuration
-        self.remainingTime = workDuration
-    }
+    private var remainingTime: Int = SessionType.work.duration
+    private var isActive: Bool = false
+    private var isTimerFinished: Bool = false
     
     var currentRemainingTime: Int {
         return remainingTime
+    }
+    
+    var currentSession: SessionType {
+        return session
     }
     
     var currentSessionsDone: Int {
@@ -41,7 +68,7 @@ class PomodoroTimer {
     }
         
     var isWorkSessionStatus: Bool {
-        return isWorkSession
+        return session.isWorkSession
     }
     
     var isTimerFinishedStatus: Bool {
@@ -59,7 +86,7 @@ class PomodoroTimer {
     
     func stopTimer() {
         isActive = false
-        remainingTime = isWorkSession ? workDuration : breakDuration
+        remainingTime = self.session.duration
         
         guard let timer = timer else {
             return
@@ -84,20 +111,28 @@ class PomodoroTimer {
         if remainingTime > 0 {
             remainingTime -= 1
         } else {
-            self.stopTimer()
             isTimerFinished = true
+            self.stopTimer()
             self.nextSession()
         }
     }
     
     private func nextSession() {
-        if isWorkSession {
+        if session.isWorkSession {
             sessionsDone += 1
-        } else if !isWorkSession && sessionsDone == 4 {
-            sessionsDone = 0
         }
         
-        isWorkSession.toggle()
-        remainingTime = isWorkSession ? workDuration : breakDuration
+        if session.isWorkSession && sessionsDone == maxSessions {
+            session = .longBreak
+        } else if session.isWorkSession && sessionsDone != maxSessions {
+            session = .shortBreak
+        } else {
+            session = .work
+            if sessionsDone == maxSessions {
+                sessionsDone = 0
+            }
+        }
+        
+        remainingTime = session.duration
     }
 }
