@@ -86,8 +86,18 @@ class PomodoroTimer {
         } else {
             self.stopTimer()
             isTimerFinished = true
-            isWorkSession.toggle()
-            remainingTime = isWorkSession ? workDuration : breakDuration
+            self.nextSession()
         }
+    }
+    
+    private func nextSession() {
+        if isWorkSession {
+            sessionsDone += 1
+        } else if !isWorkSession && sessionsDone == 4 {
+            sessionsDone = 0
+        }
+        
+        isWorkSession.toggle()
+        remainingTime = isWorkSession ? workDuration : breakDuration
     }
 }
