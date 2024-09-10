@@ -48,9 +48,9 @@ struct PomodoroView: View {
             
             HStack {
                 Button(action: {
-                    pomodoroViewModel.isActive ? pomodoroViewModel.pauseTimer() : pomodoroViewModel.startTimer()
+                    pomodoroViewModel.isTimerTicking ? pomodoroViewModel.pauseTimer() : pomodoroViewModel.startTimer()
                 }) {
-                    Image(systemName: pomodoroViewModel.isActive ? "pause.fill" : "play.fill")
+                    Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
                         .font(.body)
                 }
 
@@ -71,6 +71,7 @@ struct PomodoroView: View {
         .alert("Timer finished", isPresented: $showFinishedAlert) {
             Button("OK") {
                 stopHaptics()
+                pomodoroViewModel.resetIsTimerFinished()
             }
         }
     }

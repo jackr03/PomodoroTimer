@@ -22,24 +22,28 @@ final class PomodoroViewModel {
         return String(format: "%02d:%02d", remainingTimeMinutes, remainingTimeSeconds)
     }
     
-    var maxSessions: Int {
-        return pomodoroTimer.maxSessions
-    }
-    
-    var currentSessionsDone: Int {
-        return pomodoroTimer.currentSessionsDone
-    }
-    
-    var isActive: Bool {
-        return pomodoroTimer.isActiveStatus
+    var isTimerTicking: Bool {
+        return pomodoroTimer.isTimerTickingStatus
     }
     
     var isTimerFinished: Bool {
         return pomodoroTimer.isTimerFinishedStatus
     }
     
+    func resetIsTimerFinished() {
+        pomodoroTimer.isTimerFinishedStatus = false
+    }
+    
+    var maxSessions: Int {
+        return pomodoroTimer.maxSessions
+    }
+    
     var currentSession: String {
         return pomodoroTimer.currentSession.displayName
+    }
+    
+    var currentSessionsDone: Int {
+        return pomodoroTimer.currentSessionsDone
     }
     
     func startTimer() {
@@ -53,4 +57,6 @@ final class PomodoroViewModel {
     func pauseTimer() {
         pomodoroTimer.pauseTimer()
     }
+    
+
 }
