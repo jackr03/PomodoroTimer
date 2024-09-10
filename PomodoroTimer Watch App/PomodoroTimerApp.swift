@@ -11,11 +11,17 @@ import SwiftUI
 struct PomodoroTimer_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            let pomodoroTimer: PomodoroTimer = PomodoroTimer()
-            
-            let pomodoroViewModel: PomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
-            
-            return PomodoroView(pomodoroViewModel: pomodoroViewModel)
+            TabView {
+                PomodoroView()
+                    .tabItem {
+                        Label("Pomodoro", systemImage: "clock")
+                    }
+                
+                SettingsView()
+                    .tabItem {
+                        Label("Settings", systemImage: "gear")
+                    }
+            }
         }
     }
 }

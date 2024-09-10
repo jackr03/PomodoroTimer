@@ -14,7 +14,9 @@ struct PomodoroView: View {
     @State private var showFinishedAlert = false
     @State private var hapticTimer: Timer? = nil
     
-    init(pomodoroViewModel: PomodoroViewModel) {
+    init() {
+        let pomodoroTimer = PomodoroTimer()
+        let pomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
         self.pomodoroViewModel = pomodoroViewModel
     }
     
@@ -95,8 +97,5 @@ struct PomodoroView: View {
 }
 
 #Preview {
-    let pomodoroTimer: PomodoroTimer = PomodoroTimer()
-    let pomodoroViewModel: PomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
-    
-    return PomodoroView(pomodoroViewModel: pomodoroViewModel)
+    PomodoroView()
 }

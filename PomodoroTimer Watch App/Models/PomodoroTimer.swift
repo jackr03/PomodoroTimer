@@ -20,11 +20,11 @@ enum SessionType: String {
     var duration: Int {
         switch self {
         case .work:
-            return 1
+            return UserDefaults.standard.integer(forKey: "workDuration") == 0 ? 25 : UserDefaults.standard.integer(forKey: "workDuration") * 60
         case .shortBreak:
-            return 2
+            return UserDefaults.standard.integer(forKey: "shortBreakDuration") == 0 ? 5 : UserDefaults.standard.integer(forKey: "shortBreakDuration") * 60
         case .longBreak:
-            return 3
+            return UserDefaults.standard.integer(forKey: "longBreakDuration") == 0 ? 30 : UserDefaults.standard.integer(forKey: "workDuration") * 60
         }
     }
     
@@ -49,7 +49,7 @@ class PomodoroTimer {
     
     let maxSessions: Int = 4
     private var session: SessionType = .work
-    private var sessionNumber: Int = 3
+    private var sessionNumber: Int = 0
     
     var currentRemainingTime: Int {
         return remainingTime
