@@ -16,22 +16,22 @@ final class PomodoroViewModel {
     }
     
     var formattedRemainingTime: String {
-        let remainingTimeMinutes: Int = pomodoroTimer.remainingTime / 60
-        let remainingTimeSeconds: Int = pomodoroTimer.remainingTime % 60
+        let remainingTimeMinutes: Int = pomodoroTimer.currentRemainingTime / 60
+        let remainingTimeSeconds: Int = pomodoroTimer.currentRemainingTime % 60
         
         return String(format: "%02d:%02d", remainingTimeMinutes, remainingTimeSeconds)
     }
     
     var isActive: Bool {
-        return pomodoroTimer.isActive
+        return pomodoroTimer.isActiveStatus
     }
     
     var isTimerFinished: Bool {
-        return pomodoroTimer.isTimerFinished
+        return pomodoroTimer.isTimerFinishedStatus
     }
     
     var currentSession: String {
-        return pomodoroTimer.isWorkSession ? "Work" : "Break"
+        return pomodoroTimer.isWorkSessionStatus ? "Work" : "Break"
     }
     
     func startTimer() {

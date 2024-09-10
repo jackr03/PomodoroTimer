@@ -13,49 +13,33 @@ class PomodoroTimer {
     let workDuration: Int
     let breakDuration: Int
     
-    private var _remainingTime: Int
-    private var _isActive: Bool = false
-    private var _isWorkSession: Bool = true
-    private var _isTimerFinished: Bool = false
+    private var remainingTime: Int
+    private var isActive: Bool = false
+    private var isWorkSession: Bool = true
+    private var isTimerFinished: Bool = false
     
     private var timer: Timer?
         
     init(workDuration: Int, breakDuration: Int) {
         self.workDuration = workDuration
         self.breakDuration = breakDuration
-        self._remainingTime = workDuration
+        self.remainingTime = workDuration
     }
     
-    var remainingTime: Int {
-        get {
-            return _remainingTime
-        } set {
-            _remainingTime = newValue
-        }
+    var currentRemainingTime: Int {
+        return remainingTime
     }
     
-    var isActive: Bool {
-        get {
-            return _isActive
-        } set {
-            _isActive = newValue
-        }
+    var isActiveStatus: Bool {
+        return isActive
     }
         
-    var isWorkSession: Bool {
-        get {
-            return _isWorkSession
-        } set {
-            _isWorkSession = newValue
-        }
+    var isWorkSessionStatus: Bool {
+        return isWorkSession
     }
     
-    var isTimerFinished: Bool {
-        get {
-            return _isTimerFinished
-        } set {
-            _isTimerFinished = newValue
-        }
+    var isTimerFinishedStatus: Bool {
+        return isTimerFinished
     }
     
     func startTimer() {
