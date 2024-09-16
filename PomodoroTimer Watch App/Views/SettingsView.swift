@@ -18,7 +18,7 @@ struct SettingsView: View {
             Form {
                 Picker("Work", selection: $workDuration) {
                     ForEach(1...60, id: \.self) {
-                        Text("^[\($0) minutes](inflect: true)").tag($0)
+                        Text("^[\($0) \("minute")](inflect: true)").tag($0)
                     }
                 }
                 .onChange(of: workDuration) {
@@ -28,13 +28,13 @@ struct SettingsView: View {
                 
                 Picker("Short break", selection: $shortBreakDuration) {
                     ForEach(1...60, id: \.self) {
-                        Text("^[\($0) minutes](inflect: true)").tag($0)
+                        Text("^[\($0) \("minute")](inflect: true)").tag($0)
                     }
                 }
                 
                 Picker("Long break", selection: $longBreakDuration) {
                     ForEach(1...60, id: \.self) {
-                        Text("^[\($0) minutes](inflect: true)").tag($0)
+                        Text("^[\($0) \("minute")](inflect: true)").tag($0)
                     }
                 }
             }
