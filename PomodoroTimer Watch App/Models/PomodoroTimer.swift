@@ -20,11 +20,11 @@ enum SessionType: String {
     var duration: Int {
         switch self {
         case .work:
-            return UserDefaults.standard.integer(forKey: "workDuration") == 0 ? 25 : UserDefaults.standard.integer(forKey: "workDuration") * 60
+            return UserDefaults.standard.integer(forKey: "workDuration") == 0 ? 1500 : UserDefaults.standard.integer(forKey: "workDuration")
         case .shortBreak:
-            return UserDefaults.standard.integer(forKey: "shortBreakDuration") == 0 ? 5 : UserDefaults.standard.integer(forKey: "shortBreakDuration") * 60
+            return UserDefaults.standard.integer(forKey: "shortBreakDuration") == 0 ? 300 : UserDefaults.standard.integer(forKey: "shortBreakDuration")
         case .longBreak:
-            return UserDefaults.standard.integer(forKey: "longBreakDuration") == 0 ? 30 : UserDefaults.standard.integer(forKey: "workDuration") * 60
+            return UserDefaults.standard.integer(forKey: "longBreakDuration") == 0 ? 1800 : UserDefaults.standard.integer(forKey: "workDuration") * 60
         }
     }
     

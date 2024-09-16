@@ -9,33 +9,43 @@ import Foundation
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("workDuration") private var workDuration: Int = SessionType.work.duration
-    @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = SessionType.shortBreak.duration
-    @AppStorage("longBreakDuration") private var longBreakDuration: Int = SessionType.longBreak.duration
+    @AppStorage("workDuration") private var workDuration: Int = 1500
+    @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
+    @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
+    
+    @State private var workDurationInMinutes: Int = 25
+    @State private var shortBreakDurationInMinutes: Int = 5
+    @State private var longBreakDurationInMinutes: Int = 30
     
     var body: some View {
         NavigationView{
             Form {
-                Picker("Work", selection: $workDuration) {
+                Picker("Work", selection: $workDurationInMinutes) {
                     ForEach(1...60, id: \.self) {
                         Text("^[\($0) \("minute")](inflect: true)").tag($0)
                     }
                 }
-                .onChange(of: workDuration) {
+                .onChange(of: workDurationInMinutes) { _, newValue in
                     // TODO: Reset timer on change
-                    print(workDuration)
+                    workDuration = newValue * 60
                 }
                 
-                Picker("Short break", selection: $shortBreakDuration) {
+                Picker("Short break", selection: $shortBreakDurationInMinutes) {
                     ForEach(1...60, id: \.self) {
                         Text("^[\($0) \("minute")](inflect: true)").tag($0)
                     }
                 }
+                .onChange(of: shortBreakDurationInMinutes) { _, newValue in
+                    shortBreakDuration = newValue * 60
+                }
                 
-                Picker("Long break", selection: $longBreakDuration) {
+                Picker("Long break", selection: $longBreakDurationInMinutes) {
                     ForEach(1...60, id: \.self) {
                         Text("^[\($0) \("minute")](inflect: true)").tag($0)
                     }
+                }
+                .onChange(of: longBreakDurationInMinutes) { _, newValue in
+                    longBreakDuration = newValue * 60
                 }
             }
             .navigationTitle("Settings")
