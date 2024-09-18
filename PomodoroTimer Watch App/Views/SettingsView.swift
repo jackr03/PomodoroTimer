@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct SettingsView: View {
+    private var settingsViewModel: SettingsViewModel
+    
     @AppStorage("workDuration") private var workDuration: Int = 1500
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
     @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
@@ -16,6 +18,10 @@ struct SettingsView: View {
     @State private var workDurationInMinutes: Int = 25
     @State private var shortBreakDurationInMinutes: Int = 5
     @State private var longBreakDurationInMinutes: Int = 30
+    
+    init(settingsViewModel: SettingsViewModel) {
+        self.settingsViewModel = settingsViewModel
+    }
     
     var body: some View {
         NavigationView{
@@ -54,5 +60,8 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    let pomodoroTimer = PomodoroTimer()
+    let settingsViewModel = SettingsViewModel(pomodoroTimer: pomodoroTimer)
+    
+    SettingsView(settingsViewModel: settingsViewModel)
 }

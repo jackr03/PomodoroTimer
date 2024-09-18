@@ -8,7 +8,9 @@
 import Foundation
 
 final class SettingsViewModel {
-    func resetTimer() {
-        
+    private var pomodoroTimer: PomodoroTimer
+    
+    init(pomodoroTimer: PomodoroTimer) {
+        self.pomodoroTimer = pomodoroTimer
     }
 }

@@ -5,7 +5,7 @@
 //  Created by Jack Rong on 08/09/2024.
 //
 
-import Observation
+import Foundation
 
 final class PomodoroViewModel {
     private var pomodoroTimer: PomodoroTimer

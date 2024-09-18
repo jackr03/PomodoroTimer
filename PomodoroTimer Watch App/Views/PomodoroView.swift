@@ -5,8 +5,8 @@
 //  Created by Jack Rong on 08/09/2024.
 //
 
+import Foundation
 import SwiftUI
-import Observation
 
 struct PomodoroView: View {
     private var pomodoroViewModel: PomodoroViewModel
@@ -14,9 +14,7 @@ struct PomodoroView: View {
     @State private var showFinishedAlert = false
     @State private var hapticTimer: Timer? = nil
     
-    init() {
-        let pomodoroTimer = PomodoroTimer()
-        let pomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
+    init(pomodoroViewModel: PomodoroViewModel) {
         self.pomodoroViewModel = pomodoroViewModel
     }
     
@@ -97,5 +95,8 @@ struct PomodoroView: View {
 }
 
 #Preview {
-    PomodoroView()
+    let pomodoroTimer = PomodoroTimer()
+    let pomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
+    
+    PomodoroView(pomodoroViewModel: pomodoroViewModel)
 }
