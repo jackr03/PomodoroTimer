@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import WatchKit
 
-final class PomodoroViewModel {
+final class PomodoroViewModel: NSObject, WKExtendedRuntimeSessionDelegate {
+    private var extendedSession: WKExtendedRuntimeSession?
     private var pomodoroTimer: PomodoroTimer
     
     init(pomodoroTimer: PomodoroTimer) {
@@ -29,10 +31,6 @@ final class PomodoroViewModel {
         return pomodoroTimer.isTimerFinishedStatus
     }
     
-    func resetIsTimerFinished() {
-        pomodoroTimer.isTimerFinishedStatus = false
-    }
-    
     var maxSessions: Int {
         return pomodoroTimer.maxSessions
     }
@@ -49,19 +47,45 @@ final class PomodoroViewModel {
         return pomodoroTimer.isWorkSessionStatus
     }
     
+    func resetIsTimerFinished() {
+        pomodoroTimer.isTimerFinishedStatus = false
+    }
+    
     func startTimer() {
+        self.startExtendedSession()
         pomodoroTimer.startTimer()
     }
     
     func stopTimer() {
+        self.endExtendedSession()
         pomodoroTimer.stopTimer()
     }
     
     func pauseTimer() {
+        self.endExtendedSession()
         pomodoroTimer.pauseTimer()
     }
     
     func resetTimer() {
         pomodoroTimer.resetTimer()
+    }
+    
+    private func startExtendedSession() {
+        extendedSession = WKExtendedRuntimeSession()
+        extendedSession?.delegate = self
+        extendedSession?.start()
+    }
+    
+    private func endExtendedSession() {
+        extendedSession?.invalidate()
+        extendedSession = nil
+    }
+    
+    func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {}
+    
+    func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {}
+    
+    func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
+        print("Session invalidated due to \(reason.rawValue), error: \(error?.localizedDescription ?? "None")")
     }
 }
