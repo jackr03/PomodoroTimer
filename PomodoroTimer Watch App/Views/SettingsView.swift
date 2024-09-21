@@ -24,34 +24,72 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        NavigationView{
+        NavigationStack {
             Form {
-                Picker("Work", selection: $workDurationInMinutes) {
-                    ForEach(1...60, id: \.self) {
-                        Text("^[\($0) \("minute")](inflect: true)").tag($0)
+                Section {
+                    Picker("Work", selection: $workDurationInMinutes) {
+                        ForEach(1...60, id: \.self) {
+                            Text("^[\($0) \("minute")](inflect: true)").tag($0)
+                        }
                     }
-                }
-                .onChange(of: workDurationInMinutes) { _, newValue in
-                    // TODO: Reset timer on change
-                    workDuration = newValue * 60
+                    .onChange(of: workDurationInMinutes) { _, newValue in
+                        workDuration = newValue * 60
+                    }
+                    
+                    Picker("Short break", selection: $shortBreakDurationInMinutes) {
+                        ForEach(1...60, id: \.self) {
+                            Text("^[\($0) \("minute")](inflect: true)").tag($0)
+                        }
+                    }
+                    .onChange(of: shortBreakDurationInMinutes) { _, newValue in
+                        shortBreakDuration = newValue * 60
+                    }
+                    
+                    Picker("Long break", selection: $longBreakDurationInMinutes) {
+                        ForEach(1...60, id: \.self) {
+                            Text("^[\($0) \("minute")](inflect: true)").tag($0)
+                        }
+                    }
+                    .onChange(of: longBreakDurationInMinutes) { _, newValue in
+                        longBreakDuration = newValue * 60
+                    }
                 }
                 
-                Picker("Short break", selection: $shortBreakDurationInMinutes) {
-                    ForEach(1...60, id: \.self) {
-                        Text("^[\($0) \("minute")](inflect: true)").tag($0)
+                Section {
+                    HStack {
+                        Spacer()
+                        
+                        Button(action: {
+                            print("confirm")
+                        }) {
+                            Image(systemName: "checkmark")
+                                .padding()
+                                .frame(minWidth: 50, minHeight: 50, alignment: .center)
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .background(.green)
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
+                        .cornerRadius(10)
+
+                        Spacer()
+                        
+                        Button(action: {
+                            print("cancel")
+                        }) {
+                            Image(systemName: "xmark")
+                                .padding()
+                                .frame(minWidth: 50, minHeight: 50, alignment: .center)
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .background(.red)
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
+                        .cornerRadius(10)
+
+                        Spacer()
                     }
-                }
-                .onChange(of: shortBreakDurationInMinutes) { _, newValue in
-                    shortBreakDuration = newValue * 60
-                }
-                
-                Picker("Long break", selection: $longBreakDurationInMinutes) {
-                    ForEach(1...60, id: \.self) {
-                        Text("^[\($0) \("minute")](inflect: true)").tag($0)
-                    }
-                }
-                .onChange(of: longBreakDurationInMinutes) { _, newValue in
-                    longBreakDuration = newValue * 60
+                    .listRowBackground(Color.clear)
                 }
             }
             .navigationTitle("Settings")
