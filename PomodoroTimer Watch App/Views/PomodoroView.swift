@@ -9,10 +9,8 @@ import Foundation
 import SwiftUI
 
 struct PomodoroView: View {
-    @State private var showFinishedAlert = false
-
+    @Bindable private var alertsViewModel = AlertsViewModel.shared
     private var pomodoroViewModel: PomodoroViewModel
-    private var alertsViewModel = AlertsViewModel.shared
     
     init(_ pomodoroViewModel: PomodoroViewModel) {
         self.pomodoroViewModel = pomodoroViewModel
@@ -73,14 +71,13 @@ struct PomodoroView: View {
                 }
             }
         }
-        .onChange(of: alertsViewModel.isTimerFinished) { _, newValue in
+        .onChange(of: alertsViewModel.showAlert) { _, newValue in
             if newValue {
                 pomodoroViewModel.endSession()
                 alertsViewModel.startHaptics()
-                showFinishedAlert = true
             }
         }
-        .alert("Time's up!", isPresented: $showFinishedAlert) {
+        .alert("Time's up!", isPresented: $alertsViewModel.showAlert) {
             Button("OK") {
                 alertsViewModel.stopHaptics()
             }

@@ -76,11 +76,8 @@ class PomodoroTimer {
     }
     
     var isTimerFinishedStatus: Bool {
-        get {
-            return isTimerFinished
-        } set {
-            isTimerFinished = newValue
-        }
+        get { return isTimerFinished }
+        set { isTimerFinished = newValue }
     }
         
     var isWorkSessionStatus: Bool {

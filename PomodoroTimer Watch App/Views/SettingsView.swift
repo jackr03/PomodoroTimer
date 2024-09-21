@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct SettingsView: View {
+    @Bindable private var alertsViewModel = AlertsViewModel.shared
     private var settingsViewModel: SettingsViewModel
     
     @AppStorage("workDuration") private var workDuration: Int = 1500
@@ -64,6 +65,12 @@ struct SettingsView: View {
             shortBreakDurationInMinutes = max(1, shortBreakDuration / 60)
             longBreakDurationInMinutes = max(1, longBreakDuration / 60)
         }
+        .alert("Time's up!", isPresented: $alertsViewModel.showAlert) {
+            Button("OK") {
+                alertsViewModel.stopHaptics()
+            }
+        }
+
     }
 }
 

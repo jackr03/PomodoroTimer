@@ -7,19 +7,20 @@
 
 import Foundation
 import WatchKit
+import Observation
 
+@Observable
 final class AlertsViewModel {
     static let shared = AlertsViewModel()
     
     private var pomodoroTimer = PomodoroTimer.shared
     private var hapticTimer: Timer?
-
-    public var showAlert: Bool = false
     
     private init() {}
     
-    var isTimerFinished: Bool {
-        return pomodoroTimer.isTimerFinishedStatus
+    public var showAlert: Bool {
+        get { return pomodoroTimer.isTimerFinishedStatus }
+        set { pomodoroTimer.isTimerFinishedStatus = newValue }
     }
     
     func playStartHaptic() {
@@ -27,7 +28,7 @@ final class AlertsViewModel {
     }
     
     func startHaptics() {
-        hapticTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { _ in
+        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
             WKInterfaceDevice.current().play(.stop)
         }
     }
@@ -35,7 +36,5 @@ final class AlertsViewModel {
     func stopHaptics() {
         hapticTimer?.invalidate()
         hapticTimer = nil
-        
-        pomodoroTimer.isTimerFinishedStatus = false
     }
 }
