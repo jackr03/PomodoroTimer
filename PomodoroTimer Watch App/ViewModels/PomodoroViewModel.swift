@@ -12,14 +12,14 @@ final class PomodoroViewModel {
     private var extendedSessionService = ExtendedSessionService()
     
     var formattedRemainingTime: String {
-        let remainingTimeMinutes: Int = pomodoroTimer.currentRemainingTime / 60
-        let remainingTimeSeconds: Int = pomodoroTimer.currentRemainingTime % 60
+        let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
+        let remainingTimeInSeconds: Int = pomodoroTimer.remainingTime % 60
         
-        return String(format: "%02d:%02d", remainingTimeMinutes, remainingTimeSeconds)
+        return String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
     }
     
     var isTimerTicking: Bool {
-        return pomodoroTimer.isTimerTickingStatus
+        return pomodoroTimer.isTimerTicking
     }
     
     var maxSessions: Int {
@@ -27,15 +27,15 @@ final class PomodoroViewModel {
     }
     
     var currentSession: String {
-        return pomodoroTimer.currentSession.displayName
+        return pomodoroTimer.session.displayName
     }
     
     var currentSessionsDone: Int {
-        return pomodoroTimer.currentsessionNumber
+        return pomodoroTimer.sessionNumber
     }
     
     var isWorkSession: Bool {
-        return pomodoroTimer.isWorkSessionStatus
+        return pomodoroTimer.isWorkSession
     }
     
     func startTimer() {

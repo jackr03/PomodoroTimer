@@ -22,7 +22,7 @@ final class SettingsViewModel {
      Update only if the timer isn't currently running.
      */
     private func updateTimer() {
-        guard !pomodoroTimer.isTimerTickingStatus else { return }
+        guard !pomodoroTimer.isTimerTicking else { return }
         
         pomodoroTimer.resetTimer()
     }

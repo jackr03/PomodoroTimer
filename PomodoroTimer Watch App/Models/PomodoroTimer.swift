@@ -47,40 +47,21 @@ enum SessionType: String {
 class PomodoroTimer {
     static let shared = PomodoroTimer()
     
-    private var timer: Timer?
-    private var remainingTime: Int = SessionType.work.duration
-    private var isTimerTicking: Bool = false
-    private var isTimerFinished: Bool = false
-    
     let maxSessions: Int = 4
-    private var session: SessionType = .work
-    private var sessionNumber: Int = 0
+
+    private(set) var remainingTime: Int = SessionType.work.duration
+    private(set) var isTimerTicking: Bool = false
+    private(set) var session: SessionType = .work
+    private(set) var sessionNumber: Int = 0
+    
+    private var timer: Timer?
+
+    public var isTimerFinished: Bool = false
     
     // Private initialiser to prevent external instantiation
     private init() {}
-    
-    var currentRemainingTime: Int {
-        return remainingTime
-    }
-    
-    var currentSession: SessionType {
-        return session
-    }
-    
-    var currentsessionNumber: Int {
-        return sessionNumber
-    }
-    
-    var isTimerTickingStatus: Bool {
-        return isTimerTicking
-    }
-    
-    var isTimerFinishedStatus: Bool {
-        get { return isTimerFinished }
-        set { isTimerFinished = newValue }
-    }
-        
-    var isWorkSessionStatus: Bool {
+                    
+    var isWorkSession: Bool {
         return session.isWorkSession
     }
     

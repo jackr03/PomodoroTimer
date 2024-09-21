@@ -19,8 +19,8 @@ final class AlertsViewModel {
     private init() {}
     
     public var showAlert: Bool {
-        get { return pomodoroTimer.isTimerFinishedStatus }
-        set { pomodoroTimer.isTimerFinishedStatus = newValue }
+        get { return pomodoroTimer.isTimerFinished }
+        set { pomodoroTimer.isTimerFinished = newValue }
     }
     
     func playStartHaptic() {
