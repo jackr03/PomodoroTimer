@@ -10,8 +10,7 @@ import WatchKit
 
 final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
     private var session: WKExtendedRuntimeSession?
-    private var hapticTimer: Timer?
-    
+
     func startSession() {
         guard session?.state != .running else {
             print("Session already running")
@@ -21,8 +20,6 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         session = WKExtendedRuntimeSession()
         session?.delegate = self
         session?.start()
-        
-        playStartHaptic()
     }
     
     func stopSession() {
@@ -32,21 +29,6 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         }
         
         session?.invalidate()
-    }
-    
-    private func playStartHaptic() {
-        WKInterfaceDevice.current().play(.start)
-    }
-    
-    func startHaptics() {
-        hapticTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { _ in
-            WKInterfaceDevice.current().play(.stop)
-        }
-    }
-    
-    func stopHaptics() {
-        hapticTimer?.invalidate()
-        hapticTimer = nil
     }
 
     // Delegate functions

@@ -12,7 +12,8 @@ struct PomodoroView: View {
     @State private var showFinishedAlert = false
 
     private var pomodoroViewModel: PomodoroViewModel
-        
+    private var alertsViewModel = AlertsViewModel.shared
+    
     init(_ pomodoroViewModel: PomodoroViewModel) {
         self.pomodoroViewModel = pomodoroViewModel
     }
@@ -46,7 +47,12 @@ struct PomodoroView: View {
             
             HStack {
                 Button(action: {
-                    pomodoroViewModel.isTimerTicking ? pomodoroViewModel.pauseTimer() : pomodoroViewModel.startTimer()
+                    if pomodoroViewModel.isTimerTicking {
+                        pomodoroViewModel.pauseTimer()
+                    } else {
+                        pomodoroViewModel.startTimer()
+                        alertsViewModel.playStartHaptic()
+                    }
                 }) {
                     Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
                         .font(.body)
@@ -67,15 +73,16 @@ struct PomodoroView: View {
                 }
             }
         }
-        .onChange(of: pomodoroViewModel.isTimerFinished) { _, newValue in
+        .onChange(of: alertsViewModel.isTimerFinished) { _, newValue in
             if newValue {
                 pomodoroViewModel.endSession()
+                alertsViewModel.startHaptics()
                 showFinishedAlert = true
             }
         }
         .alert("Time's up!", isPresented: $showFinishedAlert) {
             Button("OK") {
-                pomodoroViewModel.stopHaptics()
+                alertsViewModel.stopHaptics()
             }
         }
     }

@@ -9,11 +9,7 @@ import Foundation
 
 final class PomodoroViewModel {
     private var pomodoroTimer = PomodoroTimer.shared
-    private var extendedSessionService: ExtendedSessionService
-    
-    init() {
-        self.extendedSessionService = ExtendedSessionService()
-    }
+    private var extendedSessionService = ExtendedSessionService()
     
     var formattedRemainingTime: String {
         let remainingTimeMinutes: Int = pomodoroTimer.currentRemainingTime / 60
@@ -24,10 +20,6 @@ final class PomodoroViewModel {
     
     var isTimerTicking: Bool {
         return pomodoroTimer.isTimerTickingStatus
-    }
-    
-    var isTimerFinished: Bool {
-        return pomodoroTimer.isTimerFinishedStatus
     }
     
     var maxSessions: Int {
@@ -65,19 +57,7 @@ final class PomodoroViewModel {
         pomodoroTimer.endCycle()
     }
     
-    /**
-     End session and trigger haptics.
-     */
     func endSession() {
         extendedSessionService.stopSession()
-        extendedSessionService.startHaptics()
-    }
-    
-    /**
-     Stop the haptic alarm and reset isTimerFinished.
-     */
-    func stopHaptics() {
-        extendedSessionService.stopHaptics()
-        pomodoroTimer.isTimerFinishedStatus = false
     }
 }
