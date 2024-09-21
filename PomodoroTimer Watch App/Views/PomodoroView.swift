@@ -13,7 +13,7 @@ struct PomodoroView: View {
 
     private var pomodoroViewModel: PomodoroViewModel
         
-    init(pomodoroViewModel: PomodoroViewModel) {
+    init(_ pomodoroViewModel: PomodoroViewModel) {
         self.pomodoroViewModel = pomodoroViewModel
     }
     
@@ -83,7 +83,7 @@ struct PomodoroView: View {
 
  #Preview {
     let pomodoroTimer = PomodoroTimer()
-    let pomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
+    let pomodoroViewModel = PomodoroViewModel(pomodoroTimer)
     
-    PomodoroView(pomodoroViewModel: pomodoroViewModel)
+    PomodoroView(pomodoroViewModel)
 }

@@ -10,7 +10,7 @@ import Foundation
 final class SettingsViewModel {
     private var pomodoroTimer: PomodoroTimer
     
-    init(pomodoroTimer: PomodoroTimer) {
+    init(_ pomodoroTimer: PomodoroTimer) {
         self.pomodoroTimer = pomodoroTimer
     }
     

@@ -11,7 +11,7 @@ final class PomodoroViewModel {
     private var pomodoroTimer: PomodoroTimer
     private var extendedSessionService: ExtendedSessionService
     
-    init(pomodoroTimer: PomodoroTimer) {
+    init(_ pomodoroTimer: PomodoroTimer) {
         self.pomodoroTimer = pomodoroTimer
         self.extendedSessionService = ExtendedSessionService()
     }

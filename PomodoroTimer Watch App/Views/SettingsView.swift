@@ -19,7 +19,7 @@ struct SettingsView: View {
     @State private var shortBreakDurationInMinutes: Int = 5
     @State private var longBreakDurationInMinutes: Int = 30
     
-    init(settingsViewModel: SettingsViewModel) {
+    init(_ settingsViewModel: SettingsViewModel) {
         self.settingsViewModel = settingsViewModel
     }
     
@@ -68,7 +68,7 @@ struct SettingsView: View {
 
 #Preview {
     let pomodoroTimer = PomodoroTimer()
-    let settingsViewModel = SettingsViewModel(pomodoroTimer: pomodoroTimer)
+    let settingsViewModel = SettingsViewModel(pomodoroTimer)
     
-    SettingsView(settingsViewModel: settingsViewModel)
+    SettingsView(settingsViewModel)
 }

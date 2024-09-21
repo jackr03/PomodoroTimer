@@ -16,19 +16,19 @@ struct PomodoroTimer_Watch_AppApp: App {
     
     init() {
         self.pomodoroTimer = PomodoroTimer()
-        self.pomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
-        self.settingsViewModel = SettingsViewModel(pomodoroTimer: pomodoroTimer)
+        self.pomodoroViewModel = PomodoroViewModel(pomodoroTimer)
+        self.settingsViewModel = SettingsViewModel(pomodoroTimer)
     }
     
     var body: some Scene {
         WindowGroup {
             TabView {
-                PomodoroView(pomodoroViewModel: pomodoroViewModel)
+                PomodoroView(pomodoroViewModel)
                     .tabItem {
                         Label("Pomodoro", systemImage: "clock")
                     }
                 
-                SettingsView(settingsViewModel: settingsViewModel)
+                SettingsView(settingsViewModel)
                     .tabItem {
                         Label("Settings", systemImage: "gear")
                     }
