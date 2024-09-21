@@ -10,14 +10,13 @@ import SwiftUI
 
 @main
 struct PomodoroTimer_Watch_AppApp: App {
-    private var pomodoroTimer: PomodoroTimer
     private var pomodoroViewModel: PomodoroViewModel
     private var settingsViewModel: SettingsViewModel
     
     init() {
-        self.pomodoroTimer = PomodoroTimer()
-        self.pomodoroViewModel = PomodoroViewModel(pomodoroTimer)
-        self.settingsViewModel = SettingsViewModel(pomodoroTimer)
+        UserDefaults.standard.set(5, forKey: "workDuration")
+        self.pomodoroViewModel = PomodoroViewModel()
+        self.settingsViewModel = SettingsViewModel()
     }
     
     var body: some Scene {

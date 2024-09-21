@@ -68,8 +68,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    let pomodoroTimer = PomodoroTimer()
-    let settingsViewModel = SettingsViewModel(pomodoroTimer)
-    
-    SettingsView(settingsViewModel)
+    SettingsView(SettingsViewModel())
 }

@@ -82,8 +82,5 @@ struct PomodoroView: View {
 }
 
  #Preview {
-    let pomodoroTimer = PomodoroTimer()
-    let pomodoroViewModel = PomodoroViewModel(pomodoroTimer)
-    
-    PomodoroView(pomodoroViewModel)
+    PomodoroView(PomodoroViewModel())
 }

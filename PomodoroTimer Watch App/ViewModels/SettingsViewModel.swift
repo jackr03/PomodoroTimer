@@ -8,11 +8,7 @@
 import Foundation
 
 final class SettingsViewModel {
-    private var pomodoroTimer: PomodoroTimer
-    
-    init(_ pomodoroTimer: PomodoroTimer) {
-        self.pomodoroTimer = pomodoroTimer
-    }
+    private var pomodoroTimer = PomodoroTimer.shared
     
     func updateSetting(to value: Int, forKey key: String) {
         // Convert time back to seconds

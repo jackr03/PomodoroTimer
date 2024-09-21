@@ -8,11 +8,10 @@
 import Foundation
 
 final class PomodoroViewModel {
-    private var pomodoroTimer: PomodoroTimer
+    private var pomodoroTimer = PomodoroTimer.shared
     private var extendedSessionService: ExtendedSessionService
     
-    init(_ pomodoroTimer: PomodoroTimer) {
-        self.pomodoroTimer = pomodoroTimer
+    init() {
         self.extendedSessionService = ExtendedSessionService()
     }
     

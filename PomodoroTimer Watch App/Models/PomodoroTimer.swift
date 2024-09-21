@@ -40,8 +40,13 @@ enum SessionType: String {
     }
 }
 
+/**
+ Singleton as only timer should exist anyway, and states can be coordinated easier.
+ */
 @Observable
 class PomodoroTimer {
+    static let shared = PomodoroTimer()
+    
     private var timer: Timer?
     private var remainingTime: Int = SessionType.work.duration
     private var isTimerTicking: Bool = false
@@ -50,6 +55,9 @@ class PomodoroTimer {
     let maxSessions: Int = 4
     private var session: SessionType = .work
     private var sessionNumber: Int = 0
+    
+    // Private initialiser to prevent external instantiation
+    private init() {}
     
     var currentRemainingTime: Int {
         return remainingTime
