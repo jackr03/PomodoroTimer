@@ -22,5 +22,16 @@ final class SettingsViewModel {
         UserDefaults.standard.set(newWorkDuration, forKey: "workDuration")
         UserDefaults.standard.set(newShortBreakDuration, forKey: "shortBreakDuration")
         UserDefaults.standard.set(newLongBreakDuration, forKey: "longBreakDuration")
+        
+        updateTimerDurations()
+    }
+    
+    /**
+     Update only if the timer isn't currently running.
+     */
+    private func updateTimerDurations() {
+        guard !pomodoroTimer.isTimerTickingStatus else { return }
+        
+        pomodoroTimer.resetTimer()
     }
 }
