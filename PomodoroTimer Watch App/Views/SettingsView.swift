@@ -11,14 +11,13 @@ import SwiftUI
 struct SettingsView: View {
     private var settingsViewModel: SettingsViewModel
     
-    @AppStorage("workDuration") private var workDuration =  1500
-    @AppStorage("shortBreakDuration") private var shortBreakDuration = 300
-    @AppStorage("longBreakDuration") private var longBreakDuration = 1800
+    @AppStorage("workDuration") private var workDuration: Int = 1500
+    @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
+    @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
     
-    @State private var workDurationInMinutes = 25
-    @State private var shortBreakDurationInMinutes = 5
-    @State private var longBreakDurationInMinutes = 30
-    
+    @State private var workDurationInMinutes: Int = 25
+    @State private var shortBreakDurationInMinutes: Int = 5
+    @State private var longBreakDurationInMinutes: Int = 30
     @State private var haveSettingsChanged = false
     
     init(settingsViewModel: SettingsViewModel) {
@@ -97,6 +96,12 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            // Update using AppStorage values when view appears
+            workDurationInMinutes = workDuration / 60
+            shortBreakDurationInMinutes = shortBreakDuration / 60
+            longBreakDurationInMinutes = longBreakDuration / 60
         }
     }
 }
