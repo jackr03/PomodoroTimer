@@ -15,13 +15,6 @@ struct PomodoroTimer_Watch_AppApp: App {
     private var settingsViewModel: SettingsViewModel
     
     init() {
-        // For testing
-//        let defaults = UserDefaults.standard
-//        let dictionary = defaults.dictionaryRepresentation()
-//        for key in dictionary.keys {
-//            defaults.removeObject(forKey: key)
-//        }
-        
         self.pomodoroTimer = PomodoroTimer()
         self.pomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
         self.settingsViewModel = SettingsViewModel(pomodoroTimer: pomodoroTimer)
