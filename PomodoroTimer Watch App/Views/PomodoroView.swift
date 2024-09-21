@@ -79,7 +79,6 @@ struct PomodoroView: View {
         }
         .alert("Time's up!", isPresented: $alertsViewModel.showAlert) {
             Button("OK") {
-                alertsViewModel.stopHaptics()
             }
         }
     }

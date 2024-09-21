@@ -20,11 +20,13 @@ final class AlertsViewModel {
     
     public var showAlert: Bool {
         get { return pomodoroTimer.isTimerFinished }
-        set { pomodoroTimer.isTimerFinished = newValue }
-    }
-    
-    func playStartHaptic() {
-        WKInterfaceDevice.current().play(.start)
+        set {
+            pomodoroTimer.isTimerFinished = newValue
+            
+            if !newValue {
+                stopHaptics()
+            }
+        }
     }
     
     func startHaptics() {
@@ -33,8 +35,12 @@ final class AlertsViewModel {
         }
     }
     
-    func stopHaptics() {
+    private func stopHaptics() {
         hapticTimer?.invalidate()
         hapticTimer = nil
+    }
+    
+    func playStartHaptic() {
+        WKInterfaceDevice.current().play(.start)
     }
 }
