@@ -6,14 +6,14 @@
 //
 
 import Foundation
-import WatchKit
 
-final class PomodoroViewModel: NSObject, WKExtendedRuntimeSessionDelegate {
-    private var extendedSession: WKExtendedRuntimeSession?
+final class PomodoroViewModel {
     private var pomodoroTimer: PomodoroTimer
+    private var extendedSessionService: ExtendedSessionService
     
     init(pomodoroTimer: PomodoroTimer) {
         self.pomodoroTimer = pomodoroTimer
+        self.extendedSessionService = ExtendedSessionService()
     }
     
     var formattedRemainingTime: String {
@@ -47,22 +47,18 @@ final class PomodoroViewModel: NSObject, WKExtendedRuntimeSessionDelegate {
         return pomodoroTimer.isWorkSessionStatus
     }
     
-    func resetIsTimerFinished() {
-        pomodoroTimer.isTimerFinishedStatus = false
-    }
-    
     func startTimer() {
-        self.startExtendedSession()
+        extendedSessionService.startSession()
         pomodoroTimer.startTimer()
     }
     
     func stopTimer() {
-        self.endExtendedSession()
+        extendedSessionService.stopSession()
         pomodoroTimer.stopTimer()
     }
     
     func pauseTimer() {
-        self.endExtendedSession()
+        extendedSessionService.stopSession()
         pomodoroTimer.pauseTimer()
     }
     
@@ -70,22 +66,19 @@ final class PomodoroViewModel: NSObject, WKExtendedRuntimeSessionDelegate {
         pomodoroTimer.resetTimer()
     }
     
-    private func startExtendedSession() {
-        extendedSession = WKExtendedRuntimeSession()
-        extendedSession?.delegate = self
-        extendedSession?.start()
+    /**
+     End session and trigger haptics.
+     */
+    func endSession() {
+        extendedSessionService.stopSession()
+        extendedSessionService.startHaptics()
     }
     
-    private func endExtendedSession() {
-        extendedSession?.invalidate()
-        extendedSession = nil
-    }
-    
-    func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {}
-    
-    func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {}
-    
-    func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
-        print("Session invalidated due to \(reason.rawValue), error: \(error?.localizedDescription ?? "None")")
+    /**
+     Stop the haptic alarm and reset isTimerFinished.
+     */
+    func stopHaptics() {
+        extendedSessionService.stopHaptics()
+        pomodoroTimer.isTimerFinishedStatus = false
     }
 }

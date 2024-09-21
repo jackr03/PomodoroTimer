@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -55,6 +55,10 @@
 		15D5B5182C88F78B004B29E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		15D5B51B2C88F78B004B29E8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		15567D2F2C9E1C7200EEB519 /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		15D5B50C2C88F789004B29E8 /* Frameworks */ = {
@@ -117,6 +121,7 @@
 				151D60BF2C8E337C00156456 /* Models */,
 				151D60C22C8E338400156456 /* ViewModels */,
 				151D60C12C8E338100156456 /* Views */,
+				15567D2F2C9E1C7200EEB519 /* Services */,
 				15D5B5142C88F789004B29E8 /* PomodoroTimerApp.swift */,
 				15D5B5182C88F78B004B29E8 /* Assets.xcassets */,
 				15D5B51A2C88F78B004B29E8 /* Preview Content */,
@@ -163,6 +168,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				15567D2F2C9E1C7200EEB519 /* Services */,
 			);
 			name = "PomodoroTimer Watch App";
 			productName = "PomodoroTimer Watch App";

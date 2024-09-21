@@ -9,11 +9,10 @@ import Foundation
 import SwiftUI
 
 struct PomodoroView: View {
-    private var pomodoroViewModel: PomodoroViewModel
-    
     @State private var showFinishedAlert = false
-    @State private var hapticTimer: Timer? = nil
-    
+
+    private var pomodoroViewModel: PomodoroViewModel
+        
     init(pomodoroViewModel: PomodoroViewModel) {
         self.pomodoroViewModel = pomodoroViewModel
     }
@@ -52,7 +51,7 @@ struct PomodoroView: View {
                     Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
                         .font(.body)
                 }
-
+                
                 Button(action: {
                     pomodoroViewModel.stopTimer()
                 }) {
@@ -70,31 +69,19 @@ struct PomodoroView: View {
         }
         .onChange(of: pomodoroViewModel.isTimerFinished) { _, newValue in
             if newValue {
-                startHaptics()
+                pomodoroViewModel.endSession()
                 showFinishedAlert = true
             }
         }
         .alert("Time's up!", isPresented: $showFinishedAlert) {
             Button("OK") {
-                stopHaptics()
-                pomodoroViewModel.resetIsTimerFinished()
+                pomodoroViewModel.stopHaptics()
             }
         }
     }
-    
-    func startHaptics() {
-        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-            WKInterfaceDevice.current().play(.stop)
-        }
-    }
-    
-    func stopHaptics() {
-        hapticTimer?.invalidate()
-        hapticTimer = nil
-    }
 }
 
-#Preview {
+ #Preview {
     let pomodoroTimer = PomodoroTimer()
     let pomodoroViewModel = PomodoroViewModel(pomodoroTimer: pomodoroTimer)
     
