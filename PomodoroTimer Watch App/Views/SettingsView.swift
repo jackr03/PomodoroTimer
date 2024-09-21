@@ -15,13 +15,29 @@ struct SettingsView: View {
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
     @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
     
+    @State private var settingsHaveChanged = false
     @State private var workDurationInMinutes: Int = 25
     @State private var shortBreakDurationInMinutes: Int = 5
     @State private var longBreakDurationInMinutes: Int = 30
-    @State private var haveSettingsChanged = false
     
     init(settingsViewModel: SettingsViewModel) {
         self.settingsViewModel = settingsViewModel
+    }
+    
+    func initialiseDurationsInMinutes() {
+        workDurationInMinutes = workDuration / 60
+        shortBreakDurationInMinutes = shortBreakDuration / 60
+        longBreakDurationInMinutes = longBreakDuration / 60
+    }
+    
+    func confirmChanges() {
+        settingsViewModel.updateSettings(workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes)
+        settingsHaveChanged = false
+    }
+    
+    func cancelChanges() {
+        initialiseDurationsInMinutes()
+        settingsHaveChanged = false
     }
     
     var body: some View {
@@ -34,7 +50,13 @@ struct SettingsView: View {
                         }
                     }
                     .onChange(of: workDurationInMinutes) { _, newValue in
-                        workDuration = newValue * 60
+                        // Check value has actually changed, otherwise return
+                        // Need to convert AppStorage's duration into minutes
+                        guard newValue != workDuration / 60 else {
+                            return
+                        }
+
+                        settingsHaveChanged = true
                     }
                     
                     Picker("Short break", selection: $shortBreakDurationInMinutes) {
@@ -43,7 +65,11 @@ struct SettingsView: View {
                         }
                     }
                     .onChange(of: shortBreakDurationInMinutes) { _, newValue in
-                        shortBreakDuration = newValue * 60
+                        guard newValue != shortBreakDuration / 60 else {
+                            return
+                        }
+                        
+                        settingsHaveChanged = true
                     }
                     
                     Picker("Long break", selection: $longBreakDurationInMinutes) {
@@ -52,18 +78,22 @@ struct SettingsView: View {
                         }
                     }
                     .onChange(of: longBreakDurationInMinutes) { _, newValue in
-                        longBreakDuration = newValue * 60
+                        guard newValue != longBreakDuration / 60 else {
+                            return
+                        }
+                        
+                        settingsHaveChanged = true
                     }
                 }
                 .navigationTitle("Settings")
                 
-                if haveSettingsChanged {
+                if settingsHaveChanged {
                     Section {
                         HStack {
                             Spacer()
                             
                             Button(action: {
-                                print("confirm")
+                                confirmChanges()
                             }) {
                                 Image(systemName: "checkmark")
                                     .padding()
@@ -78,7 +108,7 @@ struct SettingsView: View {
                             Spacer()
                             
                             Button(action: {
-                                print("cancel")
+                                cancelChanges()
                             }) {
                                 Image(systemName: "xmark")
                                     .padding()
@@ -99,9 +129,7 @@ struct SettingsView: View {
         }
         .onAppear {
             // Update using AppStorage values when view appears
-            workDurationInMinutes = workDuration / 60
-            shortBreakDurationInMinutes = shortBreakDuration / 60
-            longBreakDurationInMinutes = longBreakDuration / 60
+            initialiseDurationsInMinutes()
         }
     }
 }

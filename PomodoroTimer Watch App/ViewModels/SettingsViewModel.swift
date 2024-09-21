@@ -13,4 +13,14 @@ final class SettingsViewModel {
     init(pomodoroTimer: PomodoroTimer) {
         self.pomodoroTimer = pomodoroTimer
     }
+    
+    func updateSettings(_ workDurationInMinutes: Int, _ shortBreakDurationInMinutes: Int, _ longBreakDurationInMinutes: Int) {
+        let newWorkDuration = workDurationInMinutes * 60
+        let newShortBreakDuration = shortBreakDurationInMinutes * 60
+        let newLongBreakDuration = longBreakDurationInMinutes * 60
+        
+        UserDefaults.standard.set(newWorkDuration, forKey: "workDuration")
+        UserDefaults.standard.set(newShortBreakDuration, forKey: "shortBreakDuration")
+        UserDefaults.standard.set(newLongBreakDuration, forKey: "longBreakDuration")
+    }
 }
