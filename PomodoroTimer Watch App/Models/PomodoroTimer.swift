@@ -87,19 +87,19 @@ class PomodoroTimer {
         }
     }
     
-    func stopTimer() {
-        session = .work
-        sessionNumber = 0
-        remainingTime = session.duration
-        stopTimerObject()
-    }
-    
     func pauseTimer() {
         stopTimerObject()
     }
     
     func resetTimer() {
         remainingTime = session.duration
+    }
+    
+    func endCycle() {
+        session = .work
+        sessionNumber = 0
+        remainingTime = session.duration
+        stopTimerObject()
     }
     
     private func stopTimerObject() {

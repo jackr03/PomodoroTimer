@@ -53,7 +53,7 @@ struct PomodoroView: View {
                 }
                 
                 Button(action: {
-                    pomodoroViewModel.stopTimer()
+                    pomodoroViewModel.endCycle()
                 }) {
                     Image(systemName: "stop.fill")
                         .font(.body)
