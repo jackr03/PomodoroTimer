@@ -59,9 +59,10 @@ struct SettingsView: View {
         }
         .onAppear {
             // Update using AppStorage values when view appears
-            workDurationInMinutes = workDuration / 60
-            shortBreakDurationInMinutes = shortBreakDuration / 60
-            longBreakDurationInMinutes = longBreakDuration / 60
+            // Set to 1 if < 60 seconds somehow
+            workDurationInMinutes = max(1, workDuration / 60)
+            shortBreakDurationInMinutes = max(1, shortBreakDuration / 60)
+            longBreakDurationInMinutes = max(1, longBreakDuration / 60)
         }
     }
 }
