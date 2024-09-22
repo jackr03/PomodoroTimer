@@ -48,6 +48,7 @@ class PomodoroTimer {
     static let shared = PomodoroTimer()
     
     let maxSessions: Int = 4
+    let sessionsCompletedKey = "sessionsCompleted"
 
     private(set) var remainingTime: Int = SessionType.work.duration
     private(set) var isTimerTicking: Bool = false
@@ -91,6 +92,7 @@ class PomodoroTimer {
         
         if session.isWorkSession {
             sessionNumber += 1
+            incrementSessionsCompleted()
             
             if sessionNumber == maxSessions {
                 session = .longBreak
@@ -122,5 +124,11 @@ class PomodoroTimer {
             isTimerFinished = true
             self.nextSession()
         }
+    }
+    
+    private func incrementSessionsCompleted() {
+        // Returns 0 if key doesn't exist, so no need to account for that situation
+        let currentSessionsCompleted = UserDefaults.standard.integer(forKey: sessionsCompletedKey)
+        UserDefaults.standard.set(currentSessionsCompleted + 1, forKey: sessionsCompletedKey)
     }
 }
