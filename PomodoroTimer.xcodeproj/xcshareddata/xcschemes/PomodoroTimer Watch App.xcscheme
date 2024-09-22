@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1540"
+   LastUpgradeVersion = "1600"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
-               BuildableName = "PomodoroTimer Watch App.app"
-               BlueprintName = "PomodoroTimer Watch App"
+               BuildableName = "PomodoroTimer.app"
+               BlueprintName = "PomodoroTimer"
                ReferencedContainer = "container:PomodoroTimer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -59,8 +59,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
-            BuildableName = "PomodoroTimer Watch App.app"
-            BlueprintName = "PomodoroTimer Watch App"
+            BuildableName = "PomodoroTimer.app"
+            BlueprintName = "PomodoroTimer"
             ReferencedContainer = "container:PomodoroTimer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -76,8 +76,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
-            BuildableName = "PomodoroTimer Watch App.app"
-            BlueprintName = "PomodoroTimer Watch App"
+            BuildableName = "PomodoroTimer.app"
+            BlueprintName = "PomodoroTimer"
             ReferencedContainer = "container:PomodoroTimer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
