@@ -26,8 +26,6 @@ struct PomodoroView: View {
                     .font(.system(size: 60))
                     .foregroundStyle(.primary)
                 
-                Spacer()
-                
                 HStack {
                     ForEach(0..<pomodoroViewModel.maxSessions, id: \.self) { number in
                         if number < pomodoroViewModel.currentSessionsDone {
@@ -49,8 +47,15 @@ struct PomodoroView: View {
                 Spacer()
                 Spacer()
                 Spacer()
+                Spacer()
+                Spacer()
                 
                 .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink(destination: SettingsView()) {
+                            Image(systemName: "gear")
+                        }
+                    }
                     ToolbarItemGroup(placement: .bottomBar) {
                         Button(action: {
                             if pomodoroViewModel.isTimerTicking {
