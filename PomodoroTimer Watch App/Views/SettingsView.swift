@@ -17,7 +17,6 @@ struct SettingsView: View {
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
     @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
     
-    @State private var settingsHaveChanged = false
     @State private var workDurationInMinutes: Int = 25
     @State private var shortBreakDurationInMinutes: Int = 5
     @State private var longBreakDurationInMinutes: Int = 30
@@ -40,40 +39,52 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    Picker("Work", selection: $workDurationInMinutes) {
+                    Picker(selection: $workDurationInMinutes) {
                         ForEach(1...60, id: \.self) {
-                            Text("^[\($0) \("minute")](inflect: true)").tag($0)
+                            Text("^[\($0) \("minute")](inflect: true)")
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                                .tag($0)
                         }
+                    } label: {
+                        Text("Work")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                     .onChange(of: workDurationInMinutes) { _, newValue in
-                        guard newValue != workDuration / 60 else { return }
-                        
                         settingsViewModel.updateSetting(to: newValue, forKey: "workDuration")
-                        settingsHaveChanged = true
                     }
                     
-                    Picker("Short Break", selection: $shortBreakDurationInMinutes) {
+                    Picker(selection: $shortBreakDurationInMinutes) {
                         ForEach(1...60, id: \.self) {
-                            Text("^[\($0) \("minute")](inflect: true)").tag($0)
+                            Text("^[\($0) \("minute")](inflect: true)")
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                                .tag($0)
                         }
+                    } label: {
+                        Text("Short Break")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                     .onChange(of: shortBreakDurationInMinutes) { _, newValue in
-                        guard newValue != workDuration / 60 else { return }
-                        
                         settingsViewModel.updateSetting(to: newValue, forKey: "shortBreakDuration")
-                        settingsHaveChanged = true
                     }
                     
-                    Picker("Long Break", selection: $longBreakDurationInMinutes) {
+                    Picker(selection: $longBreakDurationInMinutes) {
                         ForEach(1...60, id: \.self) {
-                            Text("^[\($0) \("minute")](inflect: true)").tag($0)
+                            Text("^[\($0) \("minute")](inflect: true)")
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                                .tag($0)
                         }
+                    } label: {
+                        Text("Short Break")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                     .onChange(of: longBreakDurationInMinutes) { _, newValue in
-                        guard newValue != workDuration / 60 else { return }
-                        
                         settingsViewModel.updateSetting(to: newValue, forKey: "longBreakDuration")
-                        settingsHaveChanged = true
                     }
                     
                     if !settingsAreDefault {
@@ -84,25 +95,19 @@ struct SettingsView: View {
                                 Button(action: {
                                     settingsViewModel.resetSettings()
                                     alertsViewModel.playPressedHaptic()
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                        updateDurations()
-                                    }
                                 }) {
-                                    Image(systemName: "arrow.counterclockwise")
+                                    Text("Reset to default")
                                         .padding()
-                                        .frame(minWidth: 40, minHeight: 40)
-                                        .font(.body)
-                                        .foregroundStyle(.white)
-                                        .background(.red)
+                                        .font(.callout)
+                                        .foregroundStyle(.red)
+                                        .background(.red.secondary)
+                                        .clipShape(Capsule())
                                 }
-                                .buttonStyle(BorderlessButtonStyle())
-                                .cornerRadius(10)
                                 
                                 Spacer()
                             }
+                            .listRowBackground(Color.clear)
                         }
-                        .listRowBackground(Color.clear)
                     }
                 }
                 .navigationTitle("Settings")
