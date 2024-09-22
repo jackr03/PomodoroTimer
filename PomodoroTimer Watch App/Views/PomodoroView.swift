@@ -54,6 +54,7 @@ struct PomodoroView: View {
                 }) {
                     Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
                         .font(.body)
+                        .foregroundStyle(.primary)
                 }
                 
                 Button(action: {
@@ -61,6 +62,7 @@ struct PomodoroView: View {
                 }) {
                     Image(systemName: "stop.fill")
                         .font(.body)
+                        .foregroundStyle(.secondary)
                 }
                 
                 Button(action: {
@@ -68,6 +70,7 @@ struct PomodoroView: View {
                 }) {
                     Image(systemName: "arrow.circlepath")
                         .font(.body)
+                        .foregroundStyle(.secondary)
                 }
                 
                 Button(action: {
@@ -75,6 +78,7 @@ struct PomodoroView: View {
                 }) {
                     Image(systemName: "forward.end.fill")
                         .font(.body)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
