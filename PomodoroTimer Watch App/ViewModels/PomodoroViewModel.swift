@@ -6,7 +6,10 @@
 //
 
 import Foundation
+import WatchKit
+import Observation
 
+@Observable
 final class PomodoroViewModel {
     static let shared = PomodoroViewModel()
     
@@ -42,6 +45,11 @@ final class PomodoroViewModel {
         return pomodoroTimer.isWorkSession
     }
     
+    var showFinishedAlert: Bool {
+        get { return pomodoroTimer.isTimerFinished }
+        set { pomodoroTimer.isTimerFinished = newValue }
+    }
+    
     func startTimer() {
         extendedSessionService.startSession()
         pomodoroTimer.startTimer()
@@ -68,5 +76,24 @@ final class PomodoroViewModel {
     
     func endSession() {
         extendedSessionService.stopSession()
+    }
+    
+    func playHaptics() {
+        extendedSessionService.playHaptics()
+    }
+    
+    /**
+     Haptics can be stopped by just ending the session.
+     */
+    func stopHaptics() {
+        extendedSessionService.stopSession()
+    }
+    
+    func playStartHaptic() {
+        WKInterfaceDevice.current().play(.start)
+    }
+    
+    func playPressedHaptic() {
+        WKInterfaceDevice.current().play(.click)
     }
 }

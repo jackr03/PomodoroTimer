@@ -9,9 +9,7 @@ import Foundation
 import SwiftUI
 
 struct PomodoroView: View {
-    private let pomodoroViewModel = PomodoroViewModel.shared
-    
-    @Bindable private var alertsViewModel = AlertsViewModel.shared
+    @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
     
     var body: some View {
         NavigationStack {
@@ -60,10 +58,10 @@ struct PomodoroView: View {
                         Button(action: {
                             if pomodoroViewModel.isTimerTicking {
                                 pomodoroViewModel.pauseTimer()
-                                alertsViewModel.playPressedHaptic()
+                                pomodoroViewModel.playPressedHaptic()
                             } else {
                                 pomodoroViewModel.startTimer()
-                                alertsViewModel.playStartHaptic()
+                                pomodoroViewModel.playStartHaptic()
                             }
                         }) {
                             Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
@@ -71,21 +69,21 @@ struct PomodoroView: View {
                         
                         Button(action: {
                             pomodoroViewModel.endCycle()
-                            alertsViewModel.playPressedHaptic()
+                            pomodoroViewModel.playPressedHaptic()
                         }) {
                             Image(systemName: "stop.fill")
                         }
                         
                         Button(action: {
                             pomodoroViewModel.resetTimer()
-                            alertsViewModel.playPressedHaptic()
+                            pomodoroViewModel.playPressedHaptic()
                         }) {
                             Image(systemName: "arrow.circlepath")
                         }
                         
                         Button(action: {
                             pomodoroViewModel.skipSession()
-                            alertsViewModel.playPressedHaptic()
+                            pomodoroViewModel.playPressedHaptic()
                         }) {
                             Image(systemName: "forward.end.fill")
                         }
@@ -95,14 +93,14 @@ struct PomodoroView: View {
 
             }
         }
-        .onChange(of: alertsViewModel.showAlert) { _, newValue in
+        .onChange(of: pomodoroViewModel.showFinishedAlert) { _, newValue in
             if newValue {
-                alertsViewModel.playHaptics()
+                pomodoroViewModel.playHaptics()
             }
         }
-        .alert("Time's up!", isPresented: $alertsViewModel.showAlert) {
+        .alert("Time's up!", isPresented: $pomodoroViewModel.showFinishedAlert) {
             Button("OK") {
-                alertsViewModel.stopHaptics()
+                pomodoroViewModel.stopHaptics()
             }
         }
     }

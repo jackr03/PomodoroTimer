@@ -10,8 +10,6 @@ import SwiftUI
 
 struct SettingsView: View {
     private let settingsViewModel = SettingsViewModel.shared
-
-    @Bindable private var alertsViewModel = AlertsViewModel.shared
     
     @AppStorage("workDuration") private var workDuration: Int = 1500
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
@@ -90,7 +88,7 @@ struct SettingsView: View {
                                 
                                 Button(action: {
                                     settingsViewModel.resetSettings()
-                                    alertsViewModel.playPressedHaptic()
+                                    settingsViewModel.playPressedHaptic()
                                     
                                     dismiss()
                                 }) {

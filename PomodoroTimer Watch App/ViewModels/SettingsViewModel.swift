@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import WatchKit
 
 final class SettingsViewModel {
     static let shared = SettingsViewModel()
@@ -37,5 +38,9 @@ final class SettingsViewModel {
         guard !pomodoroTimer.isTimerTicking else { return }
         
         pomodoroTimer.resetTimer()
+    }
+    
+    func playPressedHaptic() {
+        WKInterfaceDevice.current().play(.click)
     }
 }
