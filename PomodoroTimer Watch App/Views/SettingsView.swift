@@ -21,6 +21,8 @@ struct SettingsView: View {
     @State private var shortBreakDurationInMinutes: Int = 5
     @State private var longBreakDurationInMinutes: Int = 30
     
+    @Environment(\.dismiss) var dismiss
+    
     var settingsAreDefault: Bool {
         let defaultWorkDurationInMinutes = 25
         let defaultShortBreakDurationInMinutes = 5
@@ -95,6 +97,8 @@ struct SettingsView: View {
                                 Button(action: {
                                     settingsViewModel.resetSettings()
                                     alertsViewModel.playPressedHaptic()
+                                    
+                                    dismiss()
                                 }) {
                                     Text("Reset to default")
                                         .padding()
