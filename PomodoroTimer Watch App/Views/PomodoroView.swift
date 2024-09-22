@@ -47,6 +47,7 @@ struct PomodoroView: View {
                 Button(action: {
                     if pomodoroViewModel.isTimerTicking {
                         pomodoroViewModel.pauseTimer()
+                        alertsViewModel.playPressedHaptic()
                     } else {
                         pomodoroViewModel.startTimer()
                         alertsViewModel.playStartHaptic()
@@ -59,6 +60,7 @@ struct PomodoroView: View {
                 
                 Button(action: {
                     pomodoroViewModel.endCycle()
+                    alertsViewModel.playPressedHaptic()
                 }) {
                     Image(systemName: "stop.fill")
                         .font(.body)
@@ -67,6 +69,7 @@ struct PomodoroView: View {
                 
                 Button(action: {
                     pomodoroViewModel.resetTimer()
+                    alertsViewModel.playPressedHaptic()
                 }) {
                     Image(systemName: "arrow.circlepath")
                         .font(.body)
@@ -75,6 +78,7 @@ struct PomodoroView: View {
                 
                 Button(action: {
                     pomodoroViewModel.skipSession()
+                    alertsViewModel.playPressedHaptic()
                 }) {
                     Image(systemName: "forward.end.fill")
                         .font(.body)

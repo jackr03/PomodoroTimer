@@ -37,4 +37,8 @@ final class AlertsViewModel {
     func playStartHaptic() {
         WKInterfaceDevice.current().play(.start)
     }
+    
+    func playPressedHaptic() {
+        WKInterfaceDevice.current().play(.click)
+    }
 }
