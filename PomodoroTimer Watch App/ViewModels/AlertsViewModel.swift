@@ -21,13 +21,7 @@ final class AlertsViewModel {
     
     public var showAlert: Bool {
         get { return pomodoroTimer.isTimerFinished }
-        set {
-            pomodoroTimer.isTimerFinished = newValue
-            
-            if !newValue {
-                stopHaptics()
-            }
-        }
+        set { pomodoroTimer.isTimerFinished = newValue}
     }
     
     func startHaptics() {
@@ -36,7 +30,7 @@ final class AlertsViewModel {
         }
     }
     
-    private func stopHaptics() {
+    func stopHaptics() {
         hapticTimer?.invalidate()
         hapticTimer = nil
     }
