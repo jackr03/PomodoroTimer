@@ -31,12 +31,6 @@ struct SettingsView: View {
         return workDurationInMinutes == defaultWorkDurationInMinutes && shortBreakDurationInMinutes == defaultShortBreakDurationInMinutes && longBreakDurationInMinutes == defaultLongBreakDurationInMinutes
     }
     
-    func updateDurations() {
-        workDurationInMinutes = max(1, workDuration / 60)
-        shortBreakDurationInMinutes = max(1, shortBreakDuration / 60)
-        longBreakDurationInMinutes = max(1, longBreakDuration / 60)
-    }
-    
     var body: some View {
         NavigationStack {
             Form {
@@ -119,14 +113,10 @@ struct SettingsView: View {
         }
         .onAppear {
             // Update using AppStorage values when view appears
-            updateDurations()
+            workDurationInMinutes = max(1, workDuration / 60)
+            shortBreakDurationInMinutes = max(1, shortBreakDuration / 60)
+            longBreakDurationInMinutes = max(1, longBreakDuration / 60)
         }
-        .alert("Time's up!", isPresented: $alertsViewModel.showAlert) {
-            Button("OK") {
-                alertsViewModel.stopHaptics()
-            }
-        }
-
     }
 }
 
