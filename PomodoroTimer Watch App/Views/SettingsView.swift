@@ -9,8 +9,9 @@ import Foundation
 import SwiftUI
 
 struct SettingsView: View {
+    private let settingsViewModel = SettingsViewModel.shared
+
     @Bindable private var alertsViewModel = AlertsViewModel.shared
-    private var settingsViewModel: SettingsViewModel
     
     @AppStorage("workDuration") private var workDuration: Int = 1500
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
@@ -21,19 +22,15 @@ struct SettingsView: View {
     @State private var shortBreakDurationInMinutes: Int = 5
     @State private var longBreakDurationInMinutes: Int = 30
     
-    init(_ settingsViewModel: SettingsViewModel) {
-        self.settingsViewModel = settingsViewModel
-    }
-    
     var settingsAreDefault: Bool {
         let defaultWorkDurationInMinutes = 25
-        let defaultshortBreakDurationInMinutes = 5
-        let defaultlongBreakDurationInMinutes = 30
+        let defaultShortBreakDurationInMinutes = 5
+        let defaultLongBreakDurationInMinutes = 30
         
-        return workDurationInMinutes == defaultWorkDurationInMinutes && shortBreakDurationInMinutes == defaultshortBreakDurationInMinutes && longBreakDurationInMinutes == defaultlongBreakDurationInMinutes
+        return workDurationInMinutes == defaultWorkDurationInMinutes && shortBreakDurationInMinutes == defaultShortBreakDurationInMinutes && longBreakDurationInMinutes == defaultLongBreakDurationInMinutes
     }
     
-    func setDurationsInMinutes() {
+    func updateDurations() {
         workDurationInMinutes = max(1, workDuration / 60)
         shortBreakDurationInMinutes = max(1, shortBreakDuration / 60)
         longBreakDurationInMinutes = max(1, longBreakDuration / 60)
@@ -88,9 +85,9 @@ struct SettingsView: View {
                                     settingsViewModel.resetSettings()
                                     alertsViewModel.playPressedHaptic()
                                     
-                                    setDurationsInMinutes()
-
-                                    print("\(workDuration), \(shortBreakDuration), \(longBreakDuration)")
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        updateDurations()
+                                    }
                                 }) {
                                     Image(systemName: "arrow.counterclockwise")
                                         .padding()
@@ -113,7 +110,7 @@ struct SettingsView: View {
         }
         .onAppear {
             // Update using AppStorage values when view appears
-            setDurationsInMinutes()
+            updateDurations()
         }
         .alert("Time's up!", isPresented: $alertsViewModel.showAlert) {
             Button("OK") {
@@ -125,5 +122,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(SettingsViewModel())
+    SettingsView()
 }

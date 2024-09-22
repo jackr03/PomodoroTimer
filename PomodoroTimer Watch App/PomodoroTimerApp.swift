@@ -10,26 +10,22 @@ import SwiftUI
 
 @main
 struct PomodoroTimer_Watch_AppApp: App {
-    private var pomodoroViewModel: PomodoroViewModel
-    private var settingsViewModel: SettingsViewModel
-    
     init() {
-        UserDefaults.standard.set(3, forKey:"workDuration")
-        UserDefaults.standard.set(3, forKey:"longBreakDuration")
-        UserDefaults.standard.set(3, forKey:"shortBreakDuration")
-        self.pomodoroViewModel = PomodoroViewModel()
-        self.settingsViewModel = SettingsViewModel()
+        // For testing purposes
+//        UserDefaults.standard.set(3, forKey:"workDuration")
+//        UserDefaults.standard.set(3, forKey:"longBreakDuration")
+//        UserDefaults.standard.set(3, forKey:"shortBreakDuration")
     }
     
     var body: some Scene {
         WindowGroup {
             TabView {
-                PomodoroView(pomodoroViewModel)
+                PomodoroView()
                     .tabItem {
                         Label("Pomodoro", systemImage: "clock")
                     }
                 
-                SettingsView(settingsViewModel)
+                SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gear")
                     }

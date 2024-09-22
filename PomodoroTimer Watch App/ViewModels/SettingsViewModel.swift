@@ -8,7 +8,11 @@
 import Foundation
 
 final class SettingsViewModel {
-    private var pomodoroTimer = PomodoroTimer.shared
+    static let shared = SettingsViewModel()
+    
+    private let pomodoroTimer = PomodoroTimer.shared
+    
+    private init() {}
     
     func updateSetting(to value: Int, forKey key: String) {
         // Convert time back to seconds
@@ -22,6 +26,8 @@ final class SettingsViewModel {
         UserDefaults.standard.set(1500, forKey: "workDuration")
         UserDefaults.standard.set(300, forKey: "shortBreakDuration")
         UserDefaults.standard.set(1800, forKey: "longBreakDuration")
+        
+        updateTimer()
     }
     
     /**

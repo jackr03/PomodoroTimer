@@ -9,12 +9,9 @@ import Foundation
 import SwiftUI
 
 struct PomodoroView: View {
-    @Bindable private var alertsViewModel = AlertsViewModel.shared
-    private var pomodoroViewModel: PomodoroViewModel
+    private let pomodoroViewModel = PomodoroViewModel.shared
     
-    init(_ pomodoroViewModel: PomodoroViewModel) {
-        self.pomodoroViewModel = pomodoroViewModel
-    }
+    @Bindable private var alertsViewModel = AlertsViewModel.shared
     
     var body: some View {
         VStack {
@@ -100,5 +97,5 @@ struct PomodoroView: View {
 }
 
  #Preview {
-    PomodoroView(PomodoroViewModel())
+    PomodoroView()
 }

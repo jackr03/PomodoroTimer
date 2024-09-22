@@ -13,8 +13,8 @@ import Observation
 final class AlertsViewModel {
     static let shared = AlertsViewModel()
     
-    private var pomodoroTimer = PomodoroTimer.shared
-    private var extendedSessionService = ExtendedSessionService.shared
+    private let pomodoroTimer = PomodoroTimer.shared
+    private let extendedSessionService = ExtendedSessionService.shared
     
     private init() {}
     
