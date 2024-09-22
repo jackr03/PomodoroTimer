@@ -73,7 +73,7 @@ struct PomodoroView: View {
         }
         .onChange(of: alertsViewModel.showAlert) { _, newValue in
             if newValue {
-                alertsViewModel.startHaptics()
+                alertsViewModel.playHaptics()
             }
         }
         .alert("Time's up!", isPresented: $alertsViewModel.showAlert) {

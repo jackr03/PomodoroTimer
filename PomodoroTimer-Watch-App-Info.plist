@@ -6,7 +6,7 @@
 	<array/>
 	<key>WKBackgroundModes</key>
 	<array>
-		<string>physical-therapy</string>
+		<string>alarm</string>
 	</array>
 </dict>
 </plist>

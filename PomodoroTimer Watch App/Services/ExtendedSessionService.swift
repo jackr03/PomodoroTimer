@@ -22,19 +22,25 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
             print("Session already running")
             return
         }
-        
+                
         session = WKExtendedRuntimeSession()
         session?.delegate = self
-        session?.start()
+        session?.start(at: Date())
     }
     
     func stopSession() {
-        guard session?.state == .running else {
-            print("Session not running")
+        guard session?.state != .invalid else {
+            print("Session already invalidated")
             return
         }
         
         session?.invalidate()
+    }
+    
+    func playHaptics() {
+        session?.notifyUser(hapticType: .stop) { _ in
+            return 2.0
+        }
     }
 
     // Delegate functions
@@ -44,10 +50,24 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
     
     func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
         print("Session expiring")
+        
+        // Experimental, hard to test as would take 30 minutes to expire
+        // Idea is to play a haptic to allow future sessions to run without a pop-up warning
+        // Then, restart the session
+        session?.notifyUser(hapticType: .retry)
+        stopSession()
+        startSession()
     }
     
     func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
-        session = nil
         print("Session invalidated with reason: \(reason.rawValue), error: \(error?.localizedDescription ?? "No error")")
+        
+    }
+    
+    func handle(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
+        session = extendedRuntimeSession
+        session?.delegate = self
+        
+        print("Resuming session")
     }
 }

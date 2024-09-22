@@ -15,25 +15,22 @@ final class AlertsViewModel {
     
     private var pomodoroTimer = PomodoroTimer.shared
     private var extendedSessionService = ExtendedSessionService.shared
-    private var hapticTimer: Timer?
     
     private init() {}
     
     public var showAlert: Bool {
         get { return pomodoroTimer.isTimerFinished }
-        set { pomodoroTimer.isTimerFinished = newValue}
+        set { pomodoroTimer.isTimerFinished = newValue }
     }
     
-    func startHaptics() {
-        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-            WKInterfaceDevice.current().play(.stop)
-        }
+    func playHaptics() {
+        extendedSessionService.playHaptics()
     }
     
+    /**
+     Haptics can be stopped by just ending the session.
+     */
     func stopHaptics() {
-        hapticTimer?.invalidate()
-        hapticTimer = nil
-        
         extendedSessionService.stopSession()
     }
     
