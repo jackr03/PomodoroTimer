@@ -29,7 +29,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "15D5B5082C88F789004B29E8"
+               BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
                BuildableName = "PomodoroTimer.app"
                BlueprintName = "PomodoroTimer"
                ReferencedContainer = "container:PomodoroTimer.xcodeproj">
