@@ -9,7 +9,7 @@ import Foundation
 
 final class PomodoroViewModel {
     private var pomodoroTimer = PomodoroTimer.shared
-    private var extendedSessionService = ExtendedSessionService()
+    private var extendedSessionService = ExtendedSessionService.shared
     
     var formattedRemainingTime: String {
         let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60

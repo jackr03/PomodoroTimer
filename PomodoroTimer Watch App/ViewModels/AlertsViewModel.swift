@@ -14,6 +14,7 @@ final class AlertsViewModel {
     static let shared = AlertsViewModel()
     
     private var pomodoroTimer = PomodoroTimer.shared
+    private var extendedSessionService = ExtendedSessionService.shared
     private var hapticTimer: Timer?
     
     private init() {}

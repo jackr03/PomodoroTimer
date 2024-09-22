@@ -9,8 +9,14 @@ import Foundation
 import WatchKit
 
 final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
+    static let shared = ExtendedSessionService()
+    
     private var session: WKExtendedRuntimeSession?
 
+    private override init() {
+        super.init()
+    }
+    
     func startSession() {
         guard session?.state != .running else {
             print("Session already running")

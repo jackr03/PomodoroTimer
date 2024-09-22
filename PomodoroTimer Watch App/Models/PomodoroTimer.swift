@@ -91,9 +91,7 @@ class PomodoroTimer {
     private func stopTimerObject() {
         isTimerTicking = false
         
-        guard let timer = timer else {
-            return
-        }
+        guard let timer = timer else { return }
         
         timer.invalidate()
         self.timer = nil
