@@ -69,6 +69,13 @@ struct PomodoroView: View {
                     Image(systemName: "arrow.circlepath")
                         .font(.body)
                 }
+                
+                Button(action: {
+                    pomodoroViewModel.skipSession()
+                }) {
+                    Image(systemName: "forward.end.fill")
+                        .font(.body)
+                }
             }
         }
         .onChange(of: alertsViewModel.showAlert) { _, newValue in

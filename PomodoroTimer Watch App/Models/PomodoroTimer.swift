@@ -74,21 +74,6 @@ class PomodoroTimer {
     }
     
     func pauseTimer() {
-        stopTimerObject()
-    }
-    
-    func resetTimer() {
-        remainingTime = session.duration
-    }
-    
-    func endCycle() {
-        session = .work
-        sessionNumber = 0
-        remainingTime = session.duration
-        stopTimerObject()
-    }
-    
-    private func stopTimerObject() {
         isTimerTicking = false
         
         guard let timer = timer else { return }
@@ -96,18 +81,13 @@ class PomodoroTimer {
         timer.invalidate()
         self.timer = nil
     }
-        
-    private func countdown() {
-        if remainingTime > 0 {
-            remainingTime -= 1
-        } else {
-            isTimerFinished = true
-            self.nextSession()
-        }
+    
+    func resetTimer() {
+        remainingTime = session.duration
     }
     
-    private func nextSession() {
-        stopTimerObject()
+    func nextSession() {
+        pauseTimer()
         
         if session.isWorkSession {
             sessionNumber += 1
@@ -126,5 +106,21 @@ class PomodoroTimer {
         }
         
         remainingTime = session.duration
+    }
+    
+    func endCycle() {
+        session = .work
+        sessionNumber = 0
+        remainingTime = session.duration
+        pauseTimer()
+    }
+        
+    private func countdown() {
+        if remainingTime > 0 {
+            remainingTime -= 1
+        } else {
+            isTimerFinished = true
+            self.nextSession()
+        }
     }
 }

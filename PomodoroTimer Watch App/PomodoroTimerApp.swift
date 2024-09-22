@@ -14,6 +14,9 @@ struct PomodoroTimer_Watch_AppApp: App {
     private var settingsViewModel: SettingsViewModel
     
     init() {
+        UserDefaults.standard.set(3, forKey:"workDuration")
+        UserDefaults.standard.set(3, forKey:"longBreakDuration")
+        UserDefaults.standard.set(3, forKey:"shortBreakDuration")
         self.pomodoroViewModel = PomodoroViewModel()
         self.settingsViewModel = SettingsViewModel()
     }

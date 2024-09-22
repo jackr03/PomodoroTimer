@@ -48,13 +48,18 @@ final class PomodoroViewModel {
         pomodoroTimer.pauseTimer()
     }
     
+    func endCycle() {
+        extendedSessionService.stopSession()
+        pomodoroTimer.endCycle()
+    }
+
     func resetTimer() {
         pomodoroTimer.resetTimer()
     }
     
-    func endCycle() {
+    func skipSession() {
         extendedSessionService.stopSession()
-        pomodoroTimer.endCycle()
+        pomodoroTimer.nextSession()
     }
     
     func endSession() {
