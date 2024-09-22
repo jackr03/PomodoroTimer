@@ -33,6 +33,8 @@ final class AlertsViewModel {
     func stopHaptics() {
         hapticTimer?.invalidate()
         hapticTimer = nil
+        
+        extendedSessionService.stopSession()
     }
     
     func playStartHaptic() {

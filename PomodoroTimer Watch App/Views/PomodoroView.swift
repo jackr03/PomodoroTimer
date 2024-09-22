@@ -73,7 +73,6 @@ struct PomodoroView: View {
         }
         .onChange(of: alertsViewModel.showAlert) { _, newValue in
             if newValue {
-                pomodoroViewModel.endSession()
                 alertsViewModel.startHaptics()
             }
         }
