@@ -52,7 +52,7 @@ struct SettingsView: View {
                         settingsHaveChanged = true
                     }
                     
-                    Picker("Short break", selection: $shortBreakDurationInMinutes) {
+                    Picker("Short Break", selection: $shortBreakDurationInMinutes) {
                         ForEach(1...60, id: \.self) {
                             Text("^[\($0) \("minute")](inflect: true)").tag($0)
                         }
@@ -64,7 +64,7 @@ struct SettingsView: View {
                         settingsHaveChanged = true
                     }
                     
-                    Picker("Long break", selection: $longBreakDurationInMinutes) {
+                    Picker("Long Break", selection: $longBreakDurationInMinutes) {
                         ForEach(1...60, id: \.self) {
                             Text("^[\($0) \("minute")](inflect: true)").tag($0)
                         }
