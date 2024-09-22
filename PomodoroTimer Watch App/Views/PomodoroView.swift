@@ -14,71 +14,71 @@ struct PomodoroView: View {
     @Bindable private var alertsViewModel = AlertsViewModel.shared
     
     var body: some View {
-        VStack {
-            HStack {
-                Text(pomodoroViewModel.currentSession)
-                    .font(.headline)
+        NavigationStack {
+            VStack {
+                Text(pomodoroViewModel.formattedRemainingTime)
+                    .font(.system(size: 60))
+                
+                Spacer()
                 
                 HStack {
                     ForEach(0..<pomodoroViewModel.maxSessions, id: \.self) { number in
                         if number < pomodoroViewModel.currentSessionsDone {
                             Image(systemName: "circle.fill")
-                                .font(.subheadline)
+                                .font(.caption)
                         } else if number == pomodoroViewModel.currentSessionsDone && pomodoroViewModel.isWorkSession {
                             Image(systemName: "circle.dotted.circle")
-                                .font(.subheadline)
+                                .font(.caption)
                         } else {
                             Image(systemName: "circle.dotted")
-                                .font(.subheadline)
+                                .font(.caption)
                         }
                     }
                 }
-            }
-            
-            Text(pomodoroViewModel.formattedRemainingTime)
-                .font(.system(size: 60))
-            
-            Spacer()
-            
-            HStack {
-                Button(action: {
-                    if pomodoroViewModel.isTimerTicking {
-                        pomodoroViewModel.pauseTimer()
-                        alertsViewModel.playPressedHaptic()
-                    } else {
-                        pomodoroViewModel.startTimer()
-                        alertsViewModel.playStartHaptic()
+
+                Spacer()
+                Spacer()
+                Spacer()
+                
+                HStack {
+                    Button(action: {
+                        if pomodoroViewModel.isTimerTicking {
+                            pomodoroViewModel.pauseTimer()
+                            alertsViewModel.playPressedHaptic()
+                        } else {
+                            pomodoroViewModel.startTimer()
+                            alertsViewModel.playStartHaptic()
+                        }
+                    }) {
+                        Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
                     }
-                }) {
-                    Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
-                        .font(.body)
-                        .foregroundStyle(.primary)
+                    
+                    Button(action: {
+                        pomodoroViewModel.endCycle()
+                        alertsViewModel.playPressedHaptic()
+                    }) {
+                        Image(systemName: "stop.fill")
+                    }
+                    
+                    Button(action: {
+                        pomodoroViewModel.resetTimer()
+                        alertsViewModel.playPressedHaptic()
+                    }) {
+                        Image(systemName: "arrow.circlepath")
+                    }
+                    
+                    Button(action: {
+                        pomodoroViewModel.skipSession()
+                        alertsViewModel.playPressedHaptic()
+                    }) {
+                        Image(systemName: "forward.end.fill")
+                    }
                 }
-                
-                Button(action: {
-                    pomodoroViewModel.endCycle()
-                    alertsViewModel.playPressedHaptic()
-                }) {
-                    Image(systemName: "stop.fill")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                }
-                
-                Button(action: {
-                    pomodoroViewModel.resetTimer()
-                    alertsViewModel.playPressedHaptic()
-                }) {
-                    Image(systemName: "arrow.circlepath")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                }
-                
-                Button(action: {
-                    pomodoroViewModel.skipSession()
-                    alertsViewModel.playPressedHaptic()
-                }) {
-                    Image(systemName: "forward.end.fill")
-                        .font(.body)
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text(pomodoroViewModel.currentSession)
+                        .font(.headline.bold())
                         .foregroundStyle(.secondary)
                 }
             }

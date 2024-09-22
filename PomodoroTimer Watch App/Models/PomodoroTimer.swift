@@ -9,9 +9,9 @@ import Foundation
 import Observation
 
 enum SessionType: String {
-    case work = "Work"
-    case shortBreak = "Break"
-    case longBreak = "Long Break"
+    case work = "WORK"
+    case shortBreak = "BREAK"
+    case longBreak = "LONG BREAK"
     
     var displayName: String {
         return self.rawValue
