@@ -18,6 +18,12 @@ final class SettingsViewModel {
         updateTimer()
     }
     
+    func resetSettings() {
+        UserDefaults.standard.set(1500, forKey: "workDuration")
+        UserDefaults.standard.set(300, forKey: "shortBreakDuration")
+        UserDefaults.standard.set(1800, forKey: "longBreakDuration")
+    }
+    
     /**
      Update only if the timer isn't currently running.
      */
