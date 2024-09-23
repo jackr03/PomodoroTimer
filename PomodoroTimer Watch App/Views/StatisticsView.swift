@@ -39,7 +39,7 @@ struct StatisticsView: View {
                 
                 Spacer()
                 
-                Text("Keep up the good work!")
+                Text(sessionsCompleted > 0 ? "Keep up the good work!" : "Get to work!")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 
@@ -47,16 +47,18 @@ struct StatisticsView: View {
             }
             .navigationTitle("Statistics")
             .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    Button(action: {
-                        showingConfirmAlert = true
-                        statisticsViewModel.playClickHaptic()
-                    }) {
-                        Image(systemName: "trash")
+                if sessionsCompleted > 0 {
+                    ToolbarItem(placement: .bottomBar) {
+                        Button(action: {
+                            showingConfirmAlert = true
+                            statisticsViewModel.playClickHaptic()
+                        }) {
+                            Image(systemName: "trash")
+                        }
+                        .foregroundStyle(.red)
+                        .background(.red.secondary)
+                        .clipShape(Capsule())
                     }
-                    .foregroundStyle(.red)
-                    .background(.red.secondary)
-                    .clipShape(Capsule())
                 }
             }
             .padding()

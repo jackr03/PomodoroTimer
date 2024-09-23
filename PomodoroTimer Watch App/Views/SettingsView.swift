@@ -106,6 +106,11 @@ struct SettingsView: View {
                         }
                     }
                 }
+                .toolbar {
+                    ToolbarItem(placement: .bottomBar) {
+                        
+                    }
+                }
                 .navigationTitle("Settings")
             }
         }
