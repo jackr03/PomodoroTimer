@@ -45,7 +45,7 @@ final class PomodoroViewModel {
         return pomodoroTimer.isWorkSession
     }
     
-    var showFinishedAlert: Bool {
+    var showingFinishedAlert: Bool {
         get { return pomodoroTimer.isTimerFinished }
         set { pomodoroTimer.isTimerFinished = newValue }
     }
@@ -93,7 +93,7 @@ final class PomodoroViewModel {
         WKInterfaceDevice.current().play(.start)
     }
     
-    func playPressedHaptic() {
+    func playButtonHaptic() {
         WKInterfaceDevice.current().play(.click)
     }
 }

@@ -63,7 +63,7 @@ struct PomodoroView: View {
                         Button(action: {
                             if pomodoroViewModel.isTimerTicking {
                                 pomodoroViewModel.pauseTimer()
-                                pomodoroViewModel.playPressedHaptic()
+                                pomodoroViewModel.playButtonHaptic()
                             } else {
                                 pomodoroViewModel.startTimer()
                                 pomodoroViewModel.playStartHaptic()
@@ -74,21 +74,21 @@ struct PomodoroView: View {
                         
                         Button(action: {
                             pomodoroViewModel.endCycle()
-                            pomodoroViewModel.playPressedHaptic()
+                            pomodoroViewModel.playButtonHaptic()
                         }) {
                             Image(systemName: "stop.fill")
                         }
                         
                         Button(action: {
                             pomodoroViewModel.resetTimer()
-                            pomodoroViewModel.playPressedHaptic()
+                            pomodoroViewModel.playButtonHaptic()
                         }) {
                             Image(systemName: "arrow.circlepath")
                         }
                         
                         Button(action: {
                             pomodoroViewModel.skipSession()
-                            pomodoroViewModel.playPressedHaptic()
+                            pomodoroViewModel.playButtonHaptic()
                         }) {
                             Image(systemName: "forward.end.fill")
                         }
@@ -98,12 +98,12 @@ struct PomodoroView: View {
 
             }
         }
-        .onChange(of: pomodoroViewModel.showFinishedAlert) { _, newValue in
+        .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, newValue in
             if newValue {
                 pomodoroViewModel.playHaptics()
             }
         }
-        .alert("Time's up!", isPresented: $pomodoroViewModel.showFinishedAlert) {
+        .alert("Time's up!", isPresented: $pomodoroViewModel.showingFinishedAlert) {
             Button("OK") {
                 pomodoroViewModel.stopHaptics()
             }
