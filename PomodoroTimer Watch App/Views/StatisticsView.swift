@@ -36,7 +36,8 @@ struct StatisticsView: View {
                         .font(.body)
                 }
                 .multilineTextAlignment(.center)
-                .padding()
+                
+                Spacer()
                 
                 Text("Keep up the good work!")
                     .font(.caption)
