@@ -11,6 +11,10 @@ import SwiftUI
 struct StatisticsView: View {
     @AppStorage("sessionsCompleted") private var sessionsCompleted: Int = 0
     
+    var inflectedSessionsCount: String {
+        return sessionsCompleted == 1 ? "session" : "sessions"
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -22,7 +26,7 @@ struct StatisticsView: View {
                     + Text("\(sessionsCompleted)")
                         .bold()
                         .font(.body)
-                    + Text(" sessions.")
+                    + Text(" \(inflectedSessionsCount).")
                         .font(.body)
                 }
                 .multilineTextAlignment(.center)

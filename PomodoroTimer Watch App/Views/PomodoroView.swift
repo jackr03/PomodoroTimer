@@ -49,6 +49,11 @@ struct PomodoroView: View {
                 Spacer()
                 
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        NavigationLink(destination: StatisticsView()) {
+                            Image(systemName: "chart.line.uptrend.xyaxis")
+                        }
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         NavigationLink(destination: SettingsView()) {
                             Image(systemName: "gear")
