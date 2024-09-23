@@ -11,6 +11,12 @@ import SwiftUI
 struct PomodoroView: View {
     @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
     
+    @Environment(\.scenePhase) private var scenePhase
+
+    var isInactive: Bool {
+        return scenePhase == .inactive
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -20,7 +26,7 @@ struct PomodoroView: View {
                 
                 Spacer()
                     
-                Text(pomodoroViewModel.formattedRemainingTime)
+                Text(isInactive ? pomodoroViewModel.formattedRemainingMinutes : pomodoroViewModel.formattedRemainingMinutesAndSeconds)
                     .font(.system(size: 60))
                     .foregroundStyle(.primary)
                 

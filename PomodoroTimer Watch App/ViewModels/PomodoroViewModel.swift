@@ -18,7 +18,13 @@ final class PomodoroViewModel {
     
     private init() {}
     
-    var formattedRemainingTime: String {
+    var formattedRemainingMinutes: String {
+        let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
+        
+        return String(format: "%02d:--", remainingTimeInMinutes)
+    }
+    
+    var formattedRemainingMinutesAndSeconds: String {
         let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
         let remainingTimeInSeconds: Int = pomodoroTimer.remainingTime % 60
         
