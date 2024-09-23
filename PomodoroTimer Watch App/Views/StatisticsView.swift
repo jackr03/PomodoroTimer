@@ -50,7 +50,7 @@ struct StatisticsView: View {
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: {
                         showingConfirmAlert = true
-                        statisticsViewModel.playButtonHaptic()
+                        statisticsViewModel.playClickHaptic()
                     }) {
                         Image(systemName: "trash")
                     }
@@ -67,12 +67,12 @@ struct StatisticsView: View {
                 message: Text("Are you sure you want to reset the number of sessions completed?"),
                 primaryButton: .destructive(Text("Confirm")) {
                     statisticsViewModel.resetSessions()
-                    statisticsViewModel.playButtonHaptic()
+                    statisticsViewModel.playSuccessHaptic()
                     
                     dismiss()
                 },
                 secondaryButton: .cancel(Text("Cancel")) {
-                    statisticsViewModel.playButtonHaptic()
+                    statisticsViewModel.playFailureHaptic()
                 }
             )
         }

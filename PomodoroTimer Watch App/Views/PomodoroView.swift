@@ -63,7 +63,7 @@ struct PomodoroView: View {
                         Button(action: {
                             if pomodoroViewModel.isTimerTicking {
                                 pomodoroViewModel.pauseTimer()
-                                pomodoroViewModel.playButtonHaptic()
+                                pomodoroViewModel.playClickHaptic()
                             } else {
                                 pomodoroViewModel.startTimer()
                                 pomodoroViewModel.playStartHaptic()
@@ -74,21 +74,21 @@ struct PomodoroView: View {
                         
                         Button(action: {
                             pomodoroViewModel.endCycle()
-                            pomodoroViewModel.playButtonHaptic()
+                            pomodoroViewModel.playClickHaptic()
                         }) {
                             Image(systemName: "stop.fill")
                         }
                         
                         Button(action: {
                             pomodoroViewModel.resetTimer()
-                            pomodoroViewModel.playButtonHaptic()
+                            pomodoroViewModel.playClickHaptic()
                         }) {
                             Image(systemName: "arrow.circlepath")
                         }
                         
                         Button(action: {
                             pomodoroViewModel.skipSession()
-                            pomodoroViewModel.playButtonHaptic()
+                            pomodoroViewModel.playClickHaptic()
                         }) {
                             Image(systemName: "forward.end.fill")
                         }

@@ -40,7 +40,7 @@ final class SettingsViewModel {
         pomodoroTimer.resetTimer()
     }
     
-    func playButtonHaptic() {
+    func playClickHaptic() {
         WKInterfaceDevice.current().play(.click)
     }
 }

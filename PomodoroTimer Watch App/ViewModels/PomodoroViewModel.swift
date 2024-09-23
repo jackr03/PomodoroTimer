@@ -93,7 +93,7 @@ final class PomodoroViewModel {
         WKInterfaceDevice.current().play(.start)
     }
     
-    func playButtonHaptic() {
+    func playClickHaptic() {
         WKInterfaceDevice.current().play(.click)
     }
 }

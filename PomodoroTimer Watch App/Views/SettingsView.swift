@@ -88,7 +88,7 @@ struct SettingsView: View {
                                 
                                 Button(action: {
                                     settingsViewModel.resetSettings()
-                                    settingsViewModel.playButtonHaptic()
+                                    settingsViewModel.playClickHaptic()
                                     
                                     dismiss()
                                 }) {

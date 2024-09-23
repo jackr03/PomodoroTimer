@@ -17,7 +17,15 @@ final class StatisticsViewModel {
         UserDefaults.standard.set(0, forKey: "sessionsCompleted")
     }
     
-    func playButtonHaptic() {
+    func playClickHaptic() {
         WKInterfaceDevice.current().play(.click)
+    }
+    
+    func playSuccessHaptic() {
+        WKInterfaceDevice.current().play(.success)
+    }
+    
+    func playFailureHaptic() {
+        WKInterfaceDevice.current().play(.failure)
     }
 }
