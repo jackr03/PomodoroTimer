@@ -24,8 +24,4 @@ final class StatisticsViewModel {
     func playSuccessHaptic() {
         WKInterfaceDevice.current().play(.success)
     }
-    
-    func playFailureHaptic() {
-        WKInterfaceDevice.current().play(.failure)
-    }
 }

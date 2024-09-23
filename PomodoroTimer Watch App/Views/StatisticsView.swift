@@ -72,7 +72,7 @@ struct StatisticsView: View {
                     dismiss()
                 },
                 secondaryButton: .cancel(Text("Cancel")) {
-                    statisticsViewModel.playFailureHaptic()
+                    statisticsViewModel.playClickHaptic()
                 }
             )
         }
