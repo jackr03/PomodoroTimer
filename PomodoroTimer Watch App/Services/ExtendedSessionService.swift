@@ -37,6 +37,25 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         session?.invalidate()
     }
     
+    /**
+     Experimental, hard to test as would take 30 minutes to expire
+     Idea is to play a haptic to allow future sessions to run without a pop-up warning
+     Then, restart the session
+     */
+    func restartSession() {
+        session?.notifyUser(hapticType: .retry)
+        
+        // Delay before stopping session
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                self?.stopSession()
+                
+                // Add another delay before starting the session again
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                    self?.startSession()
+                }
+            }
+    }
+    
     func playHaptics() {
         session?.notifyUser(hapticType: .stop) { _ in
             return 2.0
@@ -50,13 +69,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
     
     func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
         print("Session expiring")
-        
-        // Experimental, hard to test as would take 30 minutes to expire
-        // Idea is to play a haptic to allow future sessions to run without a pop-up warning
-        // Then, restart the session
-        session?.notifyUser(hapticType: .retry)
-        stopSession()
-        startSession()
+        restartSession()
     }
     
     func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
