@@ -14,7 +14,7 @@ final class StatisticsViewModel {
     private init() {}
     
     func resetSessions() {
-        UserDefaults.standard.set(0, forKey: "sessionsCompleted")
+        UserDefaults.standard.set(0, forKey: "totalSessionsCompleted")
     }
     
     func playClickHaptic() {

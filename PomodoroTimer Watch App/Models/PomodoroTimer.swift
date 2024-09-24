@@ -12,7 +12,7 @@ import Observation
 class PomodoroTimer {
     static let shared = PomodoroTimer()
     
-    private let sessionsCompletedKey = "sessionsCompleted"
+    private let totalSessionsCompletedKey = "totalSessionsCompleted"
     private let sessionsCompletedTodayKey = "sessionsCompletedToday"
     
     public let maxSessions: Int = 4
@@ -122,13 +122,13 @@ class PomodoroTimer {
      UserDefaults returns 0 if key doesn't exist, so no need to account for that situation
      */
     private func incrementSessionsCompleted() {
-        var currentSessionsCompleted = UserDefaults.standard.integer(forKey: sessionsCompletedKey)
+        var currentTotalSessionsCompleted = UserDefaults.standard.integer(forKey: totalSessionsCompletedKey)
         var currentSessionsCompletedToday = UserDefaults.standard.integer(forKey: sessionsCompletedTodayKey)
         
-        currentSessionsCompleted += 1
+        currentTotalSessionsCompleted += 1
         currentSessionsCompletedToday += 1
         
-        UserDefaults.standard.set(currentSessionsCompleted, forKey: sessionsCompletedKey)
+        UserDefaults.standard.set(currentTotalSessionsCompleted, forKey: totalSessionsCompletedKey)
         UserDefaults.standard.set(currentSessionsCompletedToday, forKey: sessionsCompletedTodayKey)
     }
 }

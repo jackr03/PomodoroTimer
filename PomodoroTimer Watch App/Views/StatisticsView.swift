@@ -11,14 +11,26 @@ import SwiftUI
 struct StatisticsView: View {
     private let statisticsViewModel = StatisticsViewModel.shared
     
-    @AppStorage("sessionsCompleted") private var sessionsCompleted: Int = 0
-    
-    @Environment(\.dismiss) private var dismiss
-    
+    @AppStorage("totalSessionsCompleted") private var totalSessionsCompleted: Int = 0
+    @AppStorage("sessionsCompletedToday") private var sessionsCompletedToday: Int = 0
+    @AppStorage("dailyTarget") private var dailyTarget: Int = 0
+        
     @State private var showingConfirmAlert = false
     
+    @Environment(\.dismiss) private var dismiss
+
     var inflectedSessionsCount: String {
-        return sessionsCompleted == 1 ? "session" : "sessions"
+        return sessionsCompletedToday == 1 ? "session" : "sessions"
+    }
+    
+    var statusMessage: String {
+        if sessionsCompletedToday == 0 {
+            return "Let's get to work!"
+        } else if sessionsCompletedToday > 0 && sessionsCompletedToday < dailyTarget {
+            return "Keep up the good work!"
+        } else {
+            return "Well done!"
+        }
     }
     
     var body: some View {
@@ -29,25 +41,37 @@ struct StatisticsView: View {
                 HStack {
                     Text("You've completed ")
                         .font(.body)
-                    + Text("\(sessionsCompleted)")
+                        .foregroundStyle(.primary)
+                    + Text("\(sessionsCompletedToday)/\(dailyTarget)")
                         .bold()
                         .font(.body)
-                    + Text(" \(inflectedSessionsCount).")
+                        .foregroundStyle(.primary)
+                    + Text(" \(inflectedSessionsCount) today.")
                         .font(.body)
+                        .foregroundStyle(.primary)
                 }
                 .multilineTextAlignment(.center)
                 
                 Spacer()
                 
-                Text(sessionsCompleted > 0 ? "Keep up the good work!" : "Get to work!")
+                Text(statusMessage)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                
+                Spacer()
+                
+                Text("Total completed: ")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                + Text("\(totalSessionsCompleted)")
+                    .font(.title3)
+                    .foregroundStyle(.primary)
                 
                 Spacer()
             }
             .navigationTitle("Statistics")
             .toolbar {
-                if sessionsCompleted > 0 {
+                if totalSessionsCompleted > 0 {
                     ToolbarItem(placement: .bottomBar) {
                         Button(action: {
                             showingConfirmAlert = true
