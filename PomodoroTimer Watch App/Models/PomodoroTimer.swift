@@ -40,7 +40,7 @@ class PomodoroTimer {
             case .shortBreak:
                 return UserDefaults.standard.integer(forKey: "shortBreakDuration") == 0 ? 300 : UserDefaults.standard.integer(forKey: "shortBreakDuration")
             case .longBreak:
-                return UserDefaults.standard.integer(forKey: "longBreakDuration") == 0 ? 1800 : UserDefaults.standard.integer(forKey: "workDuration") * 60
+                return UserDefaults.standard.integer(forKey: "longBreakDuration") == 0 ? 1800 : UserDefaults.standard.integer(forKey: "longBreakDuration")
             }
         }
         
