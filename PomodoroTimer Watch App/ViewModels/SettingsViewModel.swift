@@ -15,25 +15,82 @@ final class SettingsViewModel {
     
     private init() {}
     
-    func updateSetting(to value: Int, forKey key: String) {
-        let durationSettings = ["workDuration", "shortBreakDuration", "longBreakDuration"]
+    enum SettingsType: String, CaseIterable {
+        case workDuration
+        case shortBreakDuration
+        case longBreakDuration
+        case dailyTarget
         
-        if durationSettings.contains(key) {
-            // Convert time back to seconds
+        var currentValue: Int {
+            return UserDefaults.standard.integer(forKey: rawValue)
+        }
+        
+        var defaultValue: Int {
+            switch self {
+            case .workDuration: return 1500
+            case .shortBreakDuration: return 300
+            case .longBreakDuration: return 1800
+            case .dailyTarget: return 12
+            }
+        }
+        
+        var isDurationSetting: Bool {
+            switch self {
+            case .workDuration, .shortBreakDuration, .longBreakDuration:
+                return true
+            default:
+                return false
+            }
+        }
+        
+        func update(to value: Int) {
+            UserDefaults.standard.set(value, forKey: rawValue)
+        }
+        
+        func reset() {
+            UserDefaults.standard.set(defaultValue, forKey: rawValue)
+        }
+    }
+    
+    var settingsAreAllDefault: Bool {
+        for setting in SettingsType.allCases {
+            if setting.currentValue != setting.defaultValue {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    /**
+     Return a tuple containing the current value for each setting type
+     Convert into minutes if it is a durations setting
+     */
+    func fetchCurrentSettings() -> (Int, Int, Int, Int) {
+        let workDurationInMinutes = SettingsType.workDuration.currentValue / 60
+        let shortBreakDurationInMinutes = SettingsType.shortBreakDuration.currentValue / 60
+        let longBreakDurationInMinutes = SettingsType.longBreakDuration.currentValue / 60
+        let dailyTarget = SettingsType.dailyTarget.currentValue
+        
+        print(workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget)
+        return (workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget)
+    }
+
+    func updateSetting(_ setting: SettingsType, to value: Int) {
+        if setting.isDurationSetting {
             let valueInSeconds = value * 60
-            UserDefaults.standard.set(valueInSeconds, forKey: key)
-            
+            setting.update(to: valueInSeconds)
+            print("\(setting.rawValue): \(valueInSeconds)")
             updateTimer()
         } else {
-            UserDefaults.standard.set(value, forKey: key)
-            print(UserDefaults.standard.integer(forKey: "dailyTarget"))
+            setting.update(to: value)
         }
     }
     
     func resetSettings() {
-        UserDefaults.standard.set(1500, forKey: "workDuration")
-        UserDefaults.standard.set(300, forKey: "shortBreakDuration")
-        UserDefaults.standard.set(1800, forKey: "longBreakDuration")
+        for setting in SettingsType.allCases {
+            setting.reset()
+        }
         
         updateTimer()
     }

@@ -11,24 +11,13 @@ import SwiftUI
 struct SettingsView: View {
     private let settingsViewModel = SettingsViewModel.shared
     
-    @AppStorage("workDuration") private var workDuration: Int = 1500
-    @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
-    @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
-    @AppStorage("dailyTarget") private var dailyTarget: Int = 12
-    
+    @State var settingsAreAllDefault = false
     @State private var workDurationInMinutes: Int = 25
     @State private var shortBreakDurationInMinutes: Int = 5
     @State private var longBreakDurationInMinutes: Int = 30
+    @State private var dailyTarget: Int = 12
     
     @Environment(\.dismiss) private var dismiss
-    
-    var settingsAreDefault: Bool {
-        let defaultWorkDurationInMinutes = 25
-        let defaultShortBreakDurationInMinutes = 5
-        let defaultLongBreakDurationInMinutes = 30
-        
-        return workDurationInMinutes == defaultWorkDurationInMinutes && shortBreakDurationInMinutes == defaultShortBreakDurationInMinutes && longBreakDurationInMinutes == defaultLongBreakDurationInMinutes
-    }
     
     var body: some View {
         NavigationStack {
@@ -47,7 +36,7 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: workDurationInMinutes) { _, newValue in
-                        settingsViewModel.updateSetting(to: newValue, forKey: "workDuration")
+                        update(.workDuration, to: newValue)
                     }
                     
                     Picker(selection: $shortBreakDurationInMinutes) {
@@ -63,7 +52,7 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: shortBreakDurationInMinutes) { _, newValue in
-                        settingsViewModel.updateSetting(to: newValue, forKey: "shortBreakDuration")
+                        update(.shortBreakDuration, to: newValue)
                     }
                     
                     Picker(selection: $longBreakDurationInMinutes) {
@@ -79,7 +68,7 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: longBreakDurationInMinutes) { _, newValue in
-                        settingsViewModel.updateSetting(to: newValue, forKey: "longBreakDuration")
+                        update(.longBreakDuration, to: newValue)
                     }
                 }
                 
@@ -97,11 +86,11 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: dailyTarget) { _, newValue in
-                        settingsViewModel.updateSetting(to: newValue, forKey: "dailyTarget")
+                        update(.dailyTarget, to: newValue)
                     }
                 }
                     
-                if !settingsAreDefault {
+                if !settingsAreAllDefault {
                     Section {
                         HStack {
                             Spacer()
@@ -126,21 +115,33 @@ struct SettingsView: View {
             .navigationTitle("Settings")
         }
         .onAppear {
-            // Update using AppStorage values when view appears
-            updateMinuteDurationsFromAppStorage()
+            // Sync view with UserDefault values
+            syncSettings()
         }
     }
     
-    private func updateMinuteDurationsFromAppStorage() {
-        workDurationInMinutes = max(1, workDuration / 60)
-        shortBreakDurationInMinutes = max(1, shortBreakDuration / 60)
-        longBreakDurationInMinutes = max(1, longBreakDuration / 60)
+    private func update(_ setting: SettingsViewModel.SettingsType, to value: Int) {
+        settingsViewModel.updateSetting(setting, to: value)
+        syncSettings()
+    }
+    
+    /**
+     Update client-side settings using settingsViewModel
+     Add a minor delay before checking if settingsAreAllDefault as it takes a non-negligible amount of time to write to UserDefaults
+     */
+    private func syncSettings() {
+        (workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget) = settingsViewModel.fetchCurrentSettings()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            settingsAreAllDefault = settingsViewModel.settingsAreAllDefault
+        }
     }
     
     private func resetToDefault() {
         settingsViewModel.resetSettings()
         settingsViewModel.playClickHaptic()
         
+        syncSettings()
         dismiss()
     }
 }
