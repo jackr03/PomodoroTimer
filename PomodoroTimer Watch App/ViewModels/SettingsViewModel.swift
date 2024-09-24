@@ -16,11 +16,18 @@ final class SettingsViewModel {
     private init() {}
     
     func updateSetting(to value: Int, forKey key: String) {
-        // Convert time back to seconds
-        let valueInSeconds = value * 60
-        UserDefaults.standard.set(valueInSeconds, forKey: key)
+        let durationSettings = ["workDuration", "shortBreakDuration", "longBreakDuration"]
         
-        updateTimer()
+        if durationSettings.contains(key) {
+            // Convert time back to seconds
+            let valueInSeconds = value * 60
+            UserDefaults.standard.set(valueInSeconds, forKey: key)
+            
+            updateTimer()
+        } else {
+            UserDefaults.standard.set(value, forKey: key)
+            print(UserDefaults.standard.integer(forKey: "dailyTarget"))
+        }
     }
     
     func resetSettings() {

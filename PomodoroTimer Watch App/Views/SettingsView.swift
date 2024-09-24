@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage("workDuration") private var workDuration: Int = 1500
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
     @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
+    @AppStorage("dailyTarget") private var dailyTarget: Int = 12
     
     @State private var workDurationInMinutes: Int = 25
     @State private var shortBreakDurationInMinutes: Int = 5
@@ -57,7 +58,7 @@ struct SettingsView: View {
                                 .tag($0)
                         }
                     } label: {
-                        Text("Short Break")
+                        Text("Short break")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -73,53 +74,74 @@ struct SettingsView: View {
                                 .tag($0)
                         }
                     } label: {
-                        Text("Short Break")
+                        Text("Long break")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: longBreakDurationInMinutes) { _, newValue in
                         settingsViewModel.updateSetting(to: newValue, forKey: "longBreakDuration")
                     }
-                    
-                    if !settingsAreDefault {
-                        Section {
-                            HStack {
-                                Spacer()
-                                
-                                Button(action: {
-                                    settingsViewModel.resetSettings()
-                                    settingsViewModel.playClickHaptic()
-                                    
-                                    dismiss()
-                                }) {
-                                    Text("Reset to default")
-                                        .padding()
-                                        .font(.callout)
-                                        .foregroundStyle(.red)
-                                        .background(.red.secondary)
-                                        .clipShape(Capsule())
-                                }
-                                
-                                Spacer()
-                            }
-                            .listRowBackground(Color.clear)
+                }
+                
+                Section {
+                    Picker(selection: $dailyTarget) {
+                        ForEach(1...24, id: \.self) {
+                            Text("^[\($0) \("session")](inflect: true)")
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                                .tag($0)
                         }
+                    } label: {
+                        Text("Daily target")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .onChange(of: dailyTarget) { _, newValue in
+                        settingsViewModel.updateSetting(to: newValue, forKey: "dailyTarget")
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .bottomBar) {
-                        
+                    
+                if !settingsAreDefault {
+                    Section {
+                        HStack {
+                            Spacer()
+                            
+                            Button(action: {
+                                resetToDefault()
+                            }) {
+                                Text("Reset to default")
+                                    .padding()
+                                    .font(.callout)
+                                    .foregroundStyle(.red)
+                                    .background(.red.secondary)
+                                    .clipShape(Capsule())
+                            }
+                            
+                            Spacer()
+                        }
+                        .listRowBackground(Color.clear)
                     }
                 }
-                .navigationTitle("Settings")
             }
+            .navigationTitle("Settings")
         }
         .onAppear {
             // Update using AppStorage values when view appears
-            workDurationInMinutes = max(1, workDuration / 60)
-            shortBreakDurationInMinutes = max(1, shortBreakDuration / 60)
-            longBreakDurationInMinutes = max(1, longBreakDuration / 60)
+            updateMinuteDurationsFromAppStorage()
         }
+    }
+    
+    private func updateMinuteDurationsFromAppStorage() {
+        workDurationInMinutes = max(1, workDuration / 60)
+        shortBreakDurationInMinutes = max(1, shortBreakDuration / 60)
+        longBreakDurationInMinutes = max(1, longBreakDuration / 60)
+    }
+    
+    private func resetToDefault() {
+        settingsViewModel.resetSettings()
+        settingsViewModel.playClickHaptic()
+        
+        dismiss()
     }
 }
 
