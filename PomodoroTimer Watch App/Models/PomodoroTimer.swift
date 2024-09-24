@@ -49,6 +49,7 @@ class PomodoroTimer {
     
     let maxSessions: Int = 4
     let sessionsCompletedKey = "sessionsCompleted"
+    let sessionsCompletedTodayKey = "sessionsCompletedToday"
 
     private(set) var remainingTime: Int = SessionType.work.duration
     private(set) var isTimerTicking: Bool = false
@@ -128,7 +129,13 @@ class PomodoroTimer {
     
     private func incrementSessionsCompleted() {
         // Returns 0 if key doesn't exist, so no need to account for that situation
-        let currentSessionsCompleted = UserDefaults.standard.integer(forKey: sessionsCompletedKey)
-        UserDefaults.standard.set(currentSessionsCompleted + 1, forKey: sessionsCompletedKey)
+        var currentSessionsCompleted = UserDefaults.standard.integer(forKey: sessionsCompletedKey)
+        var currentSessionsCompletedToday = UserDefaults.standard.integer(forKey: sessionsCompletedTodayKey)
+        
+        currentSessionsCompleted += 1
+        currentSessionsCompletedToday += 1
+        
+        UserDefaults.standard.set(currentSessionsCompleted, forKey: sessionsCompletedKey)
+        UserDefaults.standard.set(currentSessionsCompletedToday, forKey: sessionsCompletedTodayKey)
     }
 }
