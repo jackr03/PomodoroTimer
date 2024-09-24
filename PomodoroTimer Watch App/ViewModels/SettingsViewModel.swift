@@ -72,7 +72,6 @@ final class SettingsViewModel {
         let longBreakDurationInMinutes = SettingsType.longBreakDuration.currentValue / 60
         let dailyTarget = SettingsType.dailyTarget.currentValue
         
-        print(workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget)
         return (workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget)
     }
 
@@ -80,7 +79,7 @@ final class SettingsViewModel {
         if setting.isDurationSetting {
             let valueInSeconds = value * 60
             setting.update(to: valueInSeconds)
-            print("\(setting.rawValue): \(valueInSeconds)")
+            
             updateTimer()
         } else {
             setting.update(to: value)

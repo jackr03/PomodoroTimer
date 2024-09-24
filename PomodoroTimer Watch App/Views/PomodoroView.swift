@@ -13,6 +13,10 @@ struct PomodoroView: View {
     
     @Environment(\.scenePhase) private var scenePhase
 
+    var isActive: Bool {
+        return scenePhase == .active
+    }
+    
     var isInactive: Bool {
         return scenePhase == .inactive
     }
@@ -98,10 +102,13 @@ struct PomodoroView: View {
                         }) {
                             Image(systemName: "forward.end.fill")
                         }
-
                     }
                 }
-
+            }
+        }
+        .onChange(of: isActive) { _, newValue in
+            if newValue {
+                pomodoroViewModel.updateDailySessionsIfNeeded()
             }
         }
         .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, newValue in

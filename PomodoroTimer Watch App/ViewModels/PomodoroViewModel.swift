@@ -15,7 +15,7 @@ final class PomodoroViewModel {
     
     private let pomodoroTimer = PomodoroTimer.shared
     private let extendedSessionService = ExtendedSessionService.shared
-    
+        
     private init() {}
     
     var formattedRemainingMinutes: String {
@@ -101,5 +101,18 @@ final class PomodoroViewModel {
     
     func playClickHaptic() {
         WKInterfaceDevice.current().play(.click)
+    }
+    
+    /**
+     Check if the current
+     */
+    func updateDailySessionsIfNeeded() {
+        let currentDate = Date.now
+        let lastResetDate = UserDefaults.standard.object(forKey: "lastResetDate") as? Date ?? Date.now
+        
+        if !Calendar.current.isDate(currentDate, inSameDayAs: lastResetDate) {
+            UserDefaults.standard.set(currentDate, forKey: "lastResetDate")
+            UserDefaults.standard.set(0, forKey: "sessionsCompletedToday")
+        }
     }
 }
