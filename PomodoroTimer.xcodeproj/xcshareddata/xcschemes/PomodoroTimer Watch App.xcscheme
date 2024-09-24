@@ -16,22 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
-               BuildableName = "PomodoroTimer.app"
-               BlueprintName = "PomodoroTimer"
-               ReferencedContainer = "container:PomodoroTimer.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
-               BuildableName = "PomodoroTimer.app"
-               BlueprintName = "PomodoroTimer"
+               BuildableName = "PomodoroTimer Watch App.app"
+               BlueprintName = "PomodoroTimer Watch App"
                ReferencedContainer = "container:PomodoroTimer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -54,16 +40,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
-            BuildableName = "PomodoroTimer.app"
-            BlueprintName = "PomodoroTimer"
+            BuildableName = "PomodoroTimer Watch App.app"
+            BlueprintName = "PomodoroTimer Watch App"
             ReferencedContainer = "container:PomodoroTimer.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -71,16 +56,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
-            BuildableName = "PomodoroTimer.app"
-            BlueprintName = "PomodoroTimer"
+            BuildableName = "PomodoroTimer Watch App.app"
+            BlueprintName = "PomodoroTimer Watch App"
             ReferencedContainer = "container:PomodoroTimer.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @main
-struct PomodoroTimer_Watch_AppApp: App {
+struct PomodoroTimer_Watch_App: App {
     init() {
         // For testing purposes
 //        UserDefaults.standard.set(3, forKey:"workDuration")
