@@ -8,63 +8,54 @@
 import Foundation
 import Observation
 
-enum SessionType: String {
-    case work = "WORK"
-    case shortBreak = "BREAK"
-    case longBreak = "LONG BREAK"
-    
-    var displayName: String {
-        return self.rawValue
-    }
-
-    var duration: Int {
-        switch self {
-        case .work:
-            return UserDefaults.standard.integer(forKey: "workDuration") == 0 ? 1500 : UserDefaults.standard.integer(forKey: "workDuration")
-        case .shortBreak:
-            return UserDefaults.standard.integer(forKey: "shortBreakDuration") == 0 ? 300 : UserDefaults.standard.integer(forKey: "shortBreakDuration")
-        case .longBreak:
-            return UserDefaults.standard.integer(forKey: "longBreakDuration") == 0 ? 1800 : UserDefaults.standard.integer(forKey: "workDuration") * 60
-        }
-    }
-    
-    var isWorkSession: Bool {
-        switch self {
-        case .work:
-            return true
-        case .shortBreak:
-            return false
-        case .longBreak:
-            return false
-        }
-    }
-}
-
-/**
- Singleton as only timer should exist anyway, and states can be coordinated easier.
- */
 @Observable
 class PomodoroTimer {
     static let shared = PomodoroTimer()
     
-    let maxSessions: Int = 4
-    let sessionsCompletedKey = "sessionsCompleted"
-    let sessionsCompletedTodayKey = "sessionsCompletedToday"
+    private let sessionsCompletedKey = "sessionsCompleted"
+    private let sessionsCompletedTodayKey = "sessionsCompletedToday"
+    
+    public let maxSessions: Int = 4
 
     private(set) var remainingTime: Int = SessionType.work.duration
     private(set) var isTimerTicking: Bool = false
-    private(set) var session: SessionType = .work
-    private(set) var sessionNumber: Int = 0
+    private(set) var currentSession: SessionType = .work
+    private(set) var currentSessionNumber: Int = 0
     
     private var timer: Timer?
 
     public var isTimerFinished: Bool = false
     
-    // Private initialiser to prevent external instantiation
     private init() {}
+    
+    enum SessionType: String {
+        case work = "WORK"
+        case shortBreak = "BREAK"
+        case longBreak = "LONG BREAK"
+
+        var duration: Int {
+            switch self {
+            case .work:
+                return UserDefaults.standard.integer(forKey: "workDuration") == 0 ? 1500 : UserDefaults.standard.integer(forKey: "workDuration")
+            case .shortBreak:
+                return UserDefaults.standard.integer(forKey: "shortBreakDuration") == 0 ? 300 : UserDefaults.standard.integer(forKey: "shortBreakDuration")
+            case .longBreak:
+                return UserDefaults.standard.integer(forKey: "longBreakDuration") == 0 ? 1800 : UserDefaults.standard.integer(forKey: "workDuration") * 60
+            }
+        }
+        
+        var isWorkSession: Bool {
+            switch self {
+            case .work:
+                return true
+            case .shortBreak, .longBreak:
+                return false
+            }
+        }
+    }
                     
     var isWorkSession: Bool {
-        return session.isWorkSession
+        return currentSession.isWorkSession
     }
     
     func startTimer() {
@@ -85,36 +76,36 @@ class PomodoroTimer {
     }
     
     func resetTimer() {
-        remainingTime = session.duration
+        remainingTime = currentSession.duration
     }
     
     func nextSession() {
         pauseTimer()
         
-        if session.isWorkSession {
-            sessionNumber += 1
+        if currentSession.isWorkSession {
+            currentSessionNumber += 1
             incrementSessionsCompleted()
             
-            if sessionNumber == maxSessions {
-                session = .longBreak
+            if currentSessionNumber == maxSessions {
+                currentSession = .longBreak
             } else {
-                session = .shortBreak
+                currentSession = .shortBreak
             }
         } else {
-            session = .work
+            currentSession = .work
             
-            if sessionNumber == maxSessions {
-                sessionNumber = 0
+            if currentSessionNumber == maxSessions {
+                currentSessionNumber = 0
             }
         }
         
-        remainingTime = session.duration
+        remainingTime = currentSession.duration
     }
     
     func endCycle() {
-        session = .work
-        sessionNumber = 0
-        remainingTime = session.duration
+        currentSession = .work
+        currentSessionNumber = 0
+        remainingTime = currentSession.duration
         pauseTimer()
     }
         
@@ -127,8 +118,10 @@ class PomodoroTimer {
         }
     }
     
+    /**
+     UserDefaults returns 0 if key doesn't exist, so no need to account for that situation
+     */
     private func incrementSessionsCompleted() {
-        // Returns 0 if key doesn't exist, so no need to account for that situation
         var currentSessionsCompleted = UserDefaults.standard.integer(forKey: sessionsCompletedKey)
         var currentSessionsCompletedToday = UserDefaults.standard.integer(forKey: sessionsCompletedTodayKey)
         
