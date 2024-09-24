@@ -34,13 +34,29 @@ class PomodoroTimer {
         case longBreak = "LONG BREAK"
 
         var duration: Int {
+            let storedValue = UserDefaults.standard.integer(forKey: settingKey)
+            return storedValue == 0 ? defaultSetting : storedValue
+        }
+    
+        var settingKey: String {
             switch self {
             case .work:
-                return UserDefaults.standard.integer(forKey: "workDuration") == 0 ? 1500 : UserDefaults.standard.integer(forKey: "workDuration")
+                return "workDuration"
             case .shortBreak:
-                return UserDefaults.standard.integer(forKey: "shortBreakDuration") == 0 ? 300 : UserDefaults.standard.integer(forKey: "shortBreakDuration")
+                return "shortBreakDuration"
             case .longBreak:
-                return UserDefaults.standard.integer(forKey: "longBreakDuration") == 0 ? 1800 : UserDefaults.standard.integer(forKey: "longBreakDuration")
+                return "longBreakDuration"
+            }
+        }
+        
+        var defaultSetting: Int {
+            switch self {
+            case .work:
+                return 1500
+            case .shortBreak:
+                return 300
+            case .longBreak:
+                return 1800
             }
         }
         

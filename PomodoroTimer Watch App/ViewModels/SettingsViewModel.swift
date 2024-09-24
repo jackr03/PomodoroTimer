@@ -22,7 +22,8 @@ final class SettingsViewModel {
         case dailyTarget
         
         var currentValue: Int {
-            return UserDefaults.standard.integer(forKey: rawValue)
+            let storedValue = UserDefaults.standard.integer(forKey: rawValue)
+            return storedValue == 0 ? defaultValue: storedValue
         }
         
         var defaultValue: Int {

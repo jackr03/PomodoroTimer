@@ -27,7 +27,7 @@ struct StatisticsView: View {
         if sessionsCompletedToday == 0 {
             return "Let's get to work!"
         } else if sessionsCompletedToday > 0 && sessionsCompletedToday < dailyTarget {
-            return "Keep up the good work!"
+            return "Keep it up!"
         } else {
             return "Well done!"
         }
@@ -36,8 +36,6 @@ struct StatisticsView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Spacer()
-                
                 HStack {
                     Text("You've completed ")
                         .font(.body)
@@ -57,6 +55,7 @@ struct StatisticsView: View {
                 Text(statusMessage)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
                 
                 Spacer()
                 
@@ -64,7 +63,7 @@ struct StatisticsView: View {
                     .font(.body)
                     .foregroundStyle(.primary)
                 + Text("\(totalSessionsCompleted)")
-                    .font(.title3)
+                    .font(.body)
                     .foregroundStyle(.primary)
                 
                 Spacer()
