@@ -13,7 +13,7 @@ struct StatisticsView: View {
     
     @AppStorage("totalSessionsCompleted") private var totalSessionsCompleted: Int = 0
     @AppStorage("sessionsCompletedToday") private var sessionsCompletedToday: Int = 0
-    @AppStorage("dailyTarget") private var dailyTarget: Int = 0
+    @AppStorage("dailyTarget") private var dailyTarget: Int = 12
         
     @State private var showingConfirmAlert = false
     
