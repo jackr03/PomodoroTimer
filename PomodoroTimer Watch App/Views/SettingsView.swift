@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var shortBreakDurationInMinutes: Int = 5
     @State private var longBreakDurationInMinutes: Int = 30
     @State private var dailyTarget: Int = 12
+    @AppStorage("autoContinue") private var autoContinue: Bool = false
     
     @Environment(\.dismiss) private var dismiss
     
@@ -88,6 +89,12 @@ struct SettingsView: View {
                     .onChange(of: dailyTarget) { _, newValue in
                         update(.dailyTarget, to: newValue)
                     }
+                }
+                
+                Section {
+                    Toggle("Auto-continue", isOn: $autoContinue)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
                     
                 if !settingsAreAllDefault {

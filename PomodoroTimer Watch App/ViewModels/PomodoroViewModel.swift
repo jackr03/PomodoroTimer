@@ -93,6 +93,12 @@ final class PomodoroViewModel {
      */
     func stopHaptics() {
         extendedSessionService.stopSession()
+        
+        if UserDefaults.standard.bool(forKey: "autoContinue") {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.startTimer()
+            }
+        }
     }
     
     func playStartHaptic() {
