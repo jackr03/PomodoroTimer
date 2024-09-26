@@ -9,14 +9,18 @@ import Foundation
 import WatchKit
 
 final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
+    // MARK: - Properties
     static let shared = ExtendedSessionService()
     
     private var session: WKExtendedRuntimeSession?
 
+    // MARK: - Init
     private override init() {
         super.init()
     }
     
+    // MARK: - Functions
+    // TODO: Remove print statements when confident everything is working
     func startSession() {
         guard session?.state != .running else {
             print("Session already running")
@@ -37,11 +41,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         session?.invalidate()
     }
     
-    /**
-     Experimental, hard to test as would take 30 minutes to expire
-     Idea is to play a haptic to allow future sessions to run without a pop-up warning
-     Then, restart the session
-     */
+    // TODO: Find a way to test if this actually works
     func restartSession() {
         session?.notifyUser(hapticType: .retry)
         
@@ -62,7 +62,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         }
     }
 
-    // Delegate functions
+    // MARK: - Delegate functions
     func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
         print("Session started")
     }
@@ -77,6 +77,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         
     }
     
+    // TODO: Determine if this is needed
     func handle(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
         session = extendedRuntimeSession
         session?.delegate = self

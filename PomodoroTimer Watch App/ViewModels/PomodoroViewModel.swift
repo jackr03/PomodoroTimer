@@ -11,13 +11,16 @@ import Observation
 
 @Observable
 final class PomodoroViewModel {
+    // MARK: - Properties
     static let shared = PomodoroViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
     private let extendedSessionService = ExtendedSessionService.shared
+    private let defaults = UserDefaults.standard
         
     private init() {}
     
+    // MARK: - Computed properties
     var formattedRemainingMinutes: String {
         let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
         
@@ -56,19 +59,20 @@ final class PomodoroViewModel {
         set { pomodoroTimer.isTimerFinished = newValue }
     }
     
+    // MARK: - Functions
     func startTimer() {
-        extendedSessionService.startSession()
         pomodoroTimer.startTimer()
+        extendedSessionService.startSession()
     }
         
     func pauseTimer() {
-        extendedSessionService.stopSession()
         pomodoroTimer.pauseTimer()
+        extendedSessionService.stopSession()
     }
     
     func endCycle() {
-        extendedSessionService.stopSession()
         pomodoroTimer.endCycle()
+        extendedSessionService.stopSession()
     }
 
     func resetTimer() {
@@ -76,11 +80,7 @@ final class PomodoroViewModel {
     }
     
     func skipSession() {
-        extendedSessionService.stopSession()
         pomodoroTimer.nextSession()
-    }
-    
-    func endSession() {
         extendedSessionService.stopSession()
     }
     
@@ -88,19 +88,17 @@ final class PomodoroViewModel {
         extendedSessionService.playHaptics()
     }
     
-    /**
-     Haptics can be stopped by just ending the session.
-     */
     func stopHaptics() {
         extendedSessionService.stopSession()
         
-        if UserDefaults.standard.bool(forKey: "autoContinue") {
+        if defaults.bool(forKey: "autoContinue") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.startTimer()
             }
         }
     }
     
+    // Move haptics and UserDefaults to a utilities class
     func playStartHaptic() {
         WKInterfaceDevice.current().play(.start)
     }
@@ -109,9 +107,6 @@ final class PomodoroViewModel {
         WKInterfaceDevice.current().play(.click)
     }
     
-    /**
-     Check if the current
-     */
     func updateDailySessionsIfNeeded() {
         let currentDate = Date.now
         let lastResetDate = UserDefaults.standard.object(forKey: "lastResetDate") as? Date ?? Date.now

@@ -10,8 +10,10 @@ import Observation
 
 @Observable
 class PomodoroTimer {
+    // MARK: - Properties
     static let shared = PomodoroTimer()
     
+    private let defaults = UserDefaults.standard
     private let totalSessionsCompletedKey = "totalSessionsCompleted"
     private let sessionsCompletedTodayKey = "sessionsCompletedToday"
     
@@ -28,6 +30,7 @@ class PomodoroTimer {
     
     private init() {}
     
+    // MARK: - SessionType Enum
     enum SessionType: String {
         case work = "WORK"
         case shortBreak = "BREAK"
@@ -69,11 +72,15 @@ class PomodoroTimer {
             }
         }
     }
+    
+    // MARK: - Computed properties
                     
     var isWorkSession: Bool {
         return currentSession.isWorkSession
     }
     
+    // MARK: - Timer functions
+    // TODO: Move ExtendedRuntimeSession stuff to the internal model
     func startTimer() {
         isTimerTicking = true
         
@@ -124,7 +131,8 @@ class PomodoroTimer {
         remainingTime = currentSession.duration
         pauseTimer()
     }
-        
+    
+    // MARK: - Private functions
     private func countdown() {
         if remainingTime > 0 {
             remainingTime -= 1
@@ -134,17 +142,14 @@ class PomodoroTimer {
         }
     }
     
-    /**
-     UserDefaults returns 0 if key doesn't exist, so no need to account for that situation
-     */
     private func incrementSessionsCompleted() {
-        var currentTotalSessionsCompleted = UserDefaults.standard.integer(forKey: totalSessionsCompletedKey)
-        var currentSessionsCompletedToday = UserDefaults.standard.integer(forKey: sessionsCompletedTodayKey)
+        var currentTotalSessionsCompleted = defaults.integer(forKey: totalSessionsCompletedKey)
+        var currentSessionsCompletedToday = defaults.integer(forKey: sessionsCompletedTodayKey)
         
         currentTotalSessionsCompleted += 1
         currentSessionsCompletedToday += 1
         
-        UserDefaults.standard.set(currentTotalSessionsCompleted, forKey: totalSessionsCompletedKey)
-        UserDefaults.standard.set(currentSessionsCompletedToday, forKey: sessionsCompletedTodayKey)
+        defaults.set(currentTotalSessionsCompleted, forKey: totalSessionsCompletedKey)
+        defaults.set(currentSessionsCompletedToday, forKey: sessionsCompletedTodayKey)
     }
 }

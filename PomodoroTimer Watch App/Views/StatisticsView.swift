@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct StatisticsView: View {
+    // MARK: - Properties
     private let statisticsViewModel = StatisticsViewModel.shared
     
     @AppStorage("totalSessionsCompleted") private var totalSessionsCompleted: Int = 0
@@ -19,6 +20,7 @@ struct StatisticsView: View {
     
     @Environment(\.dismiss) private var dismiss
 
+    // MARK: - Computed properties
     var inflectedSessionsCount: String {
         return sessionsCompletedToday == 1 ? "session" : "sessions"
     }
@@ -33,6 +35,7 @@ struct StatisticsView: View {
         }
     }
     
+    // MARK: - Body
     var body: some View {
         NavigationStack {
             VStack {

@@ -7,6 +7,10 @@
 
 import Foundation
 
+// MARK: - Settings manager
+// TODO: Implement reset and 
+
+// MARK: - Setting protocol
 protocol Setting: CaseIterable {
     associatedtype T
     
@@ -17,6 +21,7 @@ protocol Setting: CaseIterable {
     func reset()
 }
 
+// MARK: - Integer value settings
 enum NumericSetting: String, Setting {
     case workDuration
     case shortBreakDuration
@@ -59,6 +64,7 @@ enum NumericSetting: String, Setting {
     }
 }
 
+// MARK: - Boolean settings
 enum ToggleSetting: String, Setting {
     case autoContinue
     

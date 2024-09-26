@@ -9,6 +9,7 @@ import Foundation
 import WatchKit
 
 final class SettingsViewModel {
+    // MARK: - Properties
     static let shared = SettingsViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
@@ -16,6 +17,8 @@ final class SettingsViewModel {
     
     private init() {}
     
+    // MARK: - Computed properties
+    // TODO: Make this observable so syncSettings() doesn't need to be called everytime (see PomodoroViewModel.showingFinishedAlert)
     var settingsAreAllDefault: Bool {
         for setting in settings {
             if !setting.isDefault {
@@ -26,12 +29,9 @@ final class SettingsViewModel {
         return true
     }
     
-    /**
-     Return a tuple containing the current value for each setting type
-     Convert into minutes if it is a durations setting
-     
-     TODO: Find a way to do this without hardcoding things
-     */
+    // MARK: - Functions
+    // TODO: Find a way to do this without hardcoding things
+    // TODO: Move underlying logic into SettingsManager
     func fetchCurrentSettings() -> (Int, Int, Int, Int, Bool) {
         let workDurationInMinutes = NumericSetting.workDuration.currentValue
         let shortBreakDurationInMinutes = NumericSetting.shortBreakDuration.currentValue
@@ -49,9 +49,6 @@ final class SettingsViewModel {
         }
     }
     
-    /**
-     Update only if the timer isn't currently running.
-     */
     func updateTimer() {
         guard !pomodoroTimer.isTimerTicking else { return }
         

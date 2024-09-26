@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct SettingsView: View {
+    // MARK: - Properties
+    // TODO: - Determine if everything still needs to be a singleton
     private let settingsViewModel = SettingsViewModel.shared
     
     @AppStorage("workDuration") private var workDuration: Int = 1500
@@ -21,6 +23,7 @@ struct SettingsView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    // MARK: - Body
     var body: some View {
         NavigationStack {
             Form {
@@ -131,6 +134,7 @@ struct SettingsView: View {
         }
     }
     
+    // MARK: - Private functions
     /**
      Update client-side settings using settingsViewModel
      Add a minor delay before checking if settingsAreAllDefault as it takes a non-negligible amount of time to write to UserDefaults

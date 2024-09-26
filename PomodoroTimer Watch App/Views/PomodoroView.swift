@@ -9,10 +9,12 @@ import Foundation
 import SwiftUI
 
 struct PomodoroView: View {
+    // MARK: - Properties
     @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
     
     @Environment(\.scenePhase) private var scenePhase
 
+    // MARK: - Computed properties
     var isActive: Bool {
         return scenePhase == .active
     }
@@ -21,6 +23,7 @@ struct PomodoroView: View {
         return scenePhase == .inactive
     }
     
+    // MARK: - Body
     var body: some View {
         NavigationStack {
             VStack {
@@ -111,8 +114,8 @@ struct PomodoroView: View {
                 pomodoroViewModel.updateDailySessionsIfNeeded()
             }
         }
-        .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, newValue in
-            if newValue {
+        .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, finished in
+            if finished {
                 pomodoroViewModel.playHaptics()
             }
         }
