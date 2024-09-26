@@ -12,50 +12,13 @@ final class SettingsViewModel {
     static let shared = SettingsViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
+    private let settings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
     
     private init() {}
     
-    enum SettingsType: String, CaseIterable {
-        case workDuration
-        case shortBreakDuration
-        case longBreakDuration
-        case dailyTarget
-        
-        var currentValue: Int {
-            let storedValue = UserDefaults.standard.integer(forKey: rawValue)
-            return storedValue == 0 ? defaultValue: storedValue
-        }
-        
-        var defaultValue: Int {
-            switch self {
-            case .workDuration: return 1500
-            case .shortBreakDuration: return 300
-            case .longBreakDuration: return 1800
-            case .dailyTarget: return 12
-            }
-        }
-        
-        var isDurationSetting: Bool {
-            switch self {
-            case .workDuration, .shortBreakDuration, .longBreakDuration:
-                return true
-            default:
-                return false
-            }
-        }
-        
-        func update(to value: Int) {
-            UserDefaults.standard.set(value, forKey: rawValue)
-        }
-        
-        func reset() {
-            UserDefaults.standard.set(defaultValue, forKey: rawValue)
-        }
-    }
-    
     var settingsAreAllDefault: Bool {
-        for setting in SettingsType.allCases {
-            if setting.currentValue != setting.defaultValue {
+        for setting in settings {
+            if !setting.isDefault {
                 return false
             }
         }
@@ -66,39 +29,30 @@ final class SettingsViewModel {
     /**
      Return a tuple containing the current value for each setting type
      Convert into minutes if it is a durations setting
+     
+     TODO: Find a way to do this without hardcoding things
      */
-    func fetchCurrentSettings() -> (Int, Int, Int, Int) {
-        let workDurationInMinutes = SettingsType.workDuration.currentValue / 60
-        let shortBreakDurationInMinutes = SettingsType.shortBreakDuration.currentValue / 60
-        let longBreakDurationInMinutes = SettingsType.longBreakDuration.currentValue / 60
-        let dailyTarget = SettingsType.dailyTarget.currentValue
+    func fetchCurrentSettings() -> (Int, Int, Int, Int, Bool) {
+        let workDurationInMinutes = NumericSetting.workDuration.currentValue
+        let shortBreakDurationInMinutes = NumericSetting.shortBreakDuration.currentValue
+        let longBreakDurationInMinutes = NumericSetting.longBreakDuration.currentValue
+        let dailyTarget = NumericSetting.dailyTarget.currentValue
         
-        return (workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget)
-    }
-
-    func updateSetting(_ setting: SettingsType, to value: Int) {
-        if setting.isDurationSetting {
-            let valueInSeconds = value * 60
-            setting.update(to: valueInSeconds)
-            
-            updateTimer()
-        } else {
-            setting.update(to: value)
-        }
+        let autoContinue = ToggleSetting.autoContinue.currentValue
+        
+        return (workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget, autoContinue)
     }
     
     func resetSettings() {
-        for setting in SettingsType.allCases {
+        for setting in settings {
             setting.reset()
         }
-        
-        updateTimer()
     }
     
     /**
      Update only if the timer isn't currently running.
      */
-    private func updateTimer() {
+    func updateTimer() {
         guard !pomodoroTimer.isTimerTicking else { return }
         
         pomodoroTimer.resetTimer()

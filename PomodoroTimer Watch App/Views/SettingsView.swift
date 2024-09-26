@@ -11,12 +11,13 @@ import SwiftUI
 struct SettingsView: View {
     private let settingsViewModel = SettingsViewModel.shared
     
-    @State var settingsAreAllDefault = false
-    @State private var workDurationInMinutes: Int = 25
-    @State private var shortBreakDurationInMinutes: Int = 5
-    @State private var longBreakDurationInMinutes: Int = 30
-    @State private var dailyTarget: Int = 12
+    @AppStorage("workDuration") private var workDuration: Int = 1500
+    @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
+    @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
+    @AppStorage("dailyTarget") private var dailyTarget: Int = 12
     @AppStorage("autoContinue") private var autoContinue: Bool = false
+    
+    @State var settingsAreAllDefault = false
     
     @Environment(\.dismiss) private var dismiss
     
@@ -24,52 +25,52 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    Picker(selection: $workDurationInMinutes) {
+                    Picker(selection: $workDuration) {
                         ForEach(1...60, id: \.self) {
                             Text("^[\($0) \("minute")](inflect: true)")
                                 .font(.body)
                                 .foregroundStyle(.primary)
-                                .tag($0)
+                                .tag($0 * 60)
                         }
                     } label: {
                         Text("Work")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .onChange(of: workDurationInMinutes) { _, newValue in
-                        update(.workDuration, to: newValue)
+                    .onChange(of: workDuration) { _, _ in
+                        syncSettings()
                     }
                     
-                    Picker(selection: $shortBreakDurationInMinutes) {
+                    Picker(selection: $shortBreakDuration) {
                         ForEach(1...60, id: \.self) {
                             Text("^[\($0) \("minute")](inflect: true)")
                                 .font(.body)
                                 .foregroundStyle(.primary)
-                                .tag($0)
+                                .tag($0 * 60)
                         }
                     } label: {
                         Text("Short break")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .onChange(of: shortBreakDurationInMinutes) { _, newValue in
-                        update(.shortBreakDuration, to: newValue)
+                    .onChange(of: shortBreakDuration) { _, _ in
+                        syncSettings()
                     }
                     
-                    Picker(selection: $longBreakDurationInMinutes) {
+                    Picker(selection: $longBreakDuration) {
                         ForEach(1...60, id: \.self) {
                             Text("^[\($0) \("minute")](inflect: true)")
                                 .font(.body)
                                 .foregroundStyle(.primary)
-                                .tag($0)
+                                .tag($0 * 60)
                         }
                     } label: {
                         Text("Long break")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .onChange(of: longBreakDurationInMinutes) { _, newValue in
-                        update(.longBreakDuration, to: newValue)
+                    .onChange(of: longBreakDuration) { _, _ in
+                        syncSettings()
                     }
                 }
                 
@@ -86,13 +87,16 @@ struct SettingsView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .onChange(of: dailyTarget) { _, newValue in
-                        update(.dailyTarget, to: newValue)
+                    .onChange(of: dailyTarget) { _, _ in
+                        syncSettings()
                     }
                 }
                 
                 Section {
                     Toggle("Auto-continue", isOn: $autoContinue)
+                        .onChange(of: autoContinue) { _, _ in
+                            syncSettings()
+                        }
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -127,21 +131,18 @@ struct SettingsView: View {
         }
     }
     
-    private func update(_ setting: SettingsViewModel.SettingsType, to value: Int) {
-        settingsViewModel.updateSetting(setting, to: value)
-        syncSettings()
-    }
-    
     /**
      Update client-side settings using settingsViewModel
      Add a minor delay before checking if settingsAreAllDefault as it takes a non-negligible amount of time to write to UserDefaults
      */
     private func syncSettings() {
-        (workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget) = settingsViewModel.fetchCurrentSettings()
+        (workDuration, shortBreakDuration, longBreakDuration, dailyTarget, autoContinue) = settingsViewModel.fetchCurrentSettings()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             settingsAreAllDefault = settingsViewModel.settingsAreAllDefault
         }
+        
+        settingsViewModel.updateTimer()
     }
     
     private func resetToDefault() {
