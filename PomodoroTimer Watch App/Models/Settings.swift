@@ -6,20 +6,15 @@
 //
 
 import Foundation
+import Observation
 
 // MARK: - Settings manager
 // TODO: Implement reset and
 struct SettingsManager {
     static let allSettings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
     
-    static var settingsAreAllDefault: Bool {
-        for setting in allSettings {
-            if !setting.isDefault {
-                return false
-            }
-        }
-        
-        return true
+    static func checkIfSettingsAreAllDefault() -> Bool {
+        return allSettings.allSatisfy(\.isDefault)
     }
     
     static func fetchCurrentSettings() -> [String: Any] {

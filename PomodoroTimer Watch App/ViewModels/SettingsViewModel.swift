@@ -7,24 +7,26 @@
 
 import Foundation
 import WatchKit
+import Observation
 
+@Observable
 final class SettingsViewModel {
     // MARK: - Properties
     static let shared = SettingsViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
-    private let settings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
     
+    var settingsAreAllDefault: Bool = true
+    
+    // MARK: - Init
     private init() {}
     
     // MARK: - Computed properties
-    // TODO: Make this observable so syncSettings() doesn't need to be called everytime (see PomodoroViewModel.showingFinishedAlert)
-    var settingsAreAllDefault: Bool {
-        return SettingsManager.settingsAreAllDefault
+    func syncSettings() {
+        settingsAreAllDefault = SettingsManager.checkIfSettingsAreAllDefault()
     }
     
     // MARK: - Functions
-    // TODO: Move underlying logic into SettingsManager
     func fetchCurrentSettings() -> [String: Any] {
         return SettingsManager.fetchCurrentSettings()
     }

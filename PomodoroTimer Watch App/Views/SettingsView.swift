@@ -11,15 +11,13 @@ import SwiftUI
 struct SettingsView: View {
     // MARK: - Properties
     // TODO: - Determine if everything still needs to be a singleton
-    private let settingsViewModel = SettingsViewModel.shared
+    @Bindable private var settingsViewModel = SettingsViewModel.shared
     
     @AppStorage("workDuration") private var workDuration: Int = 1500
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
     @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
     @AppStorage("dailyTarget") private var dailyTarget: Int = 12
     @AppStorage("autoContinue") private var autoContinue: Bool = false
-    
-    @State var settingsAreAllDefault = false
     
     @Environment(\.dismiss) private var dismiss
     
@@ -40,7 +38,7 @@ struct SettingsView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .onChange(of: workDuration) { _, _ in
+                    .onChange(of: workDuration) {
                         syncSettings()
                     }
                     
@@ -56,7 +54,7 @@ struct SettingsView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .onChange(of: shortBreakDuration) { _, _ in
+                    .onChange(of: shortBreakDuration) {
                         syncSettings()
                     }
                     
@@ -72,7 +70,7 @@ struct SettingsView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .onChange(of: longBreakDuration) { _, _ in
+                    .onChange(of: longBreakDuration) {
                         syncSettings()
                     }
                 }
@@ -90,21 +88,21 @@ struct SettingsView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .onChange(of: dailyTarget) { _, _ in
+                    .onChange(of: dailyTarget) {
                         syncSettings()
                     }
                 }
                 
                 Section {
                     Toggle("Auto-continue", isOn: $autoContinue)
-                        .onChange(of: autoContinue) { _, _ in
+                        .onChange(of: autoContinue) {
                             syncSettings()
                         }
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                     
-                if !settingsAreAllDefault {
+                if !settingsViewModel.settingsAreAllDefault {
                     Section {
                         HStack {
                             Spacer()
@@ -128,46 +126,24 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
         }
-        .onAppear {
-            // Sync view with UserDefault values
+        .onAppear() {
             syncSettings()
+        }
+        .onChange(of: settingsViewModel.settingsAreAllDefault) {
+            settingsViewModel.updateTimer()
         }
     }
     
     // MARK: - Private functions
-    /**
-     Add a minor delay before checking if settingsAreAllDefault as it takes a non-negligible amount of time to write to UserDefaults
-     */
     private func syncSettings() {
-        let currentSettings = SettingsManager.fetchCurrentSettings()
-        
-        if let workDuration = currentSettings["workDuration"] as? Int,
-           let shortBreakDuration = currentSettings["shortBreakDuration"] as? Int,
-           let longBreakDuration = currentSettings["longBreakDuration"] as? Int,
-           let dailyTarget = currentSettings["dailyTarget"] as? Int,
-           let autoContinue = currentSettings["autoContinue"] as? Bool {
-            
-            // Assign unpacked values to the respective variables
-            self.workDuration = workDuration
-            self.shortBreakDuration = shortBreakDuration
-            self.longBreakDuration = longBreakDuration
-            self.dailyTarget = dailyTarget
-            self.autoContinue = autoContinue
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.settingsAreAllDefault = settingsViewModel.settingsAreAllDefault
-            }
-        }
-        
-        settingsViewModel.updateTimer()
+        settingsViewModel.syncSettings()
     }
     
     private func resetToDefault() {
         settingsViewModel.resetSettings()
-        
+        settingsViewModel.syncSettings()
         Haptics.playClick()
         
-        syncSettings()
         dismiss()
     }
 }
