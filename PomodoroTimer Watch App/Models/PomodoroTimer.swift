@@ -13,7 +13,6 @@ class PomodoroTimer {
     // MARK: - Properties
     static let shared = PomodoroTimer()
     
-    private let defaults = UserDefaults.standard
     private let totalSessionsCompletedKey = "totalSessionsCompleted"
     private let sessionsCompletedTodayKey = "sessionsCompletedToday"
     
@@ -28,6 +27,7 @@ class PomodoroTimer {
 
     public var isTimerFinished: Bool = false
     
+    // MARK: - Init
     private init() {}
     
     // MARK: - SessionType Enum
@@ -36,8 +36,9 @@ class PomodoroTimer {
         case shortBreak = "BREAK"
         case longBreak = "LONG BREAK"
 
+        // TODO: Convert this to use the Setting Enum
         var duration: Int {
-            let storedValue = UserDefaults.standard.integer(forKey: settingKey)
+            let storedValue = Defaults.getIntFrom(settingKey)
             return storedValue == 0 ? defaultSetting : storedValue
         }
     
@@ -80,7 +81,6 @@ class PomodoroTimer {
     }
     
     // MARK: - Timer functions
-    // TODO: Move ExtendedRuntimeSession stuff to the internal model
     func startTimer() {
         isTimerTicking = true
         
@@ -143,13 +143,10 @@ class PomodoroTimer {
     }
     
     private func incrementSessionsCompleted() {
-        var currentTotalSessionsCompleted = defaults.integer(forKey: totalSessionsCompletedKey)
-        var currentSessionsCompletedToday = defaults.integer(forKey: sessionsCompletedTodayKey)
+        var currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey)
+        var currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey)
         
-        currentTotalSessionsCompleted += 1
-        currentSessionsCompletedToday += 1
-        
-        defaults.set(currentTotalSessionsCompleted, forKey: totalSessionsCompletedKey)
-        defaults.set(currentSessionsCompletedToday, forKey: sessionsCompletedTodayKey)
+        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted += 1)
+        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday += 1)
     }
 }

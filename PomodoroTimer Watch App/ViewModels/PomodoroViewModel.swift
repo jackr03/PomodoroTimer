@@ -16,7 +16,6 @@ final class PomodoroViewModel {
     
     private let pomodoroTimer = PomodoroTimer.shared
     private let extendedSessionService = ExtendedSessionService.shared
-    private let defaults = UserDefaults.standard
         
     private init() {}
     
@@ -91,29 +90,20 @@ final class PomodoroViewModel {
     func stopHaptics() {
         extendedSessionService.stopSession()
         
-        if defaults.bool(forKey: "autoContinue") {
+        if Defaults.getBoolFrom("autoContinue") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.startTimer()
             }
         }
     }
     
-    // Move haptics and UserDefaults to a utilities class
-    func playStartHaptic() {
-        WKInterfaceDevice.current().play(.start)
-    }
-    
-    func playClickHaptic() {
-        WKInterfaceDevice.current().play(.click)
-    }
-    
     func updateDailySessionsIfNeeded() {
         let currentDate = Date.now
-        let lastResetDate = UserDefaults.standard.object(forKey: "lastResetDate") as? Date ?? Date.now
+        let lastResetDate = Defaults.getObjectFrom("lastResetDate") as? Date ?? Date.now
         
         if !Calendar.current.isDate(currentDate, inSameDayAs: lastResetDate) {
-            UserDefaults.standard.set(currentDate, forKey: "lastResetDate")
-            UserDefaults.standard.set(0, forKey: "sessionsCompletedToday")
+            Defaults.set("lastResetDate", to: currentDate)
+            Defaults.set("sessionsCompletedToday", to: 0)
         }
     }
 }

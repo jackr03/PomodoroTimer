@@ -151,7 +151,8 @@ struct SettingsView: View {
     
     private func resetToDefault() {
         settingsViewModel.resetSettings()
-        settingsViewModel.playClickHaptic()
+        
+        Haptics.playClick()
         
         syncSettings()
         dismiss()

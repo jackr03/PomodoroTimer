@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Settings manager
-// TODO: Implement reset and 
+// TODO: Implement reset and
 
 // MARK: - Setting protocol
 protocol Setting: CaseIterable {
@@ -29,7 +29,7 @@ enum NumericSetting: String, Setting {
     case dailyTarget
     
     var currentValue: Int {
-        let storedValue = UserDefaults.standard.integer(forKey: rawValue)
+        let storedValue = Defaults.getIntFrom(rawValue)
         return storedValue == 0 ? defaultValue: storedValue
     }
     
@@ -56,11 +56,12 @@ enum NumericSetting: String, Setting {
     }
     
     func update(to value: Int) {
+        Defaults.set(rawValue, to: value)
         UserDefaults.standard.set(value, forKey: rawValue)
     }
     
     func reset() {
-        UserDefaults.standard.set(defaultValue, forKey: rawValue)
+        Defaults.set(rawValue, to: defaultValue)
     }
 }
 
@@ -69,7 +70,7 @@ enum ToggleSetting: String, Setting {
     case autoContinue
     
     var currentValue: Bool {
-        return UserDefaults.standard.bool(forKey: rawValue)
+        return Defaults.getBoolFrom(rawValue)
     }
     
     var defaultValue: Bool {
@@ -83,10 +84,11 @@ enum ToggleSetting: String, Setting {
     }
     
     func update(to value: Bool) {
-        UserDefaults.standard.set(value, forKey: rawValue)
+    
+        Defaults.set(rawValue, to: value)
     }
     
     func reset() {
-        UserDefaults.standard.set(defaultValue, forKey: rawValue)
+        Defaults.set(rawValue, to: defaultValue)
     }
 }

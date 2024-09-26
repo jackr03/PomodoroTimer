@@ -16,16 +16,7 @@ final class StatisticsViewModel {
     
     // MARK: - Functions
     func resetSessions() {
-        UserDefaults.standard.set(0, forKey: "totalSessionsCompleted")
-        UserDefaults.standard.set(0, forKey: "sessionsCompletedToday")
-    }
-    
-    // TODO: Move functions to HapticsManager
-    func playClickHaptic() {
-        WKInterfaceDevice.current().play(.click)
-    }
-    
-    func playSuccessHaptic() {
-        WKInterfaceDevice.current().play(.success)
+        Defaults.set("sessionsCompletedToday", to: 0)
+        Defaults.set("totalSessionsCompleted", to: 0)
     }
 }
