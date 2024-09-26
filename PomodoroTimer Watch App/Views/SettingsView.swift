@@ -129,14 +129,12 @@ struct SettingsView: View {
         .onAppear() {
             syncSettings()
         }
-        .onChange(of: settingsViewModel.settingsAreAllDefault) {
-            settingsViewModel.updateTimer()
-        }
     }
     
     // MARK: - Private functions
     private func syncSettings() {
         settingsViewModel.syncSettings()
+        settingsViewModel.updateTimer()
     }
     
     private func resetToDefault() {

@@ -33,31 +33,11 @@ class PomodoroTimer {
         case shortBreak = "BREAK"
         case longBreak = "LONG BREAK"
 
-        // TODO: Convert this to use the Setting Enum
         var duration: Int {
-            let storedValue = Defaults.getIntFrom(settingKey)
-            return storedValue == 0 ? defaultSetting : storedValue
-        }
-    
-        var settingKey: String {
             switch self {
-            case .work:
-                return "workDuration"
-            case .shortBreak:
-                return "shortBreakDuration"
-            case .longBreak:
-                return "longBreakDuration"
-            }
-        }
-        
-        var defaultSetting: Int {
-            switch self {
-            case .work:
-                return 1500
-            case .shortBreak:
-                return 300
-            case .longBreak:
-                return 1800
+            case .work: return NumericSetting.workDuration.currentValue
+            case .shortBreak: return NumericSetting.shortBreakDuration.currentValue
+            case .longBreak: return NumericSetting.longBreakDuration.currentValue
             }
         }
         
