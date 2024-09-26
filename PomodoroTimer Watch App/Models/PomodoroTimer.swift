@@ -13,9 +13,6 @@ class PomodoroTimer {
     // MARK: - Properties
     static let shared = PomodoroTimer()
     
-    private let totalSessionsCompletedKey = "totalSessionsCompleted"
-    private let sessionsCompletedTodayKey = "sessionsCompletedToday"
-    
     public let maxSessions: Int = 4
 
     private(set) var remainingTime: Int = SessionType.work.duration
@@ -143,6 +140,9 @@ class PomodoroTimer {
     }
     
     private func incrementSessionsCompleted() {
+        let totalSessionsCompletedKey = "totalSessionsCompleted"
+        let sessionsCompletedTodayKey = "sessionsCompletedToday"
+        
         var currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey)
         var currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey)
         

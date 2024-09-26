@@ -136,14 +136,27 @@ struct SettingsView: View {
     
     // MARK: - Private functions
     /**
-     Update client-side settings using settingsViewModel
      Add a minor delay before checking if settingsAreAllDefault as it takes a non-negligible amount of time to write to UserDefaults
      */
     private func syncSettings() {
-        (workDuration, shortBreakDuration, longBreakDuration, dailyTarget, autoContinue) = settingsViewModel.fetchCurrentSettings()
+        let currentSettings = SettingsManager.fetchCurrentSettings()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            settingsAreAllDefault = settingsViewModel.settingsAreAllDefault
+        if let workDuration = currentSettings["workDuration"] as? Int,
+           let shortBreakDuration = currentSettings["shortBreakDuration"] as? Int,
+           let longBreakDuration = currentSettings["longBreakDuration"] as? Int,
+           let dailyTarget = currentSettings["dailyTarget"] as? Int,
+           let autoContinue = currentSettings["autoContinue"] as? Bool {
+            
+            // Assign unpacked values to the respective variables
+            self.workDuration = workDuration
+            self.shortBreakDuration = shortBreakDuration
+            self.longBreakDuration = longBreakDuration
+            self.dailyTarget = dailyTarget
+            self.autoContinue = autoContinue
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.settingsAreAllDefault = settingsViewModel.settingsAreAllDefault
+            }
         }
         
         settingsViewModel.updateTimer()

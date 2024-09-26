@@ -20,33 +20,17 @@ final class SettingsViewModel {
     // MARK: - Computed properties
     // TODO: Make this observable so syncSettings() doesn't need to be called everytime (see PomodoroViewModel.showingFinishedAlert)
     var settingsAreAllDefault: Bool {
-        for setting in settings {
-            if !setting.isDefault {
-                return false
-            }
-        }
-        
-        return true
+        return SettingsManager.settingsAreAllDefault
     }
     
     // MARK: - Functions
-    // TODO: Find a way to do this without hardcoding things
     // TODO: Move underlying logic into SettingsManager
-    func fetchCurrentSettings() -> (Int, Int, Int, Int, Bool) {
-        let workDurationInMinutes = NumericSetting.workDuration.currentValue
-        let shortBreakDurationInMinutes = NumericSetting.shortBreakDuration.currentValue
-        let longBreakDurationInMinutes = NumericSetting.longBreakDuration.currentValue
-        let dailyTarget = NumericSetting.dailyTarget.currentValue
-        
-        let autoContinue = ToggleSetting.autoContinue.currentValue
-        
-        return (workDurationInMinutes, shortBreakDurationInMinutes, longBreakDurationInMinutes, dailyTarget, autoContinue)
+    func fetchCurrentSettings() -> [String: Any] {
+        return SettingsManager.fetchCurrentSettings()
     }
     
     func resetSettings() {
-        for setting in settings {
-            setting.reset()
-        }
+        SettingsManager.resetSettings()
     }
     
     func updateTimer() {

@@ -9,16 +9,57 @@ import Foundation
 
 // MARK: - Settings manager
 // TODO: Implement reset and
+struct SettingsManager {
+    static let allSettings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
+    
+    static var settingsAreAllDefault: Bool {
+        for setting in allSettings {
+            if !setting.isDefault {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    static func fetchCurrentSettings() -> [String: Any] {
+        var currentSettings: [String: Any] = [:]
+        
+        for setting in allSettings {
+            currentSettings[setting.rawValue] = setting.currentValue
+        }
+        
+        return currentSettings
+    }
+    
+    static func resetSettings() {
+        for setting in allSettings {
+            setting.reset()
+        }
+    }
+}
 
 // MARK: - Setting protocol
-protocol Setting: CaseIterable {
+protocol Setting: CaseIterable where T: Equatable {
     associatedtype T
     
+    var rawValue: String { get }
     var currentValue: T { get }
     var defaultValue: T { get}
     var isDefault: Bool { get }
     func update(to value: T)
     func reset()
+}
+
+// MARK: - Setting extension to provide default implementations
+extension Setting {
+    var isDefault: Bool {
+        return currentValue == defaultValue
+    }
+    
+    func reset() {
+        Defaults.set(rawValue, to: defaultValue)
+    }
 }
 
 // MARK: - Integer value settings
@@ -42,10 +83,6 @@ enum NumericSetting: String, Setting {
         }
     }
     
-    var isDefault: Bool {
-        return currentValue == defaultValue
-    }
-    
     var isDurationSetting: Bool {
         switch self {
         case .workDuration, .shortBreakDuration, .longBreakDuration:
@@ -57,11 +94,6 @@ enum NumericSetting: String, Setting {
     
     func update(to value: Int) {
         Defaults.set(rawValue, to: value)
-        UserDefaults.standard.set(value, forKey: rawValue)
-    }
-    
-    func reset() {
-        Defaults.set(rawValue, to: defaultValue)
     }
 }
 
@@ -79,16 +111,7 @@ enum ToggleSetting: String, Setting {
         }
     }
     
-    var isDefault: Bool {
-        return currentValue == defaultValue
-    }
-    
     func update(to value: Bool) {
-    
         Defaults.set(rawValue, to: value)
-    }
-    
-    func reset() {
-        Defaults.set(rawValue, to: defaultValue)
     }
 }
