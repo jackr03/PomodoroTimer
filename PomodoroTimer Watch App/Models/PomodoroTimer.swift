@@ -123,10 +123,10 @@ class PomodoroTimer {
         let totalSessionsCompletedKey = "totalSessionsCompleted"
         let sessionsCompletedTodayKey = "sessionsCompletedToday"
         
-        var currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey)
-        var currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey)
+        let currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey) + 1
+        let currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey) + 1
         
-        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted += 1)
-        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday += 1)
+        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted)
+        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday)
     }
 }

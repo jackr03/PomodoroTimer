@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1508843A2CA6E9DE0012FB55 /* ExtendedSessionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150884392CA6E9DE0012FB55 /* ExtendedSessionService.swift */; };
 		1512B4A92C9116A0002BA07B /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1512B4A82C9116A0002BA07B /* SettingsViewModel.swift */; };
 		1512B4AB2C9116B8002BA07B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1512B4AA2C9116B8002BA07B /* SettingsView.swift */; };
 		151A8EA22CA5F3CF0022E5D2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151A8EA12CA5F3CF0022E5D2 /* Settings.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		150884392CA6E9DE0012FB55 /* ExtendedSessionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedSessionService.swift; sourceTree = "<group>"; };
 		1512B4A82C9116A0002BA07B /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		1512B4AA2C9116B8002BA07B /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		151A8EA12CA5F3CF0022E5D2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -38,10 +40,6 @@
 		15D5B51B2C88F78B004B29E8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		15567D2F2C9E1C7200EEB519 /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		15D5B50C2C88F789004B29E8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -53,6 +51,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1508843B2CA6EA120012FB55 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				150884392CA6E9DE0012FB55 /* ExtendedSessionService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		151D60BF2C8E337C00156456 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -106,7 +112,7 @@
 				151D60BF2C8E337C00156456 /* Models */,
 				151D60C22C8E338400156456 /* ViewModels */,
 				151D60C12C8E338100156456 /* Views */,
-				15567D2F2C9E1C7200EEB519 /* Services */,
+				1508843B2CA6EA120012FB55 /* Services */,
 				15D5B5142C88F789004B29E8 /* PomodoroTimerApp.swift */,
 				15D5B5182C88F78B004B29E8 /* Assets.xcassets */,
 				15D5B51A2C88F78B004B29E8 /* Preview Content */,
@@ -136,9 +142,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				15567D2F2C9E1C7200EEB519 /* Services */,
 			);
 			name = PomodoroTimer;
 			productName = "PomodoroTimer Watch App";
@@ -200,6 +203,7 @@
 				151A8EA82CA6072B0022E5D2 /* Utilities.swift in Sources */,
 				151D60C82C8E579500156456 /* PomodoroView.swift in Sources */,
 				151A8EA22CA5F3CF0022E5D2 /* Settings.swift in Sources */,
+				1508843A2CA6E9DE0012FB55 /* ExtendedSessionService.swift in Sources */,
 				1512B4AB2C9116B8002BA07B /* SettingsView.swift in Sources */,
 				1586A5302CA0E70C004FF41F /* StatisticsView.swift in Sources */,
 				151D60C62C8E3CE700156456 /* PomodoroViewModel.swift in Sources */,
