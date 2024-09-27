@@ -9,10 +9,11 @@ import Foundation
 import Observation
 
 // MARK: - Settings manager
-// TODO: Implement reset and
 struct SettingsManager {
+    // MARK: - Properties
     static let allSettings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
     
+    // MARK: - Functions
     static func checkIfSettingsAreAllDefault() -> Bool {
         return allSettings.allSatisfy(\.isDefault)
     }
@@ -48,10 +49,12 @@ protocol Setting: CaseIterable where T: Equatable {
 
 // MARK: - Setting extension to provide default implementations
 extension Setting {
+    // MARK: - Computed properties
     var isDefault: Bool {
         return currentValue == defaultValue
     }
     
+    // MARK: - Functions
     func reset() {
         Defaults.set(rawValue, to: defaultValue)
     }
@@ -59,11 +62,13 @@ extension Setting {
 
 // MARK: - Integer value settings
 enum NumericSetting: String, Setting {
+    // MARK: - Cases
     case workDuration
     case shortBreakDuration
     case longBreakDuration
     case dailyTarget
     
+    // MARK: - Computed properties
     var currentValue: Int {
         let storedValue = Defaults.getIntFrom(rawValue)
         return storedValue == 0 ? defaultValue: storedValue
@@ -87,6 +92,7 @@ enum NumericSetting: String, Setting {
         }
     }
     
+    // MARK: - Functions
     func update(to value: Int) {
         Defaults.set(rawValue, to: value)
     }
@@ -94,8 +100,10 @@ enum NumericSetting: String, Setting {
 
 // MARK: - Boolean settings
 enum ToggleSetting: String, Setting {
+    // MARK: - Cases
     case autoContinue
     
+    // MARK: - Computed properties
     var currentValue: Bool {
         return Defaults.getBoolFrom(rawValue)
     }
@@ -106,6 +114,7 @@ enum ToggleSetting: String, Setting {
         }
     }
     
+    // MARK: - Functions
     func update(to value: Bool) {
         Defaults.set(rawValue, to: value)
     }
