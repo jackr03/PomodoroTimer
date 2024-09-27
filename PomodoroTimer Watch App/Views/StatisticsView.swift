@@ -91,9 +91,9 @@ struct StatisticsView: View {
         }
         .alert(isPresented: $showingConfirmAlert) {
             Alert(
-                title: Text("Reset Sessions"),
-                message: Text("Are you sure you want to reset the number of sessions completed?"),
-                primaryButton: .destructive(Text("Confirm")) {
+                title: Text("Reset sessions?"),
+                message: Text("This action cannot be undone."),
+                primaryButton: .destructive(Text("Delete")) {
                     statisticsViewModel.resetSessions()
                     Haptics.playSuccess()
                     
