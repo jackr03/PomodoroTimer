@@ -16,7 +16,8 @@ final class PomodoroViewModel {
     
     private let pomodoroTimer = PomodoroTimer.shared
     private let extendedSessionService = ExtendedSessionService.shared
-        
+    
+    // MARK: - Init
     private init() {}
     
     // MARK: - Computed properties
@@ -97,13 +98,14 @@ final class PomodoroViewModel {
         }
     }
     
-    func updateDailySessionsIfNeeded() {
-        let currentDate = Date.now
-        let lastResetDate = Defaults.getObjectFrom("lastResetDate") as? Date ?? Date.now
-        
-        if !Calendar.current.isDate(currentDate, inSameDayAs: lastResetDate) {
-            Defaults.set("lastResetDate", to: currentDate)
-            Defaults.set("sessionsCompletedToday", to: 0)
+    func refreshDailySessions() {
+        if let lastDailyReset = Defaults.getObjectFrom("lastDailyReset") as? Date {
+            if !Calendar.current.isDateInToday(lastDailyReset) {
+                Defaults.set("lastDailyReset", to: Date.now)
+                Defaults.set("sessionsCompletedToday", to: 0)
+            }
+        } else {
+            Defaults.set("lastDailyReset", to: Date.now)
         }
     }
 }

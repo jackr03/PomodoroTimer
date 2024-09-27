@@ -12,6 +12,7 @@ final class StatisticsViewModel {
     // MARK: - Properties
     static let shared = StatisticsViewModel()
     
+    // MARK: - Init
     private init() {}
     
     // MARK: - Functions

@@ -109,10 +109,8 @@ struct PomodoroView: View {
                 }
             }
         }
-        .onChange(of: isActive) { _, newValue in
-            if newValue {
-                pomodoroViewModel.updateDailySessionsIfNeeded()
-            }
+        .onAppear {
+            pomodoroViewModel.refreshDailySessions()
         }
         .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, finished in
             if finished {
