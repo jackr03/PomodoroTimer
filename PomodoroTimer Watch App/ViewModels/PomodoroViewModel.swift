@@ -89,6 +89,7 @@ final class PomodoroViewModel {
     }
     
     func stopHaptics() {
+        extendedSessionService.stopHaptics()
         extendedSessionService.stopSession()
         
         if Defaults.getBoolFrom("autoContinue") {

@@ -13,6 +13,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
     static let shared = ExtendedSessionService()
     
     private var session: WKExtendedRuntimeSession?
+    private var timer: Timer?
 
     // MARK: - Init
     private override init() {
@@ -29,7 +30,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
                 
         session = WKExtendedRuntimeSession()
         session?.delegate = self
-        session?.start(at: Date())
+        session?.start()
     }
     
     func stopSession() {
@@ -41,25 +42,15 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         session?.invalidate()
     }
     
-    // TODO: Find a way to test if this actually works
-    func restartSession() {
-        session?.notifyUser(hapticType: .retry)
-        
-        // Delay before stopping session
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                self?.stopSession()
-                
-                // Add another delay before starting the session again
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                    self?.startSession()
-                }
-            }
+    func playHaptics() {
+        timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            Haptics.playStop()
+        }
     }
     
-    func playHaptics() {
-        session?.notifyUser(hapticType: .stop) { _ in
-            return 2.0
-        }
+    func stopHaptics() {
+        timer?.invalidate()
+        timer = nil
     }
 
     // MARK: - Delegate functions
@@ -69,19 +60,9 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
     
     func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
         print("Session expiring")
-        restartSession()
     }
     
     func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
         print("Session invalidated with reason: \(reason.rawValue), error: \(error?.localizedDescription ?? "No error")")
-        
-    }
-    
-    // TODO: Determine if this is needed
-    func handle(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
-        session = extendedRuntimeSession
-        session?.delegate = self
-        
-        print("Resuming session")
     }
 }
