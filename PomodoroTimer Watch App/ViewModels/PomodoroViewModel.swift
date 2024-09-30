@@ -16,6 +16,7 @@ final class PomodoroViewModel {
     
     private let pomodoroTimer = PomodoroTimer.shared
     private let extendedSessionService = ExtendedSessionService.shared
+    private let notificationService = NotificationService.shared
     
     // MARK: - Init
     private init() {}
@@ -65,6 +66,7 @@ final class PomodoroViewModel {
     
     // MARK: - Functions
     func startTimer() {
+        notificationService.requestPermission()
         pomodoroTimer.startTimer()
     }
         
@@ -93,6 +95,17 @@ final class PomodoroViewModel {
         pomodoroTimer.nextSession()
     }
     
+    func refreshDailySessions() {
+        if let lastDailyReset = Defaults.getObjectFrom("lastDailyReset") as? Date {
+            if !Calendar.current.isDateInToday(lastDailyReset) {
+                Defaults.set("lastDailyReset", to: Date.now)
+                Defaults.set("sessionsCompletedToday", to: 0)
+            }
+        } else {
+            Defaults.set("lastDailyReset", to: Date.now)
+        }
+    }
+    
     func startExtendedSession() {
         extendedSessionService.startSession()
     }
@@ -115,14 +128,7 @@ final class PomodoroViewModel {
         }
     }
     
-    func refreshDailySessions() {
-        if let lastDailyReset = Defaults.getObjectFrom("lastDailyReset") as? Date {
-            if !Calendar.current.isDateInToday(lastDailyReset) {
-                Defaults.set("lastDailyReset", to: Date.now)
-                Defaults.set("sessionsCompletedToday", to: 0)
-            }
-        } else {
-            Defaults.set("lastDailyReset", to: Date.now)
-        }
+    func notifyUserToResume() {
+        notificationService.notifyUserToResume()
     }
 }

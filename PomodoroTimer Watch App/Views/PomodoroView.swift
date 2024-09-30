@@ -119,14 +119,18 @@ struct PomodoroView: View {
         }
         // TODO: Clean this up
         .onChange(of: scenePhase) { oldScene, newScene in
-            // Restart the extended session if the timer is ticking but the extended session has ended
-            if newScene == .inactive && pomodoroViewModel.isTimerTicking && pomodoroViewModel.isWorkSession && !pomodoroViewModel.isExtendedSessionRunning {
+            // Send notification for the user to reopen the app
+            if oldScene == .active && newScene == .inactive && pomodoroViewModel.isTimerTicking && pomodoroViewModel.isWorkSession {
+                pomodoroViewModel.notifyUserToResume()
+            // Resume session if user reopens app
+            } else if newScene == .inactive && pomodoroViewModel.isTimerTicking && pomodoroViewModel.isWorkSession && !pomodoroViewModel.isExtendedSessionRunning {
                 pomodoroViewModel.startExtendedSession()
+            // Deduct break time by how much time has passed since user closed app
             } else if oldScene == .background && newScene == .inactive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isWorkSession && !pomodoroViewModel.isExtendedSessionRunning {
                 pomodoroViewModel.startExtendedSession()
-                
                 let secondsSinceLastInactive = Int(lastInactiveTime.distance(to: Date.now))
                 pomodoroViewModel.deductTime(by: secondsSinceLastInactive)
+            // Store time when app went inactive
             } else if oldScene == .active && newScene == .inactive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isWorkSession {
                 lastInactiveTime = Date.now
             }
