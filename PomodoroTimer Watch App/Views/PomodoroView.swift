@@ -12,9 +12,9 @@ struct PomodoroView: View {
     // MARK: - Properties
     @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
     
-    @Environment(\.scenePhase) private var scenePhase
-    
     @State private var lastInactiveTime = Date.now
+
+    @Environment(\.scenePhase) private var scenePhase    
 
     // MARK: - Computed properties
     var isInactive: Bool {

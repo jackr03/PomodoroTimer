@@ -12,7 +12,7 @@ final class NotificationService {
     // MARK: - Properties
     static let shared = NotificationService()
     
-    private var center = UNUserNotificationCenter.current()
+    private let center = UNUserNotificationCenter.current()
     
     // MARK: - Init
     private init() {}
@@ -33,9 +33,14 @@ final class NotificationService {
         content.title = "Stay focused!"
         content.body = "Your pomodoro will be paused until you return to the app."
         content.sound = UNNotificationSound.default
+        content.categoryIdentifier = "pomodoro"
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.75, repeats: false)
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.75,
+                                                        repeats: false)
+        
+        let request = UNNotificationRequest(identifier: "resumeSessionNotification",
+                                            content: content,
+                                            trigger: trigger)
             
         center.add(request) { error in
             if let error = error {
