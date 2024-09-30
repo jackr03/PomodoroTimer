@@ -52,7 +52,6 @@ class PomodoroTimer {
     }
     
     // MARK: - Computed properties
-                    
     var isWorkSession: Bool {
         return currentSession.isWorkSession
     }
@@ -81,10 +80,6 @@ class PomodoroTimer {
     
     func deductTime(by seconds: Int) {
         remainingTime -= seconds
-        
-        if remainingTime < 0 {
-            remainingTime = 0
-        }
     }
     
     func nextSession() {

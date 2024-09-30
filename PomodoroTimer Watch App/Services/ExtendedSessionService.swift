@@ -67,7 +67,6 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         print("Session expiring")
     }
     
-    // TODO: Send a notification when rawValue == 3, i.e. closed as the user pressed the crown button
     func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
         print("Session invalidated with reason: \(reason.rawValue), error: \(error?.localizedDescription ?? "No error")")
     }

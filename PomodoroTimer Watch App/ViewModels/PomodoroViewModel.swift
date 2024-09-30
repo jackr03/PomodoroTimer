@@ -84,6 +84,13 @@ final class PomodoroViewModel {
     
     func deductTime(by seconds: Int) {
         pomodoroTimer.deductTime(by: seconds)
+        
+        // This method is called on the timer during break sessions only
+        // Therefore we can skip to next session directly to avoid showing alert when user reopens app
+        if pomodoroTimer.remainingTime <= 0 {
+            pomodoroTimer.nextSession()
+            startTimerIfAutoContinueEnabled()
+        }
     }
     
     func nextSession() {
@@ -120,15 +127,31 @@ final class PomodoroViewModel {
     
     func stopHaptics() {
         extendedSessionService.stopHaptics()
-        
-        if Defaults.getBoolFrom("autoContinue") {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.startTimer()
-            }
-        }
+        startTimerIfAutoContinueEnabled()
     }
     
     func notifyUserToResume() {
+        guard pomodoroTimer.isWorkSession else { return }
         notificationService.notifyUserToResume()
+    }
+    
+    func notifyUserWhenBreakOver() {
+        guard !pomodoroTimer.isWorkSession else { return }
+        
+        let remainingTime = Double(pomodoroTimer.remainingTime)
+        notificationService.notifyUserWhenBreakOver(timeTilEnd: remainingTime)
+    }
+    
+    func cancelBreakOverNotification() {
+        notificationService.cancelNotification(withIdentifier: "breakOverNotification")
+    }
+    
+    // MARK: - Private function
+    private func startTimerIfAutoContinueEnabled() {
+        if Defaults.getBoolFrom("autoContinue") {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.startTimer()
+            }
+        }
     }
 }
