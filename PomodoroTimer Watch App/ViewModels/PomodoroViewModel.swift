@@ -84,6 +84,10 @@ final class PomodoroViewModel {
         pomodoroTimer.deductTime(by: seconds)
     }
     
+    func nextSession() {
+        pomodoroTimer.nextSession()
+    }
+    
     func skipSession() {
         pomodoroTimer.nextSession()
     }

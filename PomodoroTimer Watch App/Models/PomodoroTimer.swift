@@ -123,7 +123,7 @@ class PomodoroTimer {
             deductTime(by: 1)
         } else {
             isTimerFinished = true
-            nextSession()
+//            nextSession()
         }
     }
     
