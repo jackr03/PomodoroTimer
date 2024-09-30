@@ -112,8 +112,21 @@ struct PomodoroView: View {
         .onAppear {
             pomodoroViewModel.refreshDailySessions()
         }
-        .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, finished in
-            if finished {
+        .onChange(of: pomodoroViewModel.isTimerTicking) { _, isTicking in
+            if isTicking {
+                pomodoroViewModel.startExtendedSession()
+            } else {
+                pomodoroViewModel.stopExtendedSession()
+            }
+        }
+        .onChange(of: scenePhase) { _, _ in
+            // Restart the extended session if the timer is ticking but the extended session has ended
+            if isActive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isExtendedSessionRunning {
+                pomodoroViewModel.startExtendedSession()
+            }
+        }
+        .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, isFinished in
+            if isFinished {
                 pomodoroViewModel.playHaptics()
             }
         }

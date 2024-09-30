@@ -20,6 +20,11 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         super.init()
     }
     
+    // MARK: - Computed properties
+    var isRunning: Bool {
+        return session?.state == .running
+    }
+    
     // MARK: - Functions
     // TODO: Remove print statements when confident everything is working
     func startSession() {
@@ -62,6 +67,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         print("Session expiring")
     }
     
+    // TODO: Send a notification when rawValue == 3, i.e. closed as the user pressed the crown button
     func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
         print("Session invalidated with reason: \(reason.rawValue), error: \(error?.localizedDescription ?? "No error")")
     }

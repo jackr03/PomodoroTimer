@@ -59,20 +59,21 @@ final class PomodoroViewModel {
         set { pomodoroTimer.isTimerFinished = newValue }
     }
     
+    var isExtendedSessionRunning: Bool {
+        return extendedSessionService.isRunning
+    }
+    
     // MARK: - Functions
     func startTimer() {
         pomodoroTimer.startTimer()
-        extendedSessionService.startSession()
     }
         
     func pauseTimer() {
         pomodoroTimer.pauseTimer()
-        extendedSessionService.stopSession()
     }
     
     func endCycle() {
         pomodoroTimer.endCycle()
-        extendedSessionService.stopSession()
     }
 
     func resetTimer() {
@@ -81,6 +82,13 @@ final class PomodoroViewModel {
     
     func skipSession() {
         pomodoroTimer.nextSession()
+    }
+    
+    func startExtendedSession() {
+        extendedSessionService.startSession()
+    }
+    
+    func stopExtendedSession() {
         extendedSessionService.stopSession()
     }
     
