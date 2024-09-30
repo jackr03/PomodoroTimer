@@ -88,6 +88,7 @@ final class PomodoroViewModel {
         pomodoroTimer.nextSession()
     }
     
+    // TODO: Make this not increment session done count
     func skipSession() {
         pomodoroTimer.nextSession()
     }
@@ -106,7 +107,6 @@ final class PomodoroViewModel {
     
     func stopHaptics() {
         extendedSessionService.stopHaptics()
-        extendedSessionService.stopSession()
         
         if Defaults.getBoolFrom("autoContinue") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

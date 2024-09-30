@@ -117,6 +117,7 @@ struct PomodoroView: View {
                 pomodoroViewModel.stopExtendedSession()
             }
         }
+        // TODO: Clean this up
         .onChange(of: scenePhase) { oldScene, newScene in
             // Restart the extended session if the timer is ticking but the extended session has ended
             if newScene == .inactive && pomodoroViewModel.isTimerTicking && pomodoroViewModel.isWorkSession && !pomodoroViewModel.isExtendedSessionRunning {
