@@ -139,6 +139,8 @@ final class PomodoroViewModel {
         guard !pomodoroTimer.isWorkSession else { return }
         
         let remainingTime = Double(pomodoroTimer.remainingTime)
+        guard remainingTime > 0 else { return }
+
         notificationService.notifyUserWhenBreakOver(timeTilEnd: remainingTime)
     }
     
