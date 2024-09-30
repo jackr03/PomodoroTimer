@@ -79,6 +79,14 @@ class PomodoroTimer {
         remainingTime = currentSession.duration
     }
     
+    func deductTime(by seconds: Int) {
+        remainingTime -= seconds
+        
+        if remainingTime < 0 {
+            remainingTime = 0
+        }
+    }
+    
     func nextSession() {
         pauseTimer()
         
@@ -112,10 +120,10 @@ class PomodoroTimer {
     // MARK: - Private functions
     private func countdown() {
         if remainingTime > 0 {
-            remainingTime -= 1
+            deductTime(by: 1)
         } else {
             isTimerFinished = true
-            self.nextSession()
+            nextSession()
         }
     }
     

@@ -13,12 +13,10 @@ struct PomodoroView: View {
     @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
     
     @Environment(\.scenePhase) private var scenePhase
+    
+    @State private var lastInactiveTime = Date.now
 
     // MARK: - Computed properties
-    var isActive: Bool {
-        return scenePhase == .active
-    }
-    
     var isInactive: Bool {
         return scenePhase == .inactive
     }
@@ -119,10 +117,17 @@ struct PomodoroView: View {
                 pomodoroViewModel.stopExtendedSession()
             }
         }
-        .onChange(of: scenePhase) { _, _ in
+        .onChange(of: scenePhase) { oldScene, newScene in
             // Restart the extended session if the timer is ticking but the extended session has ended
-            if isActive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isExtendedSessionRunning {
+            if newScene == .inactive && pomodoroViewModel.isTimerTicking && pomodoroViewModel.isWorkSession && !pomodoroViewModel.isExtendedSessionRunning {
                 pomodoroViewModel.startExtendedSession()
+            } else if oldScene == .background && newScene == .inactive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isWorkSession && !pomodoroViewModel.isExtendedSessionRunning {
+                pomodoroViewModel.startExtendedSession()
+                
+                let secondsSinceLastInactive = Int(lastInactiveTime.distance(to: Date.now))
+                pomodoroViewModel.deductTime(by: secondsSinceLastInactive)
+            } else if oldScene == .active && newScene == .inactive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isWorkSession {
+                lastInactiveTime = Date.now
             }
         }
         .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, isFinished in
