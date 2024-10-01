@@ -90,6 +90,10 @@ final class PomodoroViewModel {
         pomodoroTimer.resetTimer()
     }
     
+    func skipSession() {
+        pomodoroTimer.nextSession()
+    }
+    
     func deductBreakTime(by seconds: Int) {
         guard !pomodoroTimer.isWorkSession else { return }
         pomodoroTimer.deductTime(by: seconds)
@@ -102,13 +106,9 @@ final class PomodoroViewModel {
         }
     }
     
-    func nextSession() {
+    func completeSession() {
         pomodoroTimer.nextSession()
-    }
-    
-    // TODO: Make this not increment session done count
-    func skipSession() {
-        pomodoroTimer.nextSession()
+        incrementSessionsCompleted()
     }
     
     func refreshDailySessions() {
@@ -172,5 +172,16 @@ final class PomodoroViewModel {
                 self.startTimer()
             }
         }
+    }
+    
+    private func incrementSessionsCompleted() {
+        let totalSessionsCompletedKey = "totalSessionsCompleted"
+        let sessionsCompletedTodayKey = "sessionsCompletedToday"
+        
+        let currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey) + 1
+        let currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey) + 1
+        
+        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted)
+        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday)
     }
 }

@@ -150,7 +150,7 @@ struct PomodoroView: View {
         }
         .alert("Time's up!", isPresented: $pomodoroViewModel.showingFinishedAlert) {
             Button("OK") {
-                pomodoroViewModel.nextSession()
+                pomodoroViewModel.completeSession()
                 pomodoroViewModel.stopHaptics()
             }
         }

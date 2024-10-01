@@ -87,7 +87,6 @@ class PomodoroTimer {
         
         if currentSession.isWorkSession {
             currentSessionNumber += 1
-            incrementSessionsCompleted()
             
             if currentSessionNumber == maxSessions {
                 currentSession = .longBreak
@@ -119,16 +118,5 @@ class PomodoroTimer {
         } else {
             isTimerFinished = true
         }
-    }
-    
-    private func incrementSessionsCompleted() {
-        let totalSessionsCompletedKey = "totalSessionsCompleted"
-        let sessionsCompletedTodayKey = "sessionsCompletedToday"
-        
-        let currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey) + 1
-        let currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey) + 1
-        
-        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted)
-        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday)
     }
 }
