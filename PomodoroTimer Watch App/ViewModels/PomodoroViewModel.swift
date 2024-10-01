@@ -82,7 +82,8 @@ final class PomodoroViewModel {
         pomodoroTimer.resetTimer()
     }
     
-    func deductTime(by seconds: Int) {
+    func deductBreakTime(by seconds: Int) {
+        guard !pomodoroTimer.isWorkSession else { return }
         pomodoroTimer.deductTime(by: seconds)
         
         // This method is called on the timer during break sessions only

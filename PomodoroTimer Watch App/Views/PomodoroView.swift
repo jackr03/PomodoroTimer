@@ -129,7 +129,7 @@ struct PomodoroView: View {
             } else if oldScene == .background && newScene == .inactive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isWorkSession && !pomodoroViewModel.isExtendedSessionRunning {
                 pomodoroViewModel.startExtendedSession()
                 let secondsSinceLastInactive = Int(lastInactiveTime.distance(to: Date.now))
-                pomodoroViewModel.deductTime(by: secondsSinceLastInactive)
+                pomodoroViewModel.deductBreakTime(by: secondsSinceLastInactive)
                 pomodoroViewModel.cancelBreakOverNotification()
                 // Store time when app went inactive and queue a notification
             } else if oldScene == .active && newScene == .inactive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isWorkSession {
