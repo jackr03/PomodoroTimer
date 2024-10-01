@@ -35,6 +35,14 @@ final class PomodoroViewModel {
         return String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
     }
     
+    var progress: CGFloat {
+        return CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration)
+    }
+    
+    var progressRounded: CGFloat {
+        return (self.progress * 10).rounded() / 10
+    }
+    
     var isTimerTicking: Bool {
         return pomodoroTimer.isTimerTicking
     }
