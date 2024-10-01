@@ -34,7 +34,7 @@ struct PomodoroView: View {
                 Text(isInactive ? pomodoroViewModel.formattedRemainingMinutes : pomodoroViewModel.formattedRemainingMinutesAndSeconds)
                     .font(.system(size: 60))
                     .foregroundStyle(.primary)
-                
+                    
                 HStack {
                     ForEach(0..<pomodoroViewModel.maxSessions, id: \.self) { number in
                         if number < pomodoroViewModel.currentSessionsDone {
@@ -112,6 +112,7 @@ struct PomodoroView: View {
                     }
                 }
             }
+            .padding()
         }
         .onAppear {
             pomodoroViewModel.refreshDailySessions()

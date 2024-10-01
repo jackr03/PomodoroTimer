@@ -72,6 +72,7 @@ struct StatisticsView: View {
                 Spacer()
             }
             .navigationTitle("Statistics")
+            // TODO: Move this to the total sessions page
             .toolbar {
                 if totalSessionsCompleted > 0 {
                     ToolbarItem(placement: .bottomBar) {
@@ -88,6 +89,17 @@ struct StatisticsView: View {
                 }
             }
             .padding()
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                }
+                .handGestureShortcut(.primaryAction)
+            }
         }
         .alert(isPresented: $showingConfirmAlert) {
             Alert(

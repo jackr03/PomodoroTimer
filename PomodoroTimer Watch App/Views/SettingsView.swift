@@ -45,6 +45,7 @@ struct SettingsView: View {
                                         .font(.body)
                                         .foregroundStyle(.primary)
                                         .multilineTextAlignment(.center)
+                                        .padding()
                                 }
                             }
                             .padding()
@@ -148,11 +149,23 @@ struct SettingsView: View {
                             
                             Spacer()
                         }
+                        .padding()
                         .listRowBackground(Color.clear)
                     }
                 }
             }
             .navigationTitle("Settings")
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                }
+                .handGestureShortcut(.primaryAction)
+            }
         }
         .onAppear() {
             syncSettings()
