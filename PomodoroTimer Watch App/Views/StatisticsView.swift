@@ -37,15 +37,18 @@ struct StatisticsView: View {
     
     // MARK: - Body
     var body: some View {
-        NavigationStack {
+        TabView {
+            // TODO: Progress bar?
             VStack {
+                Spacer()
+                
                 HStack {
                     Text("You've completed ")
                         .font(.body)
                         .foregroundStyle(.primary)
                     + Text("\(sessionsCompletedToday)/\(dailyTarget)")
-                        .bold()
                         .font(.body)
+                        .bold()
                         .foregroundStyle(.primary)
                     + Text(" \(inflectedSessionsCount) today.")
                         .font(.body)
@@ -61,18 +64,28 @@ struct StatisticsView: View {
                     .multilineTextAlignment(.center)
                 
                 Spacer()
-                
-                Text("Total completed: ")
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                + Text("\(totalSessionsCompleted)")
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                
                 Spacer()
             }
-            .navigationTitle("Statistics")
-            // TODO: Move this to the total sessions page
+            .padding()
+            
+            // TODO: Add a graph of how many were done over the past week
+            VStack {
+                Spacer()
+                
+                HStack {
+                    Text("Total completed: ")
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                    + Text("\(totalSessionsCompleted)")
+                        .font(.body)
+                        .bold()
+                        .foregroundStyle(.primary)
+                }
+                .multilineTextAlignment(.center)
+
+                Spacer()
+                Spacer()
+            }
             .toolbar {
                 if totalSessionsCompleted > 0 {
                     ToolbarItem(placement: .bottomBar) {
@@ -90,6 +103,8 @@ struct StatisticsView: View {
             }
             .padding()
         }
+        .tabViewStyle(.verticalPage)
+        .navigationTitle("Statistics")
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

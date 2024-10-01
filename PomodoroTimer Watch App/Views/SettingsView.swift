@@ -149,7 +149,6 @@ struct SettingsView: View {
                             
                             Spacer()
                         }
-                        .padding()
                         .listRowBackground(Color.clear)
                     }
                 }
