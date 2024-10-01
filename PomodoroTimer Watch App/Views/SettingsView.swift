@@ -19,12 +19,40 @@ struct SettingsView: View {
     @AppStorage("dailyTarget") private var dailyTarget: Int = 12
     @AppStorage("autoContinue") private var autoContinue: Bool = false
     
+    @State private var showingPermissionsAlert: Bool = false
+    
     @Environment(\.dismiss) private var dismiss
     
     // MARK: - Body
     var body: some View {
         NavigationStack {
             Form {
+                if !settingsViewModel.permissionsGranted {
+                    Section {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .fill(Color.yellow)
+                            
+                            VStack {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.title)
+                                    .foregroundStyle(.red)
+                                
+                                Button(action: {
+                                    showingPermissionsAlert = true
+                                }) {
+                                    Text("Permissions required for full functionality. Tap for details.")
+                                        .font(.body)
+                                        .foregroundStyle(.primary)
+                                        .multilineTextAlignment(.center)
+                                }
+                            }
+                            .padding()
+                        }
+                    }
+                    .listRowInsets(EdgeInsets())
+                }
+                
                 Section {
                     Picker(selection: $workDuration) {
                         ForEach(1...60, id: \.self) {
@@ -128,6 +156,13 @@ struct SettingsView: View {
         }
         .onAppear() {
             syncSettings()
+        }
+        .alert(isPresented: $showingPermissionsAlert) {
+            Alert(
+                title: Text("Enable notifications"),
+                message: Text("To receive notifications to resume your work sessions or when your break is over, please grant permission in the settings app."),
+                dismissButton: .default(Text("Dismiss"))
+            )
         }
     }
     

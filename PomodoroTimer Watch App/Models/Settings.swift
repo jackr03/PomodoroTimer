@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Observation
 
 // MARK: - Settings manager
 struct SettingsManager {

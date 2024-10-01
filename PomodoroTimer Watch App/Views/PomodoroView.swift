@@ -67,7 +67,12 @@ struct PomodoroView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         NavigationLink(destination: SettingsView()) {
-                            Image(systemName: "gear")
+                            if pomodoroViewModel.permissionsGranted {
+                                Image(systemName: "gear")
+                            } else {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(.red)
+                            }
                         }
                     }
                     ToolbarItemGroup(placement: .bottomBar) {
@@ -109,6 +114,7 @@ struct PomodoroView: View {
         }
         .onAppear {
             pomodoroViewModel.refreshDailySessions()
+            pomodoroViewModel.checkPermissions()
         }
         .onChange(of: pomodoroViewModel.isTimerTicking) { _, isTicking in
             if isTicking {

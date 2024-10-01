@@ -64,10 +64,18 @@ final class PomodoroViewModel {
         return extendedSessionService.isRunning
     }
     
-    // MARK: - Functions
+    // Return true if not yet set so that the red triangle doesn't show up until the user tries to start a timer
+    var permissionsGranted: Bool {
+        return notificationService.permissionsGranted ?? true
+    }
+    
+    // MARK: - Timer functions
     func startTimer() {
-        notificationService.requestPermission()
         pomodoroTimer.startTimer()
+        
+        if notificationService.permissionsGranted == nil {
+            notificationService.requestPermissions()
+        }
     }
         
     func pauseTimer() {
@@ -114,6 +122,7 @@ final class PomodoroViewModel {
         }
     }
     
+    // MARK: - Extended session functions
     func startExtendedSession() {
         extendedSessionService.startSession()
     }
@@ -129,6 +138,13 @@ final class PomodoroViewModel {
     func stopHaptics() {
         extendedSessionService.stopHaptics()
         startTimerIfAutoContinueEnabled()
+    }
+    
+    // MARK: - Notification functions
+    func checkPermissions() {
+        Task {
+            await notificationService.checkPermissions()
+        }
     }
     
     func notifyUserToResume() {
@@ -149,7 +165,7 @@ final class PomodoroViewModel {
         notificationService.cancelNotification(withIdentifier: "breakOverNotification")
     }
     
-    // MARK: - Private function
+    // MARK: - Private functions
     private func startTimerIfAutoContinueEnabled() {
         if Defaults.getBoolFrom("autoContinue") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

@@ -15,6 +15,7 @@ final class SettingsViewModel {
     static let shared = SettingsViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
+    private let notificationService = NotificationService.shared
     
     var settingsAreAllDefault: Bool = true
     
@@ -22,13 +23,17 @@ final class SettingsViewModel {
     private init() {}
     
     // MARK: - Computed properties
-    func syncSettings() {
-        settingsAreAllDefault = SettingsManager.checkIfSettingsAreAllDefault()
+    var permissionsGranted: Bool {
+        return notificationService.permissionsGranted ?? true
     }
     
     // MARK: - Functions
     func fetchCurrentSettings() -> [String: Any] {
         return SettingsManager.fetchCurrentSettings()
+    }
+    
+    func syncSettings() {
+        settingsAreAllDefault = SettingsManager.checkIfSettingsAreAllDefault()
     }
     
     func resetSettings() {
