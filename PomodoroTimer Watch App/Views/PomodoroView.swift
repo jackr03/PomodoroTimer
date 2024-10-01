@@ -87,6 +87,7 @@ struct PomodoroView: View {
                         }) {
                             Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
                         }
+                        .handGestureShortcut(.primaryAction)
                         
                         Button(action: {
                             pomodoroViewModel.endCycle()
