@@ -28,10 +28,6 @@ final class SettingsViewModel {
     }
     
     // MARK: - Functions
-    func fetchCurrentSettings() -> [String: Any] {
-        return SettingsManager.fetchCurrentSettings()
-    }
-    
     func syncSettings() {
         settingsAreAllDefault = SettingsManager.checkIfSettingsAreAllDefault()
     }
@@ -41,7 +37,7 @@ final class SettingsViewModel {
     }
     
     func updateTimer() {
-        guard !pomodoroTimer.isTimerTicking else { return }
+        guard !pomodoroTimer.isTimerTicking && !pomodoroTimer.sessionHasStarted else { return }
         
         pomodoroTimer.resetTimer()
     }

@@ -78,7 +78,7 @@ final class NotificationService {
     // MARK: - Private functions
     private func setUpNotificationCategories() {
         let openAppAction = UNNotificationAction(identifier: "openAppAction",
-                                                 title: "Return to app ",
+                                                 title: "Open app",
                                                  options: .foreground)
         
         let pomodoroCategory = UNNotificationCategory(identifier: "pomodoroCategory",

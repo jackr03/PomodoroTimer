@@ -68,7 +68,7 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: workDuration) {
-                        syncSettings()
+                        settingsViewModel.syncSettings()
                     }
                     
                     Picker(selection: $shortBreakDuration) {
@@ -84,7 +84,7 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: shortBreakDuration) {
-                        syncSettings()
+                        settingsViewModel.syncSettings()
                     }
                     
                     Picker(selection: $longBreakDuration) {
@@ -100,7 +100,7 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: longBreakDuration) {
-                        syncSettings()
+                        settingsViewModel.syncSettings()
                     }
                 }
                 
@@ -118,14 +118,14 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     .onChange(of: dailyTarget) {
-                        syncSettings()
+                        settingsViewModel.syncSettings()
                     }
                 }
                 
                 Section {
                     Toggle("Auto-continue", isOn: $autoContinue)
                         .onChange(of: autoContinue) {
-                            syncSettings()
+                            settingsViewModel.syncSettings()
                         }
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -159,6 +159,7 @@ struct SettingsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
+                    settingsViewModel.updateTimer()
                     dismiss()
                 }) {
                     Image(systemName: "chevron.left")
@@ -167,26 +168,22 @@ struct SettingsView: View {
             }
         }
         .onAppear() {
-            syncSettings()
+            settingsViewModel.syncSettings()
         }
         .alert(isPresented: $showingPermissionsAlert) {
             Alert(
                 title: Text("Enable notifications"),
-                message: Text("To receive notifications to resume your work sessions or when your break is over, please grant permission in the settings app."),
+                message: Text("To receive notifications to resume your work sessions or when your break is over, please grant permission in the Settings app."),
                 dismissButton: .default(Text("Dismiss"))
             )
         }
     }
     
     // MARK: - Private functions
-    private func syncSettings() {
-        settingsViewModel.syncSettings()
-        settingsViewModel.updateTimer()
-    }
-    
     private func resetToDefault() {
         settingsViewModel.resetSettings()
         settingsViewModel.syncSettings()
+        settingsViewModel.updateTimer()
         Haptics.playClick()
         
         dismiss()
