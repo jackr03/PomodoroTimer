@@ -51,14 +51,16 @@ struct CircularProgressBar: View {
                 }) {
                     VStack {
                         if pomodoroViewModel.isSessionFinished {
-                            Text("TIME'S UP!")
-                                .font(.subheadline.bold())
-                                .foregroundStyle(Color.primary)
-                                .padding(.top, 6)
-                            
-                            Image(systemName: "xmark")
-                                .foregroundStyle(Color.primary)
+                            Text("")
                                 .padding(.top, 12)
+
+                            Text("TIME'S UP!")
+                                .font(.headline.bold())
+                                .foregroundStyle(Color.black)
+                            
+                            Image(systemName: "checkmark")
+                                .foregroundStyle(Color.black)
+                                .padding(.top, 18)
                         } else {
                             HStack {
                                 Text(pomodoroViewModel.currentSession)
@@ -204,8 +206,8 @@ struct PomodoroView: View {
             }
         }
         .background(pomodoroViewModel.isSessionFinished
-                    ? Gradient(colors: [.blue, .blue.opacity(0.7)])
-                    : Gradient(colors: [.clear, .clear]))
+                    ? Color.white
+        : Color.clear)
     }
 }
 
