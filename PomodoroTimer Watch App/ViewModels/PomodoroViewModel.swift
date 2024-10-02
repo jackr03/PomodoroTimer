@@ -91,7 +91,7 @@ final class PomodoroViewModel {
     }
     
     func skipSession() {
-        pomodoroTimer.nextSession()
+        pomodoroTimer.skipSession()
     }
     
     func deductBreakTime(by seconds: Int) {
@@ -101,14 +101,8 @@ final class PomodoroViewModel {
         // This method is called on the timer during break sessions only
         // Therefore we can skip to next session directly to avoid showing alert when user reopens app
         if pomodoroTimer.remainingTime <= 0 {
-            pomodoroTimer.nextSession()
             startTimerIfAutoContinueEnabled()
         }
-    }
-    
-    func completeSession() {
-        pomodoroTimer.nextSession()
-        incrementSessionsCompleted()
     }
     
     func refreshDailySessions() {
@@ -172,16 +166,5 @@ final class PomodoroViewModel {
                 self.startTimer()
             }
         }
-    }
-    
-    private func incrementSessionsCompleted() {
-        let totalSessionsCompletedKey = "totalSessionsCompleted"
-        let sessionsCompletedTodayKey = "sessionsCompletedToday"
-        
-        let currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey) + 1
-        let currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey) + 1
-        
-        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted)
-        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday)
     }
 }
