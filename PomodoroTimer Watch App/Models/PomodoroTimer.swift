@@ -70,10 +70,10 @@ class PomodoroTimer {
     func pauseTimer() {
         isTimerTicking = false
         
-        guard let timer = timer else { return }
-        
-        timer.invalidate()
-        self.timer = nil
+        if let timer = timer {
+            timer.invalidate()
+            self.timer = nil
+        }
     }
     
     func resetTimer() {
@@ -84,27 +84,8 @@ class PomodoroTimer {
         remainingTime -= seconds
     }
     
-    func nextSession() {
-        pauseTimer()
-        
-        if currentSession.isWorkSession {
-            currentSessionNumber += 1
-            
-            if currentSessionNumber == maxSessions {
-                currentSession = .longBreak
-            } else {
-                currentSession = .shortBreak
-            }
-        } else {
-            currentSession = .work
-            
-            if currentSessionNumber == maxSessions {
-                currentSessionNumber = 0
-            }
-        }
-        
-        remainingTime = currentSession.duration
-        sessionHasStarted = false
+    func skipSession() {
+        nextSession(skipped: true)
     }
     
     func endCycle() {
@@ -118,9 +99,48 @@ class PomodoroTimer {
     // MARK: - Private functions
     private func countdown() {
         if remainingTime > 0 {
-            deductTime(by: 1)
+            remainingTime -= 1
         } else {
-            isSessionFinished = true
+            isTimerFinished = true
+            nextSession()
         }
+    }
+    
+    private func nextSession(skipped: Bool = false) {
+        pauseTimer()
+        
+        if currentSession.isWorkSession {
+            currentSessionNumber += 1
+            
+            if !skipped {
+                incrementSessionsCompleted()
+            }
+            
+            if currentSessionNumber == maxSessions {
+                currentSession = .longBreak
+            } else {
+                currentSession = .shortBreak
+            }
+        } else {
+            if currentSessionNumber == maxSessions {
+                currentSessionNumber = 0
+            }
+            
+            currentSession = .work
+        }
+        
+        remainingTime = currentSession.duration
+        sessionHasStarted = false
+    }
+    
+    private func incrementSessionsCompleted() {
+        let totalSessionsCompletedKey = "totalSessionsCompleted"
+        let sessionsCompletedTodayKey = "sessionsCompletedToday"
+        
+        let currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey) + 1
+        let currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey) + 1
+        
+        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted)
+        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday)
     }
 }

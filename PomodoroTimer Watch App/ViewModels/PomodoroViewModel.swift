@@ -18,6 +18,8 @@ final class PomodoroViewModel {
     private let extendedSessionService = ExtendedSessionService.shared
     private let notificationService = NotificationService.shared
     
+    private var hapticTimer: Timer?
+    
     // MARK: - Init
     private init() {}
     
@@ -99,24 +101,15 @@ final class PomodoroViewModel {
     }
     
     func skipSession() {
-        pomodoroTimer.nextSession()
+        pomodoroTimer.skipSession()
     }
     
-    func deductBreakTime(by seconds: Int) {
-        guard !pomodoroTimer.isWorkSession else { return }
+    // Returns remaining duration
+    func deductBreakTime(by seconds: Int) -> Int {
+        guard !pomodoroTimer.isWorkSession else { return -1 }
         pomodoroTimer.deductTime(by: seconds)
         
-        // This method is called on the timer during break sessions only
-        // Therefore we can skip to next session directly to avoid showing alert when user reopens app
-        if pomodoroTimer.remainingTime <= 0 {
-            pomodoroTimer.nextSession()
-            startTimerIfAutoContinueEnabled()
-        }
-    }
-    
-    func completeSession() {
-        pomodoroTimer.nextSession()
-        incrementSessionsCompleted()
+        return pomodoroTimer.remainingTime
     }
     
     func refreshDailySessions() {
@@ -128,6 +121,26 @@ final class PomodoroViewModel {
         } else {
             Defaults.set("lastDailyReset", to: Date.now)
         }
+    }
+    
+    func startTimerIfAutoContinueEnabled() {
+        if Defaults.getBoolFrom("autoContinue") {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.startTimer()
+            }
+        }
+    }
+    
+    // MARK: - Haptic functions
+    func playHaptics() {
+        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            Haptics.playStop()
+        }
+    }
+    
+    func stopHaptics() {
+        hapticTimer?.invalidate()
+        hapticTimer = nil
     }
     
     // MARK: - Extended session functions
@@ -172,25 +185,5 @@ final class PomodoroViewModel {
     
     func cancelBreakOverNotification() {
         notificationService.cancelNotification(withIdentifier: "breakOverNotification")
-    }
-    
-    // MARK: - Private functions
-    private func startTimerIfAutoContinueEnabled() {
-        if Defaults.getBoolFrom("autoContinue") {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.startTimer()
-            }
-        }
-    }
-    
-    private func incrementSessionsCompleted() {
-        let totalSessionsCompletedKey = "totalSessionsCompleted"
-        let sessionsCompletedTodayKey = "sessionsCompletedToday"
-        
-        let currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey) + 1
-        let currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey) + 1
-        
-        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted)
-        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday)
     }
 }

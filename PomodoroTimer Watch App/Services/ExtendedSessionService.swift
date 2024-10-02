@@ -47,17 +47,6 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         session?.invalidate()
     }
     
-    func playHaptics() {
-        timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-            Haptics.playStop()
-        }
-    }
-    
-    func stopHaptics() {
-        timer?.invalidate()
-        timer = nil
-    }
-
     // MARK: - Delegate functions
     func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
         print("Session started")
