@@ -49,7 +49,11 @@ struct CircularProgressBar: View {
                             Text(pomodoroViewModel.currentSession)
                                 .font(.subheadline.bold())
                                 .foregroundStyle(Color.secondary)
-                                .padding(.top, 6)
+                            
+                            Text("\(pomodoroViewModel.currentSessionsDone)/\(pomodoroViewModel.maxSessions)")
+                                .font(.caption)
+                                .foregroundStyle(Color.secondary)
+                            
                             
                                 // TODO: Reimplement this
 //                            HStack {
@@ -70,6 +74,7 @@ struct CircularProgressBar: View {
 //                                }
 //                            }
                         }
+                        .padding(.top, 6)
                         
                         Text(time)
                             .font(.title)
