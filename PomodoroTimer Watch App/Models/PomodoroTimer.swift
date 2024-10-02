@@ -101,7 +101,7 @@ class PomodoroTimer {
         if remainingTime > 0 {
             remainingTime -= 1
         } else {
-            isTimerFinished = true
+            isSessionFinished = true
             nextSession()
         }
     }

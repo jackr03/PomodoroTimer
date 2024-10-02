@@ -186,9 +186,10 @@ struct PomodoroView: View {
                     pomodoroViewModel.startExtendedSession()
                     // Deduct break time by how much time has passed since user closed app
                 } else if oldScene == .background && newScene == .inactive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isWorkSession && !pomodoroViewModel.isExtendedSessionRunning {
-                    pomodoroViewModel.startExtendedSession()
                     let secondsSinceLastInactive = Int(lastInactiveTime.distance(to: Date.now))
-                    pomodoroViewModel.deductBreakTime(by: secondsSinceLastInactive)
+                    if pomodoroViewModel.deductBreakTime(by: secondsSinceLastInactive) > 0 {
+                        pomodoroViewModel.startExtendedSession()
+                    }
                     pomodoroViewModel.cancelBreakOverNotification()
                     // Store time when app went inactive and queue a notification
                 } else if oldScene == .active && newScene == .inactive && pomodoroViewModel.isTimerTicking && !pomodoroViewModel.isWorkSession {

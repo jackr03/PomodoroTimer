@@ -74,7 +74,7 @@ final class PomodoroViewModel {
         return extendedSessionService.isRunning
     }
     
-    // Return true if not yet set so that the red triangle doesn't show up until the user tries to start a timer
+    // Return true if not determined so that the warning is only shown when explicitly denied
     var permissionsGranted: Bool {
         return notificationService.permissionsGranted ?? true
     }
@@ -139,8 +139,13 @@ final class PomodoroViewModel {
     }
     
     func stopHaptics() {
-        hapticTimer?.invalidate()
-        hapticTimer = nil
+        if let hapticTimer = hapticTimer {
+            hapticTimer.invalidate()
+            self.hapticTimer = nil
+        }
+
+        isSessionFinished = false
+        startTimerIfAutoContinueEnabled()
     }
     
     // MARK: - Extended session functions
@@ -150,16 +155,6 @@ final class PomodoroViewModel {
     
     func stopExtendedSession() {
         extendedSessionService.stopSession()
-    }
-    
-    func playHaptics() {
-        extendedSessionService.playHaptics()
-    }
-    
-    func stopHaptics() {
-        extendedSessionService.stopHaptics()
-        isSessionFinished = false
-        startTimerIfAutoContinueEnabled()
     }
     
     // MARK: - Notification functions
