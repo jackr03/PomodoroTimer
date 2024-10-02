@@ -146,7 +146,6 @@ struct PomodoroView: View {
                         Haptics.playClick()
                     }) {
                         Image(systemName: "stop.fill")
-                            .foregroundStyle(.secondary)
                     }
                     
                     Button(action: {
@@ -154,7 +153,6 @@ struct PomodoroView: View {
                         Haptics.playClick()
                     }) {
                         Image(systemName: "arrow.circlepath")
-                            .foregroundStyle(.secondary)
                     }
                     
                     Button(action: {
@@ -162,7 +160,6 @@ struct PomodoroView: View {
                         Haptics.playClick()
                     }) {
                         Image(systemName: "forward.end.fill")
-                            .foregroundStyle(.secondary)
                     }
                 }
             }
