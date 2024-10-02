@@ -96,7 +96,7 @@ struct CircularProgressBar: View {
                     .trim(from: 0, to: progress)
                     .stroke(Color.blue, lineWidth: 7)
                     .rotationEffect(.degrees(-90))
-                    .animation(.linear, value: progress)
+                    .animation(.easeInOut(duration: 1.0), value: progress)
             }
             .frame(maxWidth: geometry.size.width * 0.75,
                    maxHeight: geometry.size.height * 0.75)
@@ -105,6 +105,7 @@ struct CircularProgressBar: View {
                       y: geometry.size.height / 2 - geometry.size.height * 0.04)
         }
     }
+        
 }
 
 // MARK: - Main struct
