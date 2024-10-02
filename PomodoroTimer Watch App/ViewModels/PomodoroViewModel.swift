@@ -63,9 +63,9 @@ final class PomodoroViewModel {
         return pomodoroTimer.isWorkSession
     }
     
-    var showingFinishedAlert: Bool {
-        get { return pomodoroTimer.isTimerFinished }
-        set { pomodoroTimer.isTimerFinished = newValue }
+    var isSessionFinished: Bool {
+        get { return pomodoroTimer.isSessionFinished }
+        set { pomodoroTimer.isSessionFinished = newValue }
     }
     
     var isExtendedSessionRunning: Bool {
@@ -145,6 +145,7 @@ final class PomodoroViewModel {
     
     func stopHaptics() {
         extendedSessionService.stopHaptics()
+        isSessionFinished = false
         startTimerIfAutoContinueEnabled()
     }
     

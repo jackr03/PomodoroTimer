@@ -10,7 +10,10 @@ import SwiftUI
 
 @main
 struct PomodoroTimer_Watch_AppApp: App {
-    init() {}
+    init() {
+        Defaults.set("workDuration", to: 3)
+        Defaults.set("shortBreakDuration", to: 3)
+    }
     
     var body: some Scene {
         WindowGroup {

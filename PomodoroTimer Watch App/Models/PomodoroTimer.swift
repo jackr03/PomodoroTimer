@@ -23,7 +23,7 @@ class PomodoroTimer {
     
     private var timer: Timer?
 
-    public var isTimerFinished: Bool = false
+    public var isSessionFinished: Bool = false
     
     // MARK: - Init
     private init() {}
@@ -120,7 +120,7 @@ class PomodoroTimer {
         if remainingTime > 0 {
             deductTime(by: 1)
         } else {
-            isTimerFinished = true
+            isSessionFinished = true
         }
     }
 }

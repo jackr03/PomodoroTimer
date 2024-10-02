@@ -14,7 +14,7 @@ struct CircularProgressBar: View {
     private let pomodoroViewModel = PomodoroViewModel.shared
     
     @Environment(\.scenePhase) private var scenePhase
-
+    
     // MARK: - Computed properties
     var isInactive: Bool {
         return scenePhase == .inactive
@@ -36,67 +36,62 @@ struct CircularProgressBar: View {
                     .stroke(Color.gray.opacity(0.3), lineWidth: 7)
                 
                 Button(action: {
-                    if pomodoroViewModel.isTimerTicking {
-                        pomodoroViewModel.pauseTimer()
+                    if pomodoroViewModel.isSessionFinished {
+                        pomodoroViewModel.stopHaptics()
                         Haptics.playClick()
                     } else {
-                        pomodoroViewModel.startTimer()
-                        Haptics.playStart()
+                        if pomodoroViewModel.isTimerTicking {
+                            pomodoroViewModel.pauseTimer()
+                            Haptics.playClick()
+                        } else {
+                            pomodoroViewModel.startTimer()
+                            Haptics.playStart()
+                        }
                     }
                 }) {
-                    VStack(alignment: .center) {
-                        HStack {
-                            Text(pomodoroViewModel.currentSession)
+                    VStack {
+                        if pomodoroViewModel.isSessionFinished {
+                            Text("TIME'S UP!")
                                 .font(.subheadline.bold())
-                                .foregroundStyle(Color.secondary)
+                                .foregroundStyle(Color.primary)
+                                .padding(.top, 6)
                             
-                            Text("\(pomodoroViewModel.currentSessionsDone)/\(pomodoroViewModel.maxSessions)")
-                                .font(.caption)
-                                .foregroundStyle(Color.secondary)
-                            
-                            
-                                // TODO: Reimplement this
-//                            HStack {
-//                                ForEach(0..<pomodoroViewModel.maxSessions, id: \.self) { number in
-//                                    if number < pomodoroViewModel.currentSessionsDone {
-//                                        Image(systemName: "circle.fill")
-//                                            .font(.caption)
-//                                            .foregroundStyle(.secondary)
-//                                    } else if number == pomodoroViewModel.currentSessionsDone && pomodoroViewModel.isWorkSession {
-//                                        Image(systemName: "circle.dotted.circle")
-//                                            .font(.caption)
-//                                            .foregroundStyle(.secondary)
-//                                    } else {
-//                                        Image(systemName: "circle.dotted")
-//                                            .font(.caption)
-//                                            .foregroundStyle(.secondary)
-//                                    }
-//                                }
-//                            }
-                        }
-                        .padding(.top, 6)
-                        
-                        Text(time)
-                            .font(.title)
-                            .bold()
-                            .foregroundStyle(Color.primary)
-                        
-                        Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
-                            .foregroundStyle(Color.primary)
+                            Image(systemName: "xmark")
+                                .foregroundStyle(Color.primary)
+                                .padding(.top, 12)
+                        } else {
+                            HStack {
+                                Text(pomodoroViewModel.currentSession)
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(Color.secondary)
+                                
+                                Text("\(pomodoroViewModel.currentSessionsDone)/\(pomodoroViewModel.maxSessions)")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.secondary)
+                            }
                             .padding(.top, 6)
+                            
+                            Text(time)
+                                .font(.title.bold())
+                                .foregroundStyle(Color.primary)
+                            
+                            Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
+                                .foregroundStyle(Color.primary)
+                                .padding(.top, 6)
+                            }
+                        }
                     }
-                }
-                .frame(maxWidth: geometry.size.width * 0.75,
-                       maxHeight: geometry.size.height * 0.75)
-                .clipShape(Circle())
-                .buttonStyle(.borderless)
-                .handGestureShortcut(.primaryAction)
-                
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(Color.blue, lineWidth: 7)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.easeInOut(duration: 1.0), value: progress)
+                    .frame(maxWidth: geometry.size.width * 0.75,
+                           maxHeight: geometry.size.height * 0.75)
+                    .clipShape(Circle())
+                    .buttonStyle(.borderless)
+                    .handGestureShortcut(.primaryAction)
+
+                    Circle()
+                        .trim(from: 0, to: progress)
+                        .stroke(Color.blue, lineWidth: 7)
+                        .rotationEffect(.degrees(-90))
+                        .animation(.easeInOut(duration: 1.0), value: progress)
             }
             .frame(maxWidth: geometry.size.width * 0.75,
                    maxHeight: geometry.size.height * 0.75)
@@ -105,7 +100,6 @@ struct CircularProgressBar: View {
                       y: geometry.size.height / 2 - geometry.size.height * 0.04)
         }
     }
-        
 }
 
 // MARK: - Main struct
@@ -130,42 +124,44 @@ struct PomodoroView: View {
             }
             .ignoresSafeArea()
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: StatisticsView()) {
-                        Image(systemName: "chart.line.uptrend.xyaxis")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: SettingsView()) {
-                        if pomodoroViewModel.permissionsGranted {
-                            Image(systemName: "gear")
-                        } else {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.red)
+                if !pomodoroViewModel.isSessionFinished {
+                    ToolbarItem(placement: .topBarLeading) {
+                        NavigationLink(destination: StatisticsView()) {
+                            Image(systemName: "chart.line.uptrend.xyaxis")
                         }
                     }
-                }
-                // TODO: Improve the UI for buttons
-                ToolbarItemGroup(placement: .bottomBar) {
-                    Button(action: {
-                        pomodoroViewModel.endCycle()
-                        Haptics.playClick()
-                    }) {
-                        Image(systemName: "stop.fill")
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink(destination: SettingsView()) {
+                            if pomodoroViewModel.permissionsGranted {
+                                Image(systemName: "gear")
+                            } else {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
-                    
-                    Button(action: {
-                        pomodoroViewModel.resetTimer()
-                        Haptics.playClick()
-                    }) {
-                        Image(systemName: "arrow.circlepath")
-                    }
-                    
-                    Button(action: {
-                        pomodoroViewModel.skipSession()
-                        Haptics.playClick()
-                    }) {
-                        Image(systemName: "forward.end.fill")
+                    // TODO: Improve the UI for buttons
+                    ToolbarItemGroup(placement: .bottomBar) {
+                        Button(action: {
+                            pomodoroViewModel.endCycle()
+                            Haptics.playClick()
+                        }) {
+                            Image(systemName: "stop.fill")
+                        }
+                        
+                        Button(action: {
+                            pomodoroViewModel.resetTimer()
+                            Haptics.playClick()
+                        }) {
+                            Image(systemName: "arrow.circlepath")
+                        }
+                        
+                        Button(action: {
+                            pomodoroViewModel.skipSession()
+                            Haptics.playClick()
+                        }) {
+                            Image(systemName: "forward.end.fill")
+                        }
                     }
                 }
             }
@@ -200,18 +196,15 @@ struct PomodoroView: View {
                     pomodoroViewModel.notifyUserWhenBreakOver()
                 }
             }
-            .onChange(of: pomodoroViewModel.showingFinishedAlert) { _, isFinished in
-                if isFinished {
+            .onChange(of: pomodoroViewModel.isSessionFinished) { _, finished in
+                if finished {
                     pomodoroViewModel.playHaptics()
                 }
             }
-            .alert("Time's up!", isPresented: $pomodoroViewModel.showingFinishedAlert) {
-                Button("OK") {
-                    pomodoroViewModel.completeSession()
-                    pomodoroViewModel.stopHaptics()
-                }
-            }
         }
+        .background(pomodoroViewModel.isSessionFinished
+                    ? Gradient(colors: [.blue, .blue.opacity(0.7)])
+                    : Gradient(colors: [.clear, .clear]))
     }
 }
 
