@@ -28,10 +28,6 @@ final class SettingsViewModel {
     }
     
     // MARK: - Functions
-    func fetchCurrentSettings() -> [String: Any] {
-        return SettingsManager.fetchCurrentSettings()
-    }
-    
     func syncSettings() {
         settingsAreAllDefault = SettingsManager.checkIfSettingsAreAllDefault()
     }

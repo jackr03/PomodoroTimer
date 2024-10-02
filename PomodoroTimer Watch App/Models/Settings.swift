@@ -16,17 +16,7 @@ struct SettingsManager {
     static func checkIfSettingsAreAllDefault() -> Bool {
         return allSettings.allSatisfy(\.isDefault)
     }
-    
-    static func fetchCurrentSettings() -> [String: Any] {
-        var currentSettings: [String: Any] = [:]
         
-        for setting in allSettings {
-            currentSettings[setting.rawValue] = setting.currentValue
-        }
-        
-        return currentSettings
-    }
-    
     static func resetSettings() {
         for setting in allSettings {
             setting.reset()
