@@ -18,6 +18,8 @@ final class PomodoroViewModel {
     private let extendedSessionService = ExtendedSessionService.shared
     private let notificationService = NotificationService.shared
     
+    private var hapticTimer: Timer?
+    
     // MARK: - Init
     private init() {}
     
@@ -116,6 +118,20 @@ final class PomodoroViewModel {
         }
     }
     
+    // MARK: - Haptic functions
+    func playHaptics() {
+        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            Haptics.playStop()
+        }
+    }
+    
+    func stopHaptics() {
+        hapticTimer?.invalidate()
+        hapticTimer = nil
+        
+        startTimerIfAutoContinueEnabled()
+    }
+    
     // MARK: - Extended session functions
     func startExtendedSession() {
         extendedSessionService.startSession()
@@ -123,15 +139,6 @@ final class PomodoroViewModel {
     
     func stopExtendedSession() {
         extendedSessionService.stopSession()
-    }
-    
-    func playHaptics() {
-        extendedSessionService.playHaptics()
-    }
-    
-    func stopHaptics() {
-        extendedSessionService.stopHaptics()
-        startTimerIfAutoContinueEnabled()
     }
     
     // MARK: - Notification functions
