@@ -41,7 +41,7 @@ final class SettingsViewModel {
     }
     
     func updateTimer() {
-        guard !pomodoroTimer.isTimerTicking else { return }
+        guard !pomodoroTimer.isTimerTicking && !pomodoroTimer.sessionHasStarted else { return }
         
         pomodoroTimer.resetTimer()
     }

@@ -19,6 +19,7 @@ class PomodoroTimer {
     private(set) var isTimerTicking: Bool = false
     private(set) var currentSession: SessionType = .work
     private(set) var currentSessionNumber: Int = 0
+    private(set) var sessionHasStarted: Bool = false
     
     private var timer: Timer?
 
@@ -59,6 +60,7 @@ class PomodoroTimer {
     // MARK: - Timer functions
     func startTimer() {
         isTimerTicking = true
+        sessionHasStarted = true
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
             self?.countdown()
@@ -102,12 +104,14 @@ class PomodoroTimer {
         }
         
         remainingTime = currentSession.duration
+        sessionHasStarted = false
     }
     
     func endCycle() {
         currentSession = .work
         currentSessionNumber = 0
         remainingTime = currentSession.duration
+        sessionHasStarted = false
         pauseTimer()
     }
     
