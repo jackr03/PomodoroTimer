@@ -173,7 +173,7 @@ struct SettingsView: View {
         .alert(isPresented: $showingPermissionsAlert) {
             Alert(
                 title: Text("Enable notifications"),
-                message: Text("To receive notifications to resume your work sessions or when your break is over, please grant permission in the settings app."),
+                message: Text("To receive notifications to resume your work sessions or when your break is over, please grant permission in the Settings app."),
                 dismissButton: .default(Text("Dismiss"))
             )
         }
