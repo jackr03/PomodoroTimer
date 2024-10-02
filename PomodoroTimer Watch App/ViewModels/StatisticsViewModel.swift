@@ -7,13 +7,21 @@
 
 import Foundation
 import WatchKit
+import Observation
 
+@Observable
 final class StatisticsViewModel {
     // MARK: - Properties
     static let shared = StatisticsViewModel()
     
+    private let pomodoroTimer = PomodoroTimer.shared
+    
     // MARK: - Init
     private init() {}
+    
+    var isSessionFinished: Bool {
+        return pomodoroTimer.isSessionFinished
+    }
     
     // MARK: - Functions
     func resetSessions() {

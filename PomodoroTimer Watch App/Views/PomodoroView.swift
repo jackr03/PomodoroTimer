@@ -64,14 +64,15 @@ struct CircularProgressBar: View {
                         } else {
                             HStack {
                                 Text(pomodoroViewModel.currentSession)
-                                    .font(.subheadline.bold())
+                                    .font(.caption.bold())
                                     .foregroundStyle(Color.secondary)
+                                    .minimumScaleFactor(0.5)
                                 
                                 Text("\(pomodoroViewModel.currentSessionsDone)/\(pomodoroViewModel.maxSessions)")
                                     .font(.caption)
                                     .foregroundStyle(Color.secondary)
                             }
-                            .padding(.top, 6)
+                            .padding(.top, 12)
                             
                             Text(time)
                                 .font(.title.bold())
@@ -109,9 +110,9 @@ struct PomodoroView: View {
     // MARK: - Properties
     @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
     
-    @State private var lastInactiveTime = Date.now
-    
     @Environment(\.scenePhase) private var scenePhase
+    
+    @State private var lastInactiveTime = Date.now
 
     // MARK: - Computed properties
     var isInactive: Bool {
@@ -132,6 +133,7 @@ struct PomodoroView: View {
                             Image(systemName: "chart.line.uptrend.xyaxis")
                         }
                     }
+                    
                     ToolbarItem(placement: .topBarTrailing) {
                         NavigationLink(destination: SettingsView()) {
                             if pomodoroViewModel.permissionsGranted {
@@ -142,6 +144,7 @@ struct PomodoroView: View {
                             }
                         }
                     }
+                    
                     // TODO: Improve the UI for buttons
                     ToolbarItemGroup(placement: .bottomBar) {
                         Button(action: {
@@ -205,9 +208,7 @@ struct PomodoroView: View {
                 }
             }
         }
-        .background(pomodoroViewModel.isSessionFinished
-                    ? Color.white
-        : Color.clear)
+        .background(pomodoroViewModel.isSessionFinished ? Color.white : Color.clear)
     }
 }
 

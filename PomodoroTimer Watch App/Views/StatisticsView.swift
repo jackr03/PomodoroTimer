@@ -10,16 +10,16 @@ import SwiftUI
 
 struct StatisticsView: View {
     // MARK: - Properties
-    private let statisticsViewModel = StatisticsViewModel.shared
+    @Bindable private var statisticsViewModel = StatisticsViewModel.shared
     
+    @Environment(\.dismiss) private var dismiss
+
     @AppStorage("totalSessionsCompleted") private var totalSessionsCompleted: Int = 0
     @AppStorage("sessionsCompletedToday") private var sessionsCompletedToday: Int = 0
     @AppStorage("dailyTarget") private var dailyTarget: Int = 12
         
     @State private var showingConfirmAlert = false
     
-    @Environment(\.dismiss) private var dismiss
-
     // MARK: - Computed properties
     var inflectedSessionsCount: String {
         return sessionsCompletedToday == 1 ? "session" : "sessions"
@@ -114,6 +114,11 @@ struct StatisticsView: View {
                     Image(systemName: "chevron.left")
                 }
                 .handGestureShortcut(.primaryAction)
+            }
+        }
+        .onChange(of: statisticsViewModel.isSessionFinished) { _, isFinished in
+            if isFinished {
+                dismiss()
             }
         }
         .alert(isPresented: $showingConfirmAlert) {

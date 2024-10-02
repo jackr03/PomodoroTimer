@@ -27,6 +27,10 @@ final class SettingsViewModel {
         return notificationService.permissionsGranted ?? true
     }
     
+    var isSessionFinished: Bool {
+        return pomodoroTimer.isSessionFinished
+    }
+    
     // MARK: - Functions
     func syncSettings() {
         settingsAreAllDefault = SettingsManager.checkIfSettingsAreAllDefault()

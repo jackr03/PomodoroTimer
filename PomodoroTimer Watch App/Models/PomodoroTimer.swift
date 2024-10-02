@@ -32,7 +32,7 @@ class PomodoroTimer {
     enum SessionType: String {
         case work = "WORK"
         case shortBreak = "BREAK"
-        case longBreak = "LONG BREAK"
+        case longBreak = "L. BREAK"
 
         var duration: Int {
             switch self {

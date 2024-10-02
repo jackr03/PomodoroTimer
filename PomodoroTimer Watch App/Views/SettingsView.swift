@@ -13,6 +13,8 @@ struct SettingsView: View {
     // TODO: - Determine if everything still needs to be a singleton
     @Bindable private var settingsViewModel = SettingsViewModel.shared
     
+    @Environment(\.dismiss) var dismiss
+    
     @AppStorage("workDuration") private var workDuration: Int = 1500
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
     @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
@@ -20,8 +22,6 @@ struct SettingsView: View {
     @AppStorage("autoContinue") private var autoContinue: Bool = false
     
     @State private var showingPermissionsAlert: Bool = false
-    
-    @Environment(\.dismiss) private var dismiss
     
     // MARK: - Body
     var body: some View {
@@ -169,6 +169,11 @@ struct SettingsView: View {
         }
         .onAppear() {
             settingsViewModel.syncSettings()
+        }
+        .onChange(of: settingsViewModel.isSessionFinished) { _, isFinished in
+            if isFinished {
+                dismiss()
+            }
         }
         .alert(isPresented: $showingPermissionsAlert) {
             Alert(
