@@ -25,7 +25,7 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                if !settingsViewModel.permissionsGranted {
+                if !settingsViewModel.isPermissionGranted {
                     Section {
                         ZStack {
                             RoundedRectangle(cornerRadius: 20, style: .continuous)

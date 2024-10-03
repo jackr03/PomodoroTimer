@@ -10,15 +10,15 @@ import Foundation
 // MARK: - Settings manager
 struct SettingsManager {
     // MARK: - Properties
-    static let allSettings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
+    static let settings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
     
     // MARK: - Functions
     static func checkIfSettingsAreAllDefault() -> Bool {
-        return allSettings.allSatisfy(\.isDefault)
+        return settings.allSatisfy(\.isDefault)
     }
         
     static func resetSettings() {
-        for setting in allSettings {
+        settings.forEach { setting in
             setting.reset()
         }
     }
@@ -39,9 +39,7 @@ protocol Setting: CaseIterable where T: Equatable {
 // MARK: - Setting extension to provide default implementations
 extension Setting {
     // MARK: - Computed properties
-    var isDefault: Bool {
-        return currentValue == defaultValue
-    }
+    var isDefault: Bool { currentValue == defaultValue }
     
     // MARK: - Functions
     func reset() {
@@ -93,9 +91,7 @@ enum ToggleSetting: String, Setting {
     case autoContinue
     
     // MARK: - Computed properties
-    var currentValue: Bool {
-        return Defaults.getBoolFrom(rawValue)
-    }
+    var currentValue: Bool { Defaults.getBoolFrom(rawValue) }
     
     var defaultValue: Bool {
         switch self {

@@ -17,19 +17,14 @@ final class SettingsViewModel {
     private let pomodoroTimer = PomodoroTimer.shared
     private let notificationService = NotificationService.shared
     
-    var settingsAreAllDefault: Bool = true
+    public var settingsAreAllDefault = true
     
     // MARK: - Init
     private init() {}
     
     // MARK: - Computed properties
-    var permissionsGranted: Bool {
-        return notificationService.permissionsGranted ?? true
-    }
-    
-    var isSessionFinished: Bool {
-        return pomodoroTimer.isSessionFinished
-    }
+    var isPermissionGranted: Bool { notificationService.permissionsGranted ?? true }
+    var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
     
     // MARK: - Functions
     func syncSettings() {
@@ -42,7 +37,7 @@ final class SettingsViewModel {
     }
     
     func updateTimer() {
-        guard !pomodoroTimer.isTimerTicking && !pomodoroTimer.sessionHasStarted else { return }
+        guard !pomodoroTimer.isTimerTicking && !pomodoroTimer.isSessionInProgress else { return }
         
         pomodoroTimer.resetTimer()
     }

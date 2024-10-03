@@ -19,9 +19,8 @@ final class StatisticsViewModel {
     // MARK: - Init
     private init() {}
     
-    var isSessionFinished: Bool {
-        return pomodoroTimer.isSessionFinished
-    }
+    // MARK: - Computed properties
+    var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
     
     // MARK: - Functions
     func resetSessions() {

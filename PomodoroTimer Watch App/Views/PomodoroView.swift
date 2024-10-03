@@ -16,15 +16,11 @@ struct CircularProgressBar: View {
     
     // MARK: - Computed properties
     var isScreenInactive: Bool { scenePhase == .inactive }
-    
     var isSessionFinished: Bool { pomodoroViewModel.isSessionFinished }
-    
     var isCentered: Bool { isScreenInactive || pomodoroViewModel.isSessionFinished }
-    
     var time: String {
         isScreenInactive ? pomodoroViewModel.formattedRemainingMinutes : pomodoroViewModel.formattedRemainingMinutesAndSeconds
     }
-    
     var progress: CGFloat {
         isScreenInactive ? pomodoroViewModel.progressRounded : pomodoroViewModel.progress
     }
@@ -182,7 +178,7 @@ struct PomodoroView: View {
         
         ToolbarItem(placement: .topBarTrailing) {
             NavigationLink(destination: SettingsView()) {
-                if pomodoroViewModel.permissionsGranted {
+                if pomodoroViewModel.isPermissionGranted {
                     Image(systemName: "gear")
                         .foregroundStyle(.gray)
                 } else {

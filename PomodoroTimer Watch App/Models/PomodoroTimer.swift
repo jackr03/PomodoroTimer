@@ -13,17 +13,17 @@ class PomodoroTimer {
     // MARK: - Properties
     static let shared = PomodoroTimer()
     
-    public let maxSessions: Int = 4
+    public let maxSessions = 4
 
-    private(set) var remainingTime: Int = SessionType.work.duration
-    private(set) var isTimerTicking: Bool = false
+    private(set) var remainingTime = SessionType.work.duration
     private(set) var currentSession: SessionType = .work
-    private(set) var currentSessionNumber: Int = 0
-    private(set) var sessionHasStarted: Bool = false
+    private(set) var currentSessionNumber = 0
+    private(set) var isTimerTicking = false
+    private(set) var isSessionInProgress = false
     
     private var timer: Timer?
 
-    public var isSessionFinished: Bool = false
+    public var isSessionFinished = false
     
     // MARK: - Init
     private init() {}
@@ -42,25 +42,16 @@ class PomodoroTimer {
             }
         }
         
-        var isWorkSession: Bool {
-            switch self {
-            case .work:
-                return true
-            case .shortBreak, .longBreak:
-                return false
-            }
-        }
+        var isWorkSession: Bool { return self == .work }
     }
     
     // MARK: - Computed properties
-    var isWorkSession: Bool {
-        return currentSession.isWorkSession
-    }
+    var isWorkSession: Bool { currentSession.isWorkSession }
     
     // MARK: - Timer functions
     func startTimer() {
         isTimerTicking = true
-        sessionHasStarted = true
+        isSessionInProgress = true
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
             self?.countdown()
@@ -92,7 +83,7 @@ class PomodoroTimer {
         currentSession = .work
         currentSessionNumber = 0
         remainingTime = currentSession.duration
-        sessionHasStarted = false
+        isSessionInProgress = false
         pauseTimer()
     }
     
@@ -110,17 +101,12 @@ class PomodoroTimer {
         pauseTimer()
         
         if currentSession.isWorkSession {
-            currentSessionNumber += 1
-            
             if !skipped {
                 incrementSessionsCompleted()
             }
-            
-            if currentSessionNumber == maxSessions {
-                currentSession = .longBreak
-            } else {
-                currentSession = .shortBreak
-            }
+
+            currentSessionNumber += 1
+            currentSession = currentSessionNumber == maxSessions ? .longBreak : .shortBreak
         } else {
             if currentSessionNumber == maxSessions {
                 currentSessionNumber = 0
@@ -130,7 +116,7 @@ class PomodoroTimer {
         }
         
         remainingTime = currentSession.duration
-        sessionHasStarted = false
+        isSessionInProgress = false
     }
     
     private func incrementSessionsCompleted() {

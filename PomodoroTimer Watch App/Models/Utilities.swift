@@ -12,7 +12,7 @@ import WatchKit
 struct Defaults {
     static let defaults = UserDefaults.standard
     
-    // MARK: - Ints
+    // MARK: - Integer functions
     static func getIntFrom(_ key: String) -> Int {
         return defaults.integer(forKey: key)
     }
@@ -21,7 +21,7 @@ struct Defaults {
         defaults.set(value, forKey: key)
     }
     
-    // MARK: - Bools
+    // MARK: - Boolean functions
     static func getBoolFrom(_ key: String) -> Bool {
         return defaults.bool(forKey: key)
     }
@@ -30,7 +30,7 @@ struct Defaults {
         defaults.set(value, forKey: key)
     }
     
-    // MARK: - Objects
+    // MARK: - Object functions
     static func getObjectFrom(_ key: String) -> Any? {
         return defaults.object(forKey: key)
     }

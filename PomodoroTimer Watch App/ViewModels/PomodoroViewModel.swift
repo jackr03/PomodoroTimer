@@ -24,9 +24,10 @@ final class PomodoroViewModel {
     private init() {}
     
     // MARK: - Computed properties
+    // TODO: Optimise these updates
     var formattedRemainingMinutes: String {
         let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
-        
+
         return String(format: "%02d:--", remainingTimeInMinutes)
     }
     
@@ -37,43 +38,20 @@ final class PomodoroViewModel {
         return String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
     }
     
-    var progress: CGFloat {
-        return CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration)
-    }
-    
-    var progressRounded: CGFloat {
-        return (self.progress * 10).rounded() / 10
-    }
-    
-    var isTimerTicking: Bool {
-        return pomodoroTimer.isTimerTicking
-    }
-    
-    var maxSessions: Int {
-        return pomodoroTimer.maxSessions
-    }
-    
-    var currentSession: String {
-        return pomodoroTimer.currentSession.rawValue
-    }
-    
-    var currentSessionsDone: Int {
-        return pomodoroTimer.currentSessionNumber
-    }
-    
-    var isWorkSession: Bool {
-        return pomodoroTimer.isWorkSession
-    }
-    
+    var progress: CGFloat { CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration) }
+    var progressRounded: CGFloat { (self.progress * 10).rounded() / 10 }
+        
+    var maxSessions: Int { pomodoroTimer.maxSessions }
+    var currentSession: String { pomodoroTimer.currentSession.rawValue }
+    var currentSessionsDone: Int { pomodoroTimer.currentSessionNumber }
+    var isWorkSession: Bool { pomodoroTimer.isWorkSession }
+    var isTimerTicking: Bool { pomodoroTimer.isTimerTicking }
     var isSessionFinished: Bool {
         get { return pomodoroTimer.isSessionFinished }
         set { pomodoroTimer.isSessionFinished = newValue }
     }
-    
     // Return true if not determined so that the warning is only shown when explicitly denied
-    var permissionsGranted: Bool {
-        return notificationService.permissionsGranted ?? true
-    }
+    var isPermissionGranted: Bool { notificationService.permissionsGranted ?? true }
     
     // MARK: - Timer functions
     func startTimer() {
@@ -103,6 +81,7 @@ final class PomodoroViewModel {
     // Returns remaining duration
     func deductBreakTime(by seconds: Int) -> Int {
         guard !pomodoroTimer.isWorkSession else { return -1 }
+        
         pomodoroTimer.deductTime(by: seconds)
         
         return pomodoroTimer.remainingTime
@@ -162,6 +141,7 @@ final class PomodoroViewModel {
     
     func notifyUserToResume() {
         guard pomodoroTimer.isWorkSession else { return }
+        
         notificationService.notifyUserToResume()
     }
     

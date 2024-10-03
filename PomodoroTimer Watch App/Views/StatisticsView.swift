@@ -21,7 +21,7 @@ struct StatisticsView: View {
     
     // MARK: - Computed properties
     var inflectedSessionsCount: String {
-        return sessionsCompletedToday == 1 ? "session" : "sessions"
+        sessionsCompletedToday == 1 ? "session" : "sessions"
     }
     
     var statusMessage: String {
