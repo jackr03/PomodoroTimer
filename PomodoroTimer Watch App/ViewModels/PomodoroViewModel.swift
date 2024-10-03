@@ -70,10 +70,6 @@ final class PomodoroViewModel {
         set { pomodoroTimer.isSessionFinished = newValue }
     }
     
-    var isExtendedSessionRunning: Bool {
-        return extendedSessionService.isRunning
-    }
-    
     // Return true if not determined so that the warning is only shown when explicitly denied
     var permissionsGranted: Bool {
         return notificationService.permissionsGranted ?? true

@@ -19,17 +19,10 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
     private override init() {
         super.init()
     }
-    
-    // MARK: - Computed properties
-    var isRunning: Bool {
-        return session?.state == .running
-    }
-    
+        
     // MARK: - Functions
-    // TODO: Remove print statements when confident everything is working
     func startSession() {
         guard session?.state != .running else {
-            print("Session already running")
             return
         }
                 
@@ -40,7 +33,6 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
     
     func stopSession() {
         guard session?.state != .invalid else {
-            print("Session already invalidated")
             return
         }
         

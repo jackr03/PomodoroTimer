@@ -5,7 +5,6 @@
 //  Created by Jack Rong on 23/09/2024.
 //
 
-import Foundation
 import SwiftUI
 
 struct StatisticsView: View {
@@ -38,7 +37,7 @@ struct StatisticsView: View {
     // MARK: - Body
     var body: some View {
         TabView {
-            // TODO: Progress bar?
+            // TODO: Add a progress bar
             VStack {
                 Spacer()
                 

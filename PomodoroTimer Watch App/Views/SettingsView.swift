@@ -5,12 +5,10 @@
 //  Created by Jack Rong on 10/09/2024.
 //
 
-import Foundation
 import SwiftUI
 
 struct SettingsView: View {
     // MARK: - Properties
-    // TODO: - Determine if everything still needs to be a singleton
     @Bindable private var settingsViewModel = SettingsViewModel.shared
     
     @Environment(\.dismiss) var dismiss
@@ -187,7 +185,6 @@ struct SettingsView: View {
     // MARK: - Private functions
     private func resetToDefault() {
         settingsViewModel.resetSettings()
-        settingsViewModel.syncSettings()
         settingsViewModel.updateTimer()
         Haptics.playClick()
         

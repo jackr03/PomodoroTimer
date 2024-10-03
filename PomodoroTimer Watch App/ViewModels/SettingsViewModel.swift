@@ -38,6 +38,7 @@ final class SettingsViewModel {
     
     func resetSettings() {
         SettingsManager.resetSettings()
+        syncSettings()
     }
     
     func updateTimer() {

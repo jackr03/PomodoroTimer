@@ -24,7 +24,6 @@ final class NotificationService {
     }
     
     // MARK: - Functions
-    // TODO: Ask user to grant permission in settings if not successful
     func checkPermissions() async {
         let authorizationStatus = await center.notificationSettings().authorizationStatus
         
@@ -54,7 +53,6 @@ final class NotificationService {
         }
     }
     
-    // TODO: Maybe move these into an Enum?
     func notifyUserToResume() {
         notify(title: "Stay focused!",
                body: "Your pomodoro will be paused until you return to the app.",
