@@ -18,12 +18,6 @@ struct CircularProgressBar: View {
     var isScreenInactive: Bool { scenePhase == .inactive }
     var isSessionFinished: Bool { pomodoroViewModel.isSessionFinished }
     var isCentered: Bool { isScreenInactive || pomodoroViewModel.isSessionFinished }
-    var time: String {
-        isScreenInactive ? pomodoroViewModel.formattedRemainingMinutes : pomodoroViewModel.formattedRemainingMinutesAndSeconds
-    }
-    var progress: CGFloat {
-        isScreenInactive ? pomodoroViewModel.progressRounded : pomodoroViewModel.progress
-    }
     
     // MARK: - Body
     var body: some View {
@@ -46,10 +40,10 @@ struct CircularProgressBar: View {
                 .handGestureShortcut(.primaryAction)
                 
                 Circle()
-                    .trim(from: 0, to: progress)
+                    .trim(from: 0, to: pomodoroViewModel.progress)
                     .stroke(.blue, lineWidth: 7)
                     .rotationEffect(.degrees(-90))
-                    .animation(.easeInOut(duration: 1.0), value: progress)
+                    .animation(.easeInOut(duration: 1.0), value: pomodoroViewModel.progress)
             }
             .frame(maxWidth: geometry.size.width * 0.75,
                    maxHeight: geometry.size.height * 0.75)
@@ -82,7 +76,7 @@ struct CircularProgressBar: View {
                     .frame(height: 24)
             }
         
-            Text(time)
+            Text(pomodoroViewModel.formattedRemainingTime)
                 .font(.title.bold())
                 .foregroundStyle(Color.primary)
             
@@ -214,6 +208,16 @@ struct PomodoroView: View {
     
     // MARK: - Private functions
     private func handlePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase) {
+        // Slow down updates if screen is inactive
+        switch (oldPhase, newPhase) {
+        case (.inactive, .active):
+            pomodoroViewModel.startUpdatingTimeAndProgress(withInterval: 1)
+        case (.active, .inactive):
+            pomodoroViewModel.startUpdatingTimeAndProgress(withInterval: 5)
+        default:
+            break
+        }
+        
         guard pomodoroViewModel.isTimerTicking else { return }
         
         switch (oldPhase, newPhase) {

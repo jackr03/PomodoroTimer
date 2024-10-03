@@ -48,7 +48,7 @@ class PomodoroTimer {
     // MARK: - Computed properties
     var isWorkSession: Bool { currentSession.isWorkSession }
     
-    // MARK: - Timer functions
+    // MARK: - Functions
     func startTimer() {
         isTimerTicking = true
         isSessionInProgress = true

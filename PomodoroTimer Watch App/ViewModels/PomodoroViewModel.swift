@@ -18,29 +18,18 @@ final class PomodoroViewModel {
     private let extendedSessionService = ExtendedSessionService.shared
     private let notificationService = NotificationService.shared
     
+    private(set) var formattedRemainingTime: String = ""
+    private(set) var progress: CGFloat = 1.0
+    
+    private var updateTimer: Timer?
     private var hapticTimer: Timer?
     
     // MARK: - Init
-    private init() {}
+    private init() {
+        updateTimeAndProgress()
+    }
     
     // MARK: - Computed properties
-    // TODO: Optimise these updates
-    var formattedRemainingMinutes: String {
-        let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
-
-        return String(format: "%02d:--", remainingTimeInMinutes)
-    }
-    
-    var formattedRemainingMinutesAndSeconds: String {
-        let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
-        let remainingTimeInSeconds: Int = pomodoroTimer.remainingTime % 60
-        
-        return String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
-    }
-    
-    var progress: CGFloat { CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration) }
-    var progressRounded: CGFloat { (self.progress * 10).rounded() / 10 }
-        
     var maxSessions: Int { pomodoroTimer.maxSessions }
     var currentSession: String { pomodoroTimer.currentSession.rawValue }
     var currentSessionsDone: Int { pomodoroTimer.currentSessionNumber }
@@ -76,6 +65,14 @@ final class PomodoroViewModel {
     
     func skipSession() {
         pomodoroTimer.skipSession()
+    }
+    
+    func startUpdatingTimeAndProgress(withInterval interval: Int) {
+        updateTimer?.invalidate()
+        
+        updateTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(interval), repeats: true) { _ in
+            self.updateTimeAndProgress()
+        }
     }
     
     // Returns remaining duration
@@ -156,5 +153,14 @@ final class PomodoroViewModel {
     
     func cancelBreakOverNotification() {
         notificationService.cancelNotification(withIdentifier: "breakOverNotification")
+    }
+    
+    // MARK: - Private functions
+    private func updateTimeAndProgress() {
+        let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
+        let remainingTimeInSeconds: Int = pomodoroTimer.remainingTime % 60
+        
+        formattedRemainingTime = String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
+        progress = CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration)
     }
 }
