@@ -67,7 +67,7 @@ final class PomodoroViewModel {
         pomodoroTimer.skipSession()
     }
     
-    func startUpdatingTimeAndProgress(withInterval interval: Int) {
+    func startUpdatingTimeAndProgress(withInterval interval: Double) {
         updateTimer?.invalidate()
         
         updateTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(interval), repeats: true) { _ in
