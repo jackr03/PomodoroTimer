@@ -36,9 +36,9 @@ class PomodoroTimer {
 
         var duration: Int {
             switch self {
-            case .work: return NumericSetting.workDuration.currentValue
-            case .shortBreak: return NumericSetting.shortBreakDuration.currentValue
-            case .longBreak: return NumericSetting.longBreakDuration.currentValue
+            case .work: return NumberSetting.workDuration.currentValue
+            case .shortBreak: return NumberSetting.shortBreakDuration.currentValue
+            case .longBreak: return NumberSetting.longBreakDuration.currentValue
             }
         }
         

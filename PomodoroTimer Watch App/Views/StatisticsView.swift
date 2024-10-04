@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StatisticsView: View {
     // MARK: - Properties
-    @Bindable private var statisticsViewModel = StatisticsViewModel.shared
+    private let statisticsViewModel = StatisticsViewModel.shared
     
     @Environment(\.dismiss) private var dismiss
 
@@ -17,7 +17,7 @@ struct StatisticsView: View {
     @AppStorage("sessionsCompletedToday") private var sessionsCompletedToday: Int = 0
     @AppStorage("dailyTarget") private var dailyTarget: Int = 12
         
-    @State private var showingConfirmAlert = false
+    @State private var showingDeletionAlert = false
     
     // MARK: - Computed properties
     var inflectedSessionsCount: String {
@@ -34,73 +34,11 @@ struct StatisticsView: View {
         }
     }
     
-    // MARK: - Views
+    // MARK: - View
     var body: some View {
         TabView {
-            // TODO: Add a progress bar
-            VStack {
-                Spacer()
-                
-                HStack {
-                    Text("You've completed ")
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    + Text("\(sessionsCompletedToday)/\(dailyTarget)")
-                        .font(.body)
-                        .bold()
-                        .foregroundStyle(.primary)
-                    + Text(" \(inflectedSessionsCount) today.")
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                }
-                .multilineTextAlignment(.center)
-                
-                Spacer()
-                
-                Text(statusMessage)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                
-                Spacer()
-                Spacer()
-            }
-            .padding()
-            
-            // TODO: Add a graph of how many were done over the past week
-            VStack {
-                Spacer()
-                
-                HStack {
-                    Text("Total completed: ")
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    + Text("\(totalSessionsCompleted)")
-                        .font(.body)
-                        .bold()
-                        .foregroundStyle(.primary)
-                }
-                .multilineTextAlignment(.center)
-
-                Spacer()
-                Spacer()
-            }
-            .toolbar {
-                if totalSessionsCompleted > 0 {
-                    ToolbarItem(placement: .bottomBar) {
-                        Button(action: {
-                            showingConfirmAlert = true
-                            Haptics.playClick()
-                        }) {
-                            Image(systemName: "trash")
-                        }
-                        .foregroundStyle(.red)
-                        .background(.red.secondary)
-                        .clipShape(Capsule())
-                    }
-                }
-            }
-            .padding()
+            dailyView
+            allTimeView
         }
         .tabViewStyle(.verticalPage)
         .navigationTitle("Statistics")
@@ -120,21 +58,96 @@ struct StatisticsView: View {
                 dismiss()
             }
         }
-        .alert(isPresented: $showingConfirmAlert) {
-            Alert(
-                title: Text("Reset sessions?"),
-                message: Text("This action cannot be undone."),
-                primaryButton: .destructive(Text("Delete")) {
-                    statisticsViewModel.resetSessions()
-                    Haptics.playSuccess()
-                    
-                    dismiss()
-                },
-                secondaryButton: .cancel(Text("Cancel")) {
-                    Haptics.playClick()
-                }
-            )
+        .alert(isPresented: $showingDeletionAlert) {
+            deletionAlert
         }
+    }
+}
+
+private extension StatisticsView {
+    // TODO: Add a progress bar
+    var dailyView: some View {
+        VStack {
+            Spacer()
+            
+            HStack {
+                Text("You've completed ")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                + Text("\(sessionsCompletedToday)/\(dailyTarget)")
+                    .font(.body)
+                    .bold()
+                    .foregroundStyle(.primary)
+                + Text(" \(inflectedSessionsCount) today.")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+            }
+            .multilineTextAlignment(.center)
+            
+            Spacer()
+            
+            Text(statusMessage)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            
+            Spacer()
+            Spacer()
+        }
+        .padding()
+    }
+    
+    // TODO: Add a graph of how many were done over the past week
+    var allTimeView: some View {
+        VStack {
+            Spacer()
+            
+            HStack {
+                Text("Total completed: ")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                + Text("\(totalSessionsCompleted)")
+                    .font(.body)
+                    .bold()
+                    .foregroundStyle(.primary)
+            }
+            .multilineTextAlignment(.center)
+
+            Spacer()
+            Spacer()
+        }
+        .toolbar {
+            if totalSessionsCompleted > 0 {
+                ToolbarItem(placement: .bottomBar) {
+                    Button(action: {
+                        showingDeletionAlert = true
+                        Haptics.playClick()
+                    }) {
+                        Image(systemName: "trash")
+                    }
+                    .foregroundStyle(.red)
+                    .background(.red.secondary)
+                    .clipShape(Capsule())
+                }
+            }
+        }
+        .padding()
+    }
+    
+    var deletionAlert: Alert {
+        Alert(
+            title: Text("Reset sessions?"),
+            message: Text("This action cannot be undone."),
+            primaryButton: .destructive(Text("Delete")) {
+                statisticsViewModel.resetSessions()
+                Haptics.playSuccess()
+                
+                dismiss()
+            },
+            secondaryButton: .cancel(Text("Cancel")) {
+                Haptics.playClick()
+            }
+        )
     }
 }
 

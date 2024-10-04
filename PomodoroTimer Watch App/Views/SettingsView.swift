@@ -7,6 +7,108 @@
 
 import SwiftUI
 
+struct MissingPermissionView: View {
+    // MARK: - Properties
+    @Binding var showingPermissionsAlert: Bool
+    
+    // MARK: - Views
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color.yellow)
+            
+            VStack {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.title)
+                    .foregroundStyle(.red)
+                
+                Button(action: {
+                    showingPermissionsAlert = true
+                }) {
+                    Text("Permissions required for full functionality. Tap for details.")
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+struct NumberPicker: View {
+    // MARK: - Properties
+    let label: String
+    @Binding var selection: Int
+    let range: ClosedRange<Int>
+    let unit: String
+    let tagModifier: (Int) -> Int
+    let onChange: () -> Void
+    
+    // MARK: - Views
+    var body: some View {
+        Picker(selection: $selection) {
+            ForEach(range, id: \.self) {
+                Text("^[\($0) \(unit)](inflect: true)")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                    .tag(tagModifier($0))
+            }
+        } label: {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .onChange(of: selection) {
+            onChange()
+        }
+    }
+}
+
+struct TogglePicker: View {
+    // Properties
+    let label: String
+    @Binding var isOn: Bool
+    let onChange: () -> Void
+    
+    // MARK: - Views
+    var body: some View {
+        Toggle(label, isOn: $isOn)
+            .onChange(of: isOn) {
+                onChange()
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+    }
+}
+
+struct ResetSettingsButton: View {
+    // MARK: - Properties
+    let resetAction: () -> Void
+    
+    // MARK: - Views
+    var body: some View {
+        HStack {
+            Spacer()
+            
+            Button(action: {
+                resetAction()
+            }) {
+                Text("Reset to default")
+                    .padding()
+                    .font(.callout)
+                    .foregroundStyle(.red)
+                    .background(.red.secondary)
+                    .clipShape(Capsule())
+            }
+            
+            Spacer()
+        }
+
+    }
+}
+
 struct SettingsView: View {
     // MARK: - Properties
     @Bindable private var settingsViewModel = SettingsViewModel.shared
@@ -21,132 +123,63 @@ struct SettingsView: View {
     
     @State private var showingPermissionsAlert: Bool = false
     
-    // MARK: - Body
+    // MARK: - Views
     var body: some View {
         NavigationStack {
             Form {
                 if !settingsViewModel.isPermissionGranted {
                     Section {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .fill(Color.yellow)
-                            
-                            VStack {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .font(.title)
-                                    .foregroundStyle(.red)
-                                
-                                Button(action: {
-                                    showingPermissionsAlert = true
-                                }) {
-                                    Text("Permissions required for full functionality. Tap for details.")
-                                        .font(.body)
-                                        .foregroundStyle(.primary)
-                                        .multilineTextAlignment(.center)
-                                        .padding()
-                                }
-                            }
-                            .padding()
-                        }
+                        MissingPermissionView(showingPermissionsAlert: $showingPermissionsAlert)
                     }
                     .listRowInsets(EdgeInsets())
                 }
                 
                 Section {
-                    Picker(selection: $workDuration) {
-                        ForEach(1...60, id: \.self) {
-                            Text("^[\($0) \("minute")](inflect: true)")
-                                .font(.body)
-                                .foregroundStyle(.primary)
-                                .tag($0 * 60)
-                        }
-                    } label: {
-                        Text("Work")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .onChange(of: workDuration) {
-                        settingsViewModel.syncSettings()
-                    }
+                    NumberPicker(label: "Work",
+                                   selection: $workDuration,
+                                   range: 1...60,
+                                   unit: "minute",
+                                   tagModifier: { $0 * 60 },
+                                   onChange: settingsViewModel.syncSettings
+                    )
                     
-                    Picker(selection: $shortBreakDuration) {
-                        ForEach(1...60, id: \.self) {
-                            Text("^[\($0) \("minute")](inflect: true)")
-                                .font(.body)
-                                .foregroundStyle(.primary)
-                                .tag($0 * 60)
-                        }
-                    } label: {
-                        Text("Short break")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .onChange(of: shortBreakDuration) {
-                        settingsViewModel.syncSettings()
-                    }
+                    NumberPicker(label: "Short break",
+                                   selection: $shortBreakDuration,
+                                   range: 1...60,
+                                   unit: "minute",
+                                   tagModifier: { $0 * 60 },
+                                   onChange: settingsViewModel.syncSettings
+
+                    )
                     
-                    Picker(selection: $longBreakDuration) {
-                        ForEach(1...60, id: \.self) {
-                            Text("^[\($0) \("minute")](inflect: true)")
-                                .font(.body)
-                                .foregroundStyle(.primary)
-                                .tag($0 * 60)
-                        }
-                    } label: {
-                        Text("Long break")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .onChange(of: longBreakDuration) {
-                        settingsViewModel.syncSettings()
-                    }
+                    NumberPicker(label: "Long break",
+                                   selection: $longBreakDuration,
+                                   range: 1...60,
+                                   unit: "minute",
+                                   tagModifier: { $0 * 60 },
+                                   onChange: settingsViewModel.syncSettings
+                    )
                 }
                 
                 Section {
-                    Picker(selection: $dailyTarget) {
-                        ForEach(1...24, id: \.self) {
-                            Text("^[\($0) \("session")](inflect: true)")
-                                .font(.body)
-                                .foregroundStyle(.primary)
-                                .tag($0)
-                        }
-                    } label: {
-                        Text("Daily target")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .onChange(of: dailyTarget) {
-                        settingsViewModel.syncSettings()
-                    }
+                    NumberPicker(label: "Daily target",
+                                 selection: $dailyTarget,
+                                 range: 1...24,
+                                 unit: "session",
+                                 tagModifier: { $0 },
+                                 onChange: settingsViewModel.syncSettings
+                    )
                 }
                 
                 Section {
-                    Toggle("Auto-continue", isOn: $autoContinue)
-                        .onChange(of: autoContinue) {
-                            settingsViewModel.syncSettings()
-                        }
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    TogglePicker(label: "Auto-continue",
+                                 isOn: $autoContinue,
+                                 onChange: settingsViewModel.syncSettings)
                 }
                     
                 if !settingsViewModel.settingsAreAllDefault {
                     Section {
-                        HStack {
-                            Spacer()
-                            
-                            Button(action: {
-                                resetToDefault()
-                            }) {
-                                Text("Reset to default")
-                                    .padding()
-                                    .font(.callout)
-                                    .foregroundStyle(.red)
-                                    .background(.red.secondary)
-                                    .clipShape(Capsule())
-                            }
-                            
-                            Spacer()
-                        }
+                        ResetSettingsButton(resetAction: resetToDefault)
                         .listRowBackground(Color.clear)
                     }
                 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CircularProgressBar: View {
     // MARK: - Properties
-    private var pomodoroViewModel = PomodoroViewModel.shared
+    private let pomodoroViewModel = PomodoroViewModel.shared
     
     @Environment(\.scenePhase) private var scenePhase
     

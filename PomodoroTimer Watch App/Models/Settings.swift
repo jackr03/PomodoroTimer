@@ -9,7 +9,7 @@ import Foundation
 
 struct SettingsManager {
     // MARK: - Properties
-    static let settings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
+    static let settings: [any Setting] = NumberSetting.allCases + ToggleSetting.allCases
     
     // MARK: - Functions
     static func checkIfSettingsAreAllDefault() -> Bool {
@@ -44,7 +44,7 @@ extension Setting {
     }
 }
 
-enum NumericSetting: String, Setting {
+enum NumberSetting: String, Setting {
     // MARK: - Cases
     case workDuration
     case shortBreakDuration
