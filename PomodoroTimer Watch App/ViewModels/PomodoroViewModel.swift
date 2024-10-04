@@ -18,8 +18,8 @@ final class PomodoroViewModel {
     private let extendedSessionService = ExtendedSessionService.shared
     private let notificationService = NotificationService.shared
     
-    private(set) var formattedRemainingTime: String = ""
-    private(set) var progress: CGFloat = 1.0
+    private(set) var cachedFormattedRemainingTime: String = ""
+    private(set) var cachedProgress: CGFloat = 1.0
     
     private var updateTimer: Timer?
     private var hapticTimer: Timer?
@@ -30,6 +30,17 @@ final class PomodoroViewModel {
     }
     
     // MARK: - Computed properties
+    var formattedRemainingTime: String {
+        let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
+        let remainingTimeInSeconds: Int = pomodoroTimer.remainingTime % 60
+        
+        return String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
+    }
+    
+    var progress: CGFloat {
+        CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration)
+    }
+    
     var maxSessions: Int { pomodoroTimer.maxSessions }
     var currentSession: String { pomodoroTimer.currentSession.rawValue }
     var currentSessionsDone: Int { pomodoroTimer.currentSessionNumber }
@@ -67,12 +78,17 @@ final class PomodoroViewModel {
         pomodoroTimer.skipSession()
     }
     
-    func startUpdatingTimeAndProgress(withInterval interval: Double) {
-        updateTimer?.invalidate()
+    func startCachingTimeAndProgress() {
+        updateTimeAndProgress()
         
-        updateTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(interval), repeats: true) { _ in
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
             self.updateTimeAndProgress()
         }
+    }
+    
+    func stopCachingTimeAndProgress() {
+        updateTimer?.invalidate()
+        updateTimer = nil
     }
     
     // Returns remaining duration
@@ -160,7 +176,7 @@ final class PomodoroViewModel {
         let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
         let remainingTimeInSeconds: Int = pomodoroTimer.remainingTime % 60
         
-        formattedRemainingTime = String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
-        progress = CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration)
+        cachedFormattedRemainingTime = String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
+        cachedProgress = CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration)
     }
 }

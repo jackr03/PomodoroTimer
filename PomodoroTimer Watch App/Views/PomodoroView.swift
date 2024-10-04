@@ -20,6 +20,14 @@ struct CircularProgressBar: View {
     var isSessionFinished: Bool { pomodoroViewModel.isSessionFinished }
     var isCentered: Bool { isScreenInactive || pomodoroViewModel.isSessionFinished }
     
+    var time: String {
+        isScreenInactive ? pomodoroViewModel.cachedFormattedRemainingTime : pomodoroViewModel.formattedRemainingTime
+    }
+    
+    var progress: CGFloat {
+        isScreenInactive ? pomodoroViewModel.cachedProgress : pomodoroViewModel.progress
+    }
+    
     // MARK: - Views
     var body: some View {
         GeometryReader { geometry in
@@ -35,10 +43,10 @@ struct CircularProgressBar: View {
                 
                 // Progress bar
                 Circle()
-                    .trim(from: 0, to: pomodoroViewModel.progress)
+                    .trim(from: 0, to: progress)
                     .stroke(.blue, lineWidth: 2)
                     .rotationEffect(.degrees(-90))
-                    .animation(.linear(duration: isSessionFinished ? 0.25 : 1), value: pomodoroViewModel.progress)
+                    .animation(.linear(duration: isSessionFinished ? 0.25 : 1), value: progress)
                 
                 // Pulsing animation
                 if isSessionFinished {
@@ -94,7 +102,7 @@ struct CircularProgressBar: View {
                     .frame(height: 24)
             }
         
-            Text(pomodoroViewModel.formattedRemainingTime)
+            Text(time)
                 .font(.title.bold())
                 .foregroundStyle(Color.primary)
             
@@ -175,7 +183,6 @@ struct PomodoroView: View {
             .onAppear {
                 pomodoroViewModel.refreshDailySessions()
                 pomodoroViewModel.checkPermissions()
-                pomodoroViewModel.startUpdatingTimeAndProgress(withInterval: 0.5)
             }
             .onChange(of: pomodoroViewModel.isTimerTicking) { _, isTicking in
                 isTicking ? pomodoroViewModel.startExtendedSession() : pomodoroViewModel.stopExtendedSession()
@@ -243,9 +250,9 @@ struct PomodoroView: View {
         // Slow down updates if screen is inactive
         switch (oldPhase, newPhase) {
         case (.inactive, .active):
-            pomodoroViewModel.startUpdatingTimeAndProgress(withInterval: 0.5)
+            pomodoroViewModel.stopCachingTimeAndProgress()
         case (.active, .inactive):
-            pomodoroViewModel.startUpdatingTimeAndProgress(withInterval: 5)
+            pomodoroViewModel.startCachingTimeAndProgress()
         default:
             break
         }
