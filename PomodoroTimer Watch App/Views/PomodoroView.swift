@@ -184,16 +184,16 @@ struct PomodoroView: View {
                 pomodoroViewModel.refreshDailySessions()
                 pomodoroViewModel.checkPermissions()
             }
+            .onChange(of: pomodoroViewModel.isSessionFinished) { _, isFinished in
+                if isFinished {
+                    pomodoroViewModel.playHaptics()
+                }
+            }
             .onChange(of: pomodoroViewModel.isTimerTicking) { _, isTicking in
                 isTicking ? pomodoroViewModel.startExtendedSession() : pomodoroViewModel.stopExtendedSession()
             }
             .onChange(of: scenePhase) { oldPhase, newPhase in
                 handlePhaseChange(oldPhase, newPhase)
-            }
-            .onChange(of: pomodoroViewModel.isSessionFinished) { _, isFinished in
-                if isFinished {
-                    pomodoroViewModel.playHaptics()
-                }
             }
         }
         .background(pomodoroViewModel.isSessionFinished ? .white : .clear)
