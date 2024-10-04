@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: - Settings manager
 struct SettingsManager {
     // MARK: - Properties
     static let settings: [any Setting] = NumericSetting.allCases + ToggleSetting.allCases
@@ -24,7 +23,6 @@ struct SettingsManager {
     }
 }
 
-// MARK: - Setting protocol
 protocol Setting: CaseIterable where T: Equatable {
     associatedtype T
     
@@ -36,7 +34,6 @@ protocol Setting: CaseIterable where T: Equatable {
     func reset()
 }
 
-// MARK: - Setting extension to provide default implementations
 extension Setting {
     // MARK: - Computed properties
     var isDefault: Bool { currentValue == defaultValue }
@@ -47,7 +44,6 @@ extension Setting {
     }
 }
 
-// MARK: - Integer value settings
 enum NumericSetting: String, Setting {
     // MARK: - Cases
     case workDuration
@@ -85,7 +81,6 @@ enum NumericSetting: String, Setting {
     }
 }
 
-// MARK: - Boolean settings
 enum ToggleSetting: String, Setting {
     // MARK: - Cases
     case autoContinue

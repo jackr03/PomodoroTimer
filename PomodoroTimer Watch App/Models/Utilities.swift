@@ -8,7 +8,6 @@
 import Foundation
 import WatchKit
 
-// MARK: - UserDefaults
 struct Defaults {
     static let defaults = UserDefaults.standard
     
@@ -40,7 +39,6 @@ struct Defaults {
     }
 }
 
-// MARK: - Haptic Feedback
 struct Haptics {
     static let device = WKInterfaceDevice.current()
     

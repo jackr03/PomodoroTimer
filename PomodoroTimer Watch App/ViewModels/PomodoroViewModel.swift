@@ -91,7 +91,6 @@ final class PomodoroViewModel {
         updateTimer = nil
     }
     
-    // Returns remaining duration
     func deductBreakTime(by seconds: Int) -> Int {
         guard !pomodoroTimer.isWorkSession else { return -1 }
         

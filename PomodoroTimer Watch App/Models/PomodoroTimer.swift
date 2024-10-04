@@ -42,7 +42,7 @@ class PomodoroTimer {
             }
         }
         
-        var isWorkSession: Bool { return self == .work }
+        var isWorkSession: Bool { self == .work }
     }
     
     // MARK: - Computed properties

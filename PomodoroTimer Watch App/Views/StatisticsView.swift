@@ -34,7 +34,7 @@ struct StatisticsView: View {
         }
     }
     
-    // MARK: - Body
+    // MARK: - Views
     var body: some View {
         TabView {
             // TODO: Add a progress bar

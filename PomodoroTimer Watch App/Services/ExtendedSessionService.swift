@@ -22,9 +22,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
         
     // MARK: - Functions
     func startSession() {
-        guard session?.state != .running else {
-            return
-        }
+        guard session?.state != .running else { return }
                 
         session = WKExtendedRuntimeSession()
         session?.delegate = self
@@ -32,9 +30,7 @@ final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
     }
     
     func stopSession() {
-        guard session?.state != .invalid else {
-            return
-        }
+        guard session?.state != .invalid else { return }
         
         session?.invalidate()
     }
