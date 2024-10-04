@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-// MARK: - Circular progress bar
 struct CircularProgressBar: View {
     // MARK: - Properties
     private let pomodoroViewModel = PomodoroViewModel.shared
     
     @Environment(\.scenePhase) private var scenePhase
     
+    @State private var scale: CGFloat = 1.0
+    @State private var isPulsing = false
+    
     // MARK: - Computed properties
     var isScreenInactive: Bool { scenePhase == .inactive }
-    
     var isSessionFinished: Bool { pomodoroViewModel.isSessionFinished }
-    
     var isCentered: Bool { isScreenInactive || pomodoroViewModel.isSessionFinished }
     
     var time: String {
@@ -29,44 +29,62 @@ struct CircularProgressBar: View {
         isScreenInactive ? pomodoroViewModel.progressRounded : pomodoroViewModel.progress
     }
     
-    // MARK: - Body
+    // MARK: - Views
     var body: some View {
         GeometryReader { geometry in
+            let maxWidth = geometry.size.width * 0.75
+            let maxHeight = geometry.size.height * 0.75
+            let centerX = geometry.size.width / 2
+            let centerY = geometry.size.height / 2
+            
             ZStack {
+                // Progress bar background
                 Circle()
-                    .stroke(isScreenInactive ? .black : .gray.opacity(0.3), lineWidth: 7)
+                    .stroke(isScreenInactive ? .black : .gray.opacity(0.3), lineWidth: 2)
                 
-                Button(action: buttonAction) {
+                // Progress bar
+                Circle()
+                    .trim(from: 0, to: progress)
+                    .stroke(.blue, lineWidth: 2)
+                    .rotationEffect(.degrees(-90))
+                    .scaleEffect(scale)
+                    .animation(.linear(duration: isSessionFinished ? 0.25 : 1), value: progress)
+                
+                // Pulsing animation
+                if isSessionFinished {
+                    Circle()
+                        .stroke(.blue.opacity(0.3), lineWidth: 1)
+                        .onAppear() {
+                            startPulsing()
+                        }
+                        .onDisappear() {
+                            stopPulsing()
+                        }
+                        .scaleEffect(isPulsing ? 1.3 : 1)
+                        .opacity(isPulsing ? 0 : 1)
+                }
+
+                Button(action: {
+                    buttonAction()
+                }) {
                     if isSessionFinished {
                         finishedSessionView
                     } else {
                         activeSessionView
                     }
                 }
-                .frame(maxWidth: geometry.size.width * 0.75,
-                       maxHeight: geometry.size.height * 0.75)
+                .frame(maxWidth: maxWidth, maxHeight: maxHeight)
                 .clipShape(Circle())
                 .buttonStyle(.borderless)
                 .handGestureShortcut(.primaryAction)
-                
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(.blue, lineWidth: 7)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.easeInOut(duration: 1.0), value: progress)
             }
-            .frame(maxWidth: geometry.size.width * 0.75,
-                   maxHeight: geometry.size.height * 0.75)
-            .clipShape(Circle())
-            .position(x: geometry.size.width / 2,
-                      y: isCentered
-                      ? (geometry.size.height / 2)
-                      : (geometry.size.height / 2 - geometry.size.height * 0.04))
+            .frame(maxWidth: maxWidth, maxHeight: maxHeight)
+            .position(x: centerX,
+                      y: isCentered ? centerY : (centerY - geometry.size.height * 0.04))
             .animation(.easeInOut, value: isCentered)
         }
     }
     
-    // MARK: - Active session view
     var activeSessionView: some View {
         VStack {
             if !isScreenInactive {
@@ -96,7 +114,6 @@ struct CircularProgressBar: View {
         }
     }
     
-    // MARK: - Finished session view
     var finishedSessionView: some View {
         VStack {
             Spacer()
@@ -127,9 +144,21 @@ struct CircularProgressBar: View {
             }
         }
     }
+    
+    private func startPulsing() {
+        withAnimation(
+            Animation.easeIn(duration: 2)
+                .repeatForever(autoreverses: false)
+        ) {
+            isPulsing = true
+        }
+    }
+    
+    private func stopPulsing() {
+        isPulsing = false
+    }
 }
 
-// MARK: - Main view
 struct PomodoroView: View {
     // MARK: - Properties
     @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
@@ -141,7 +170,7 @@ struct PomodoroView: View {
     // MARK: - Computed properties
     var isScreenInactive: Bool { scenePhase == .inactive }
 
-    // MARK: - Body
+    // MARK: - Views
     var body: some View {
         NavigationStack {
             VStack() {
@@ -164,7 +193,9 @@ struct PomodoroView: View {
                 handlePhaseChange(oldPhase, newPhase)
             }
             .onChange(of: pomodoroViewModel.isSessionFinished) { _, isFinished in
-                if isFinished { pomodoroViewModel.playHaptics() }
+                if isFinished {
+                    pomodoroViewModel.playHaptics()
+                }
             }
         }
         .background(pomodoroViewModel.isSessionFinished ? .white : .clear)
