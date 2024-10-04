@@ -19,7 +19,7 @@ struct PomodoroView: View {
     // MARK: - Computed properties
     var isScreenInactive: Bool { scenePhase == .inactive }
     var isSessionFinished: Bool { pomodoroViewModel.isSessionFinished }
-    var isCentered: Bool { isScreenInactive || pomodoroViewModel.isSessionFinished }
+    var isCentered: Bool { isScreenInactive || isSessionFinished }
     
     var time: String {
         isScreenInactive ? pomodoroViewModel.cachedFormattedRemainingTime : pomodoroViewModel.formattedRemainingTime
