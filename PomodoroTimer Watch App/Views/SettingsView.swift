@@ -23,78 +23,80 @@ struct SettingsView: View {
     
     // MARK: - Views
     var body: some View {
-        Form {
-            if !settingsViewModel.isPermissionGranted {
-                Section {
-                    missingPermissionView
-                }
-                .listRowInsets(EdgeInsets())
-            }
-            
-            Section {
-                numberPicker(label: "Work",
-                             selection: $workDuration,
-                             range: 1...60,
-                             unit: "minute",
-                             tagModifier: { $0 * 60 })
-                
-                numberPicker(label: "Short break",
-                             selection: $shortBreakDuration,
-                             range: 1...60,
-                             unit: "minute",
-                             tagModifier: { $0 * 60 })
-                
-                numberPicker(label: "Long break",
-                             selection: $longBreakDuration,
-                             range: 1...60,
-                             unit: "minute",
-                             tagModifier: { $0 * 60 })
-            }
-            
-            Section {
-                numberPicker(label: "Daily target",
-                             selection: $dailyTarget,
-                             range: 1...24,
-                             unit: "session")
-            }
-            
-            Section {togglePicker(label: "Auto-continue", isOn: $autoContinue)
-                
-                if !settingsViewModel.settingsAreAllDefault {
+        NavigationStack {
+            Form {
+                if !settingsViewModel.isPermissionGranted {
                     Section {
-                        resetSettingsButton
-                            .listRowBackground(Color.clear)
+                        missingPermissionView
+                    }
+                    .listRowInsets(EdgeInsets())
+                }
+                
+                Section {
+                    numberPicker(label: "Work",
+                                 selection: $workDuration,
+                                 range: 1...60,
+                                 unit: "minute",
+                                 tagModifier: { $0 * 60 })
+                    
+                    numberPicker(label: "Short break",
+                                 selection: $shortBreakDuration,
+                                 range: 1...60,
+                                 unit: "minute",
+                                 tagModifier: { $0 * 60 })
+                    
+                    numberPicker(label: "Long break",
+                                 selection: $longBreakDuration,
+                                 range: 1...60,
+                                 unit: "minute",
+                                 tagModifier: { $0 * 60 })
+                }
+                
+                Section {
+                    numberPicker(label: "Daily target",
+                                 selection: $dailyTarget,
+                                 range: 1...24,
+                                 unit: "session")
+                }
+                
+                Section {togglePicker(label: "Auto-continue", isOn: $autoContinue)
+                    
+                    if !settingsViewModel.settingsAreAllDefault {
+                        Section {
+                            resetSettingsButton
+                                .listRowBackground(Color.clear)
+                        }
                     }
                 }
             }
             .navigationTitle("Settings")
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
-                        settingsViewModel.updateTimer()
-                        dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                    }
-                    .handGestureShortcut(.primaryAction)
-                }
-            }
-            .onAppear() {
-                settingsViewModel.syncSettings()
-            }
-            .onChange(of: settingsViewModel.isSessionFinished) { _, isFinished in
-                if isFinished {
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    settingsViewModel.updateTimer()
                     dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
                 }
+                .handGestureShortcut(.primaryAction)
             }
-            .alert(isPresented: $showingPermissionsAlert) {
-                Alert(
-                    title: Text("Enable notifications"),
-                    message: Text("To receive notifications to resume your work sessions or when your break is over, please grant permission in the Settings app."),
-                    dismissButton: .default(Text("Dismiss"))
-                )
+        }
+        .onAppear() {
+            settingsViewModel.syncSettings()
+        }
+        .onChange(of: settingsViewModel.isSessionFinished) { _, isFinished in
+            if isFinished {
+                dismiss()
             }
+        }
+        .alert(isPresented: $showingPermissionsAlert) {
+            Alert(
+                title: Text("Enable notifications"),
+                message: Text("To receive notifications to resume your work sessions or when your break is over, please grant permission in the Settings app."),
+                dismissButton: .default(Text("Dismiss"))
+            )
         }
     }
     
