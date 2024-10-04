@@ -7,12 +7,13 @@
 
 import SwiftUI
 
-struct CircularProgressBar: View {
+struct PomodoroView: View {
     // MARK: - Properties
-    private let pomodoroViewModel = PomodoroViewModel.shared
+    @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
     
     @Environment(\.scenePhase) private var scenePhase
     
+    @State private var lastInactiveTime = Date.now
     @State private var isPulsing = false
     
     // MARK: - Computed properties
@@ -27,152 +28,12 @@ struct CircularProgressBar: View {
     var progress: CGFloat {
         isScreenInactive ? pomodoroViewModel.cachedProgress : pomodoroViewModel.progress
     }
-    
-    // MARK: - Views
-    var body: some View {
-        GeometryReader { geometry in
-            let maxWidth = geometry.size.width * 0.75
-            let maxHeight = geometry.size.height * 0.75
-            let centerX = geometry.size.width / 2
-            let centerY = geometry.size.height / 2
-            
-            ZStack {
-                // Progress bar background
-                Circle()
-                    .stroke(isScreenInactive ? .black : .gray.opacity(0.3), lineWidth: 2)
-                
-                // Progress bar
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(.blue, lineWidth: 2)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.linear(duration: isSessionFinished ? 0.25 : 1), value: progress)
-                
-                // Pulsing animation
-                if isSessionFinished {
-                    Circle()
-                        .stroke(.blue.opacity(0.3), lineWidth: 1)
-                        .onAppear() {
-                            startPulsing()
-                        }
-                        .onDisappear() {
-                            stopPulsing()
-                        }
-                        .scaleEffect(isPulsing ? 1.3 : 1)
-                        .opacity(isPulsing ? 0 : 1)
-                }
-
-                Button(action: {
-                    buttonAction()
-                }) {
-                    if isSessionFinished {
-                        finishedSessionView
-                    } else {
-                        activeSessionView
-                    }
-                }
-                .frame(maxWidth: maxWidth, maxHeight: maxHeight)
-                .clipShape(Circle())
-                .buttonStyle(.borderless)
-                .handGestureShortcut(.primaryAction)
-            }
-            .frame(maxWidth: maxWidth, maxHeight: maxHeight)
-            .position(x: centerX,
-                      y: isCentered ? centerY : (centerY - geometry.size.height * 0.04))
-            .animation(.easeInOut, value: isCentered)
-        }
-    }
-    
-    var activeSessionView: some View {
-        VStack {
-            if !isScreenInactive {
-                HStack {
-                    Text(pomodoroViewModel.currentSession)
-                        .font(.caption.bold())
-                        .foregroundStyle(Color.secondary)
-                        .minimumScaleFactor(0.5)
-                    
-                    Text("\(pomodoroViewModel.currentSessionsDone)/\(pomodoroViewModel.maxSessions)")
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
-                }
-                .padding(.top, 12)
-            } else {
-                Spacer()
-                    .frame(height: 24)
-            }
-        
-            Text(time)
-                .font(.title.bold())
-                .foregroundStyle(Color.primary)
-            
-            Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
-                .foregroundStyle(Color.primary)
-                .padding(.top, 6)
-        }
-    }
-    
-    var finishedSessionView: some View {
-        VStack {
-            Spacer()
-                .frame(height: 24)
-            
-            Text("TIME'S UP!")
-                .font(.title3.bold())
-                .foregroundStyle(.black)
-            
-            Image(systemName: "checkmark")
-                .foregroundStyle(.green)
-                .padding(.top, 18)
-        }
-    }
-    
-    // MARK: - Private functions
-    private func buttonAction() {
-        if isSessionFinished {
-            pomodoroViewModel.stopHaptics()
-            Haptics.playClick()
-        } else {
-            if pomodoroViewModel.isTimerTicking {
-                pomodoroViewModel.pauseTimer()
-                Haptics.playClick()
-            } else {
-                pomodoroViewModel.startTimer()
-                Haptics.playStart()
-            }
-        }
-    }
-    
-    private func startPulsing() {
-        withAnimation(
-            Animation.easeIn(duration: 2)
-                .repeatForever(autoreverses: false)
-        ) {
-            isPulsing = true
-        }
-    }
-    
-    private func stopPulsing() {
-        isPulsing = false
-    }
-}
-
-struct PomodoroView: View {
-    // MARK: - Properties
-    @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
-    
-    @Environment(\.scenePhase) private var scenePhase
-    
-    @State private var lastInactiveTime = Date.now
-    
-    // MARK: - Computed properties
-    var isScreenInactive: Bool { scenePhase == .inactive }
 
     // MARK: - Views
     var body: some View {
         NavigationStack {
             VStack() {
-                CircularProgressBar()
+                circularProgressBar
             }
             .ignoresSafeArea()
             .toolbar {
@@ -281,6 +142,134 @@ struct PomodoroView: View {
             pomodoroViewModel.cancelBreakOverNotification()
         default:
             break
+        }
+    }
+    
+    private func buttonAction() {
+        if isSessionFinished {
+            pomodoroViewModel.stopHaptics()
+            Haptics.playClick()
+        } else {
+            if pomodoroViewModel.isTimerTicking {
+                pomodoroViewModel.pauseTimer()
+                Haptics.playClick()
+            } else {
+                pomodoroViewModel.startTimer()
+                Haptics.playStart()
+            }
+        }
+    }
+    
+    private func startPulsing() {
+        withAnimation(
+            Animation.easeIn(duration: 2)
+                .repeatForever(autoreverses: false)
+        ) {
+            isPulsing = true
+        }
+    }
+    
+    private func stopPulsing() {
+        isPulsing = false
+    }
+}
+
+private extension PomodoroView {
+    var activeSessionView: some View {
+        VStack {
+            if !isScreenInactive {
+                HStack {
+                    Text(pomodoroViewModel.currentSession)
+                        .font(.caption.bold())
+                        .foregroundStyle(Color.secondary)
+                        .minimumScaleFactor(0.5)
+                    
+                    Text("\(pomodoroViewModel.currentSessionsDone)/\(pomodoroViewModel.maxSessions)")
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
+                }
+                .padding(.top, 12)
+            } else {
+                Spacer()
+                    .frame(height: 24)
+            }
+            
+            Text(time)
+                .font(.title.bold())
+                .foregroundStyle(Color.primary)
+            
+            Image(systemName: pomodoroViewModel.isTimerTicking ? "pause.fill" : "play.fill")
+                .foregroundStyle(Color.primary)
+                .padding(.top, 6)
+        }
+    }
+    
+    var finishedSessionView: some View {
+        VStack {
+            Spacer()
+                .frame(height: 24)
+            
+            Text("TIME'S UP!")
+                .font(.title3.bold())
+                .foregroundStyle(.black)
+            
+            Image(systemName: "checkmark")
+                .foregroundStyle(.green)
+                .padding(.top, 18)
+        }
+    }
+    
+    var circularProgressBar: some View {
+        GeometryReader { geometry in
+            let maxWidth = geometry.size.width * 0.75
+            let maxHeight = geometry.size.height * 0.75
+            let centerX = geometry.size.width / 2
+            let centerY = geometry.size.height / 2
+            
+            ZStack {
+                // Progress bar background
+                Circle()
+                    .stroke(isScreenInactive ? .black : .gray.opacity(0.3), lineWidth: 2)
+                
+                // Progress bar
+                Circle()
+                    .trim(from: 0, to: progress)
+                    .stroke(.blue, lineWidth: 2)
+                    .rotationEffect(.degrees(-90))
+                    .animation(.linear(duration: isSessionFinished ? 0.25 : 1), value: progress)
+                
+                // Pulsing animation
+                if isSessionFinished {
+                    Circle()
+                        .stroke(.blue.opacity(0.3), lineWidth: 1)
+                        .onAppear() {
+                            startPulsing()
+                        }
+                        .onDisappear() {
+                            stopPulsing()
+                        }
+                        .scaleEffect(isPulsing ? 1.3 : 1)
+                        .opacity(isPulsing ? 0 : 1)
+                }
+                
+                Button(action: {
+                    buttonAction()
+                }) {
+                    if isSessionFinished {
+                        finishedSessionView
+                    } else {
+                        activeSessionView
+                    }
+                }
+                .frame(maxWidth: maxWidth, maxHeight: maxHeight)
+                .clipShape(Circle())
+                .buttonStyle(.borderless)
+                .handGestureShortcut(.primaryAction)
+            }
+            .frame(maxWidth: maxWidth, maxHeight: maxHeight)
+            .position(x: centerX,
+                      y: isCentered ? centerY : (centerY - geometry.size.height * 0.04))
+            .animation(.easeInOut, value: isCentered)
         }
     }
 }
