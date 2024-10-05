@@ -90,7 +90,7 @@ enum ToggleSetting: String, Setting {
     
     var defaultValue: Bool {
         switch self {
-        case .autoContinue: return false
+        case .autoContinue: return true
         }
     }
     
