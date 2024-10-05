@@ -50,9 +50,6 @@ struct PomodoroView: View {
                     pomodoroViewModel.playHaptics()
                 }
             }
-            .onChange(of: pomodoroViewModel.isTimerTicking) { _, isTicking in
-                isTicking ? pomodoroViewModel.startExtendedSession() : pomodoroViewModel.stopExtendedSession()
-            }
             .onChange(of: scenePhase) { oldPhase, newPhase in
                 handlePhaseChange(oldPhase, newPhase)
             }
@@ -239,7 +236,7 @@ private extension PomodoroView {
                     .animation(.linear(duration: isSessionFinished ? 0.25 : 1), value: progress)
                 
                 // Pulsing animation
-                if isSessionFinished {
+                if isSessionFinished && !isScreenInactive {
                     Circle()
                         .stroke(.blue.opacity(0.3), lineWidth: 1)
                         .onAppear() {
