@@ -17,6 +17,7 @@
 		151D60C82C8E579500156456 /* PomodoroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151D60C72C8E579500156456 /* PomodoroView.swift */; };
 		1586A5302CA0E70C004FF41F /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1586A52F2CA0E70B004FF41F /* StatisticsView.swift */; };
 		1586A5322CA0EC23004FF41F /* StatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1586A5312CA0EC23004FF41F /* StatisticsViewModel.swift */; };
+		159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159A17C72CB0C5B600F4ECAD /* Record.swift */; };
 		15C54A352CAAEF4300CC93C3 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15C54A342CAAEF4300CC93C3 /* NotificationService.swift */; };
 		15D5B5152C88F789004B29E8 /* PomodoroTimerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D5B5142C88F789004B29E8 /* PomodoroTimerApp.swift */; };
 		15D5B5192C88F78B004B29E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15D5B5182C88F78B004B29E8 /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 		1582628D2C9DEC7900D18B5C /* PomodoroTimer-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "PomodoroTimer-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1586A52F2CA0E70B004FF41F /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		1586A5312CA0EC23004FF41F /* StatisticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewModel.swift; sourceTree = "<group>"; };
+		159A17C72CB0C5B600F4ECAD /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		15C54A342CAAEF4300CC93C3 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		15D5B50F2C88F789004B29E8 /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PomodoroTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15D5B5142C88F789004B29E8 /* PomodoroTimerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTimerApp.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 				151D60C32C8E33A100156456 /* PomodoroTimer.swift */,
 				151A8EA12CA5F3CF0022E5D2 /* Settings.swift */,
 				151A8EA72CA6072B0022E5D2 /* Utilities.swift */,
+				159A17C72CB0C5B600F4ECAD /* Record.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -208,6 +211,7 @@
 				15C54A352CAAEF4300CC93C3 /* NotificationService.swift in Sources */,
 				151A8EA22CA5F3CF0022E5D2 /* Settings.swift in Sources */,
 				1508843A2CA6E9DE0012FB55 /* ExtendedSessionService.swift in Sources */,
+				159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */,
 				1512B4AB2C9116B8002BA07B /* SettingsView.swift in Sources */,
 				1586A5302CA0E70C004FF41F /* StatisticsView.swift in Sources */,
 				151D60C62C8E3CE700156456 /* PomodoroViewModel.swift in Sources */,
