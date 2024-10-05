@@ -192,6 +192,7 @@ private extension PomodoroView {
         VStack {
             Spacer()
                 .frame(height: 24)
+                .padding(.top, 12)
             
             Text("TIME'S UP!")
                 .font(.title3.bold())
