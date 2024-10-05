@@ -3,7 +3,7 @@
 ![screenshot1](https://github.com/user-attachments/assets/f0316f3e-0d77-4106-8c68-8f2ac802b9e9)
 ![screenshot2](https://github.com/user-attachments/assets/0f6ff631-169a-4fba-bf4d-00aef90718c8)
 
-A simple and minimalistic Pomodoro timer app developed for WatchOS using Swift and SwiftUI. The Pomodoro Technique is a time management method that encourages users to work for (typically) 25 minutes, followed by a short break to maintain productivity.
+A simple and minimalistic Pomodoro timer app developed for WatchOS using Swift and SwiftUI following the MVVM architecture. The Pomodoro Technique is a time management method that encourages users to work for (typically) 25 minutes, followed by a short break to maintain productivity.
 
 ## Features
 
