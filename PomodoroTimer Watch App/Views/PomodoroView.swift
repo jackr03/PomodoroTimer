@@ -156,19 +156,6 @@ struct PomodoroView: View {
             }
         }
     }
-    
-    private func startPulsing() {
-        withAnimation(
-            Animation.easeIn(duration: 2)
-                .repeatForever(autoreverses: false)
-        ) {
-            isPulsing = true
-        }
-    }
-    
-    private func stopPulsing() {
-        isPulsing = false
-    }
 }
 
 private extension PomodoroView {
@@ -239,14 +226,18 @@ private extension PomodoroView {
                 if isSessionFinished && !isScreenInactive {
                     Circle()
                         .stroke(.blue.opacity(0.3), lineWidth: 1)
-                        .onAppear() {
-                            startPulsing()
-                        }
-                        .onDisappear() {
-                            stopPulsing()
-                        }
                         .scaleEffect(isPulsing ? 1.3 : 1)
                         .opacity(isPulsing ? 0 : 1)
+                        .animation(
+                            .easeIn(duration: 2)
+                            .repeatForever(autoreverses: false),
+                            value: isPulsing)
+                        .onAppear() {
+                            isPulsing = true
+                        }
+                        .onDisappear() {
+                            isPulsing = false
+                        }
                 }
                 
                 Button(action: {

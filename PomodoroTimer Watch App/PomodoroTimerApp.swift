@@ -11,6 +11,7 @@ import SwiftUI
 @main
 struct PomodoroTimer_Watch_AppApp: App {
     init() {
+        
     }
     
     var body: some Scene {
