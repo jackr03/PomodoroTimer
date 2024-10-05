@@ -59,13 +59,14 @@ struct SettingsView: View {
                                  unit: "session")
                 }
                 
-                Section {togglePicker(label: "Auto-continue", isOn: $autoContinue)
-                    
-                    if !settingsViewModel.settingsAreAllDefault {
-                        Section {
-                            resetSettingsButton
-                                .listRowBackground(Color.clear)
-                        }
+                Section {
+                    togglePicker(label: "Auto-continue", isOn: $autoContinue)
+                }
+                 
+                if !settingsViewModel.settingsAreAllDefault {
+                    Section {
+                        resetSettingsButton
+                            .listRowBackground(Color.clear)
                     }
                 }
             }
