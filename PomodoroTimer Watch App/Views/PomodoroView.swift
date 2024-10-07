@@ -50,9 +50,6 @@ struct PomodoroView: View {
                     pomodoroViewModel.playHaptics()
                 }
             }
-            .onChange(of: pomodoroViewModel.isTimerTicking) { _, isTicking in
-                isTicking ? pomodoroViewModel.startExtendedSession() : pomodoroViewModel.stopExtendedSession()
-            }
             .onChange(of: scenePhase) { oldPhase, newPhase in
                 handlePhaseChange(oldPhase, newPhase)
             }
@@ -159,19 +156,6 @@ struct PomodoroView: View {
             }
         }
     }
-    
-    private func startPulsing() {
-        withAnimation(
-            Animation.easeIn(duration: 2)
-                .repeatForever(autoreverses: false)
-        ) {
-            isPulsing = true
-        }
-    }
-    
-    private func stopPulsing() {
-        isPulsing = false
-    }
 }
 
 private extension PomodoroView {
@@ -208,6 +192,7 @@ private extension PomodoroView {
         VStack {
             Spacer()
                 .frame(height: 24)
+                .padding(.top, 12)
             
             Text("TIME'S UP!")
                 .font(.title3.bold())
@@ -239,17 +224,21 @@ private extension PomodoroView {
                     .animation(.linear(duration: isSessionFinished ? 0.25 : 1), value: progress)
                 
                 // Pulsing animation
-                if isSessionFinished {
+                if isSessionFinished && !isScreenInactive {
                     Circle()
                         .stroke(.blue.opacity(0.3), lineWidth: 1)
-                        .onAppear() {
-                            startPulsing()
-                        }
-                        .onDisappear() {
-                            stopPulsing()
-                        }
                         .scaleEffect(isPulsing ? 1.3 : 1)
                         .opacity(isPulsing ? 0 : 1)
+                        .animation(
+                            .easeIn(duration: 2)
+                            .repeatForever(autoreverses: false),
+                            value: isPulsing)
+                        .onAppear() {
+                            isPulsing = true
+                        }
+                        .onDisappear() {
+                            isPulsing = false
+                        }
                 }
                 
                 Button(action: {

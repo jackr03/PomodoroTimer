@@ -60,14 +60,18 @@ final class PomodoroViewModel {
         if notificationService.permissionsGranted == nil {
             notificationService.requestPermissions()
         }
+        
+        startExtendedSession()
     }
         
     func pauseTimer() {
         pomodoroTimer.pauseTimer()
+        stopExtendedSession()
     }
     
     func endCycle() {
         pomodoroTimer.endCycle()
+        stopExtendedSession()
     }
 
     func resetTimer() {
@@ -76,6 +80,7 @@ final class PomodoroViewModel {
     
     func skipSession() {
         pomodoroTimer.skipSession()
+        stopExtendedSession()
     }
     
     func startCachingTimeAndProgress() {
@@ -132,6 +137,7 @@ final class PomodoroViewModel {
         }
 
         isSessionFinished = false
+        stopExtendedSession()
         startTimerIfAutoContinueEnabled()
     }
     

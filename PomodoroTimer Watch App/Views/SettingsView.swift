@@ -13,11 +13,11 @@ struct SettingsView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    @AppStorage("workDuration") private var workDuration: Int = 1500
-    @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = 300
-    @AppStorage("longBreakDuration") private var longBreakDuration: Int = 1800
-    @AppStorage("dailyTarget") private var dailyTarget: Int = 12
-    @AppStorage("autoContinue") private var autoContinue: Bool = false
+    @AppStorage("workDuration") private var workDuration: Int = NumberSetting.workDuration.defaultValue
+    @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = NumberSetting.shortBreakDuration.defaultValue
+    @AppStorage("longBreakDuration") private var longBreakDuration: Int = NumberSetting.longBreakDuration.defaultValue
+    @AppStorage("dailyTarget") private var dailyTarget: Int = NumberSetting.dailyTarget.defaultValue
+    @AppStorage("autoContinue") private var autoContinue: Bool = ToggleSetting.autoContinue.defaultValue
     
     @State private var showingPermissionsAlert: Bool = false
     
@@ -59,13 +59,14 @@ struct SettingsView: View {
                                  unit: "session")
                 }
                 
-                Section {togglePicker(label: "Auto-continue", isOn: $autoContinue)
-                    
-                    if !settingsViewModel.settingsAreAllDefault {
-                        Section {
-                            resetSettingsButton
-                                .listRowBackground(Color.clear)
-                        }
+                Section {
+                    togglePicker(label: "Auto-continue", isOn: $autoContinue)
+                }
+                 
+                if !settingsViewModel.settingsAreAllDefault {
+                    Section {
+                        resetSettingsButton
+                            .listRowBackground(Color.clear)
                     }
                 }
             }
