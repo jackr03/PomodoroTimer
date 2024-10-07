@@ -7,9 +7,7 @@
 
 import Foundation
 import UserNotifications
-import Observation
 
-@Observable
 final class NotificationService {
     // MARK: - Properties
     static let shared = NotificationService()

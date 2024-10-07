@@ -119,6 +119,7 @@ class PomodoroTimer {
         isSessionInProgress = false
     }
     
+    // TODO: Move to PomodoroViewModel and use dataService
     private func incrementSessionsCompleted() {
         let totalSessionsCompletedKey = "totalSessionsCompleted"
         let sessionsCompletedTodayKey = "sessionsCompletedToday"

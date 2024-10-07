@@ -37,6 +37,7 @@ struct StatisticsView: View {
     // MARK: - View
     var body: some View {
         TabView {
+            testView
             dailyView
             allTimeView
         }
@@ -65,6 +66,26 @@ struct StatisticsView: View {
 }
 
 private extension StatisticsView {
+    var testView: some View {
+        VStack {
+            Button("Add record") {
+                statisticsViewModel.addNewRecord()
+            }
+            
+            Button("Remove all records") {
+                statisticsViewModel.deleteAllRecords()
+            }
+            
+            List {
+                ForEach(statisticsViewModel.records) { record in
+                    Text("\(record.date)")
+                 }
+                .onDelete(perform: statisticsViewModel.deleteRecord)
+            }
+        }
+        
+        
+    }
     // TODO: Add a progress bar
     var dailyView: some View {
         VStack {
