@@ -42,11 +42,11 @@ struct PomodoroView: View {
                 }
             }
             .onAppear {
-                pomodoroViewModel.refreshDailySessions()
                 pomodoroViewModel.checkPermissions()
             }
             .onChange(of: pomodoroViewModel.isSessionFinished) { _, isFinished in
                 if isFinished {
+                    pomodoroViewModel.incrementWorkSessionsCompleted()
                     pomodoroViewModel.playHaptics()
                 }
             }

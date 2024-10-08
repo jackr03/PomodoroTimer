@@ -17,27 +17,71 @@ final class StatisticsViewModel {
     private let pomodoroTimer = PomodoroTimer.shared
     private let dataService = DataService.shared
     
-    private(set) var records: [Record] = []
+    private(set) var recordToday: Record = Record()
+    private(set) var recordsThisWeek: [Record] = []
+    private(set) var recordsThisMonth: [Record] = []
+    private(set) var allRecords: [Record] = []
     
     // MARK: - Init
+    // TODO: Initialise all records
     private init() {
-        self.records = dataService.fetchRecords()
+        updateRecordToday()
+        updateRecordsThisWeek()
+        updateRecordsThisMonth()
+        updateAllRecords()
     }
     
     // MARK: - Computed properties
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
     
     // MARK: - Functions
-    func addNewRecord() {
-        let record = Record()
+    func addRecord() {
+        let record = Record(date: Date.distantFuture, workSessionsCompleted: 0, dailyTarget: 0, isDailyTargetMet: false)
+        let record2 = Record(date: Date.distantPast, workSessionsCompleted: 0, dailyTarget: 0, isDailyTargetMet: false)
         
         performFunctionAndFetchRecords {
             dataService.addRecord(record)
         }
+        performFunctionAndFetchRecords {
+            dataService.addRecord(record2)
+        }
+        
+        guard let monthRange = Calendar.current.dateInterval(of: .month, for: Date.now) else {
+            return
+        }
+        var currentDate = monthRange.start
+        
+        while currentDate < monthRange.end {
+            print(currentDate)
+            
+            let record3 = Record(date: currentDate, workSessionsCompleted: 0, dailyTarget: 0, isDailyTargetMet: false)
+            performFunctionAndFetchRecords {
+                dataService.addRecord(record3)
+            }
+            guard let nextDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) else {
+                break
+            }
+            
+            currentDate = nextDate
+        }
+        allRecords = dataService.fetchAllRecords()
+
     }
     
-    func fetchRecordByDate(_ date: Date) -> Record {
-        return dataService.fetchRecordByDate(date)
+    func updateRecordToday() {
+        recordToday = dataService.fetchRecordToday()
+    }
+    
+    func updateRecordsThisWeek() {
+        recordsThisWeek = dataService.fetchRecordsThisWeek()
+    }
+    
+    func updateRecordsThisMonth() {
+        recordsThisMonth = dataService.fetchRecordsThisMonth()
+    }
+    
+    func updateAllRecords() {
+        allRecords = dataService.fetchAllRecords()
     }
     
     func deleteAllRecords() {
@@ -48,22 +92,15 @@ final class StatisticsViewModel {
     
     func deleteRecord(_ indexSet: IndexSet) {
         for index in indexSet {
-            let record = records[index]
+            let record = allRecords[index]
             dataService.deleteRecord(record)
         }
-        records = dataService.fetchRecords()
-    }
-    
-    // MARK: - DEPRECATED
-    // TODO: Reset using SwiftData
-    func resetSessions() {
-        Defaults.set("sessionsCompletedToday", to: 0)
-        Defaults.set("totalSessionsCompleted", to: 0)
+        allRecords = dataService.fetchAllRecords()
     }
     
     // MARK: - Private functions
     private func performFunctionAndFetchRecords(_ operation: () -> Void) {
         operation()
-        records = dataService.fetchRecords()
+        allRecords = dataService.fetchAllRecords()
     }
 }

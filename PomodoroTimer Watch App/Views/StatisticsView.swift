@@ -12,22 +12,21 @@ struct StatisticsView: View {
     private let statisticsViewModel = StatisticsViewModel.shared
     
     @Environment(\.dismiss) private var dismiss
-
-    @AppStorage("totalSessionsCompleted") private var totalSessionsCompleted: Int = 0
-    @AppStorage("sessionsCompletedToday") private var sessionsCompletedToday: Int = 0
+    
     @AppStorage("dailyTarget") private var dailyTarget: Int = 12
         
+    @State private var recordToday: Record = Record()
     @State private var showingDeletionAlert = false
     
     // MARK: - Computed properties
     var inflectedSessionsCount: String {
-        sessionsCompletedToday == 1 ? "session" : "sessions"
+        recordToday.workSessionsCompleted == 1 ? "session" : "sessions"
     }
     
     var statusMessage: String {
-        if sessionsCompletedToday == 0 {
+        if recordToday.workSessionsCompleted == 0 {
             return "Let's get to work!"
-        } else if sessionsCompletedToday > 0 && sessionsCompletedToday < dailyTarget {
+        } else if recordToday.workSessionsCompleted > 0 && recordToday.workSessionsCompleted < recordToday.dailyTarget {
             return "Keep it up!"
         } else {
             return "Well done!"
@@ -37,8 +36,9 @@ struct StatisticsView: View {
     // MARK: - View
     var body: some View {
         TabView {
-            testView
             dailyView
+            weeklyView
+            monthlyView
             allTimeView
         }
         .tabViewStyle(.verticalPage)
@@ -66,26 +66,6 @@ struct StatisticsView: View {
 }
 
 private extension StatisticsView {
-    var testView: some View {
-        VStack {
-            Button("Add record") {
-                statisticsViewModel.addNewRecord()
-            }
-            
-            Button("Remove all records") {
-                statisticsViewModel.deleteAllRecords()
-            }
-            
-            List {
-                ForEach(statisticsViewModel.records) { record in
-                    Text("\(record.date)")
-                 }
-                .onDelete(perform: statisticsViewModel.deleteRecord)
-            }
-        }
-        
-        
-    }
     // TODO: Add a progress bar
     var dailyView: some View {
         VStack {
@@ -95,7 +75,7 @@ private extension StatisticsView {
                 Text("You've completed ")
                     .font(.body)
                     .foregroundStyle(.primary)
-                + Text("\(sessionsCompletedToday)/\(dailyTarget)")
+                + Text("\(recordToday.workSessionsCompleted)/\(recordToday.dailyTarget)")
                     .font(.body)
                     .bold()
                     .foregroundStyle(.primary)
@@ -116,51 +96,102 @@ private extension StatisticsView {
             Spacer()
         }
         .padding()
+        .onAppear() {
+            print("TEST")
+        }
     }
     
-    // TODO: Add a graph of how many were done over the past week
-    var allTimeView: some View {
-        VStack {
-            Spacer()
-            
-            HStack {
-                Text("Total completed: ")
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                + Text("\(totalSessionsCompleted)")
-                    .font(.body)
-                    .bold()
-                    .foregroundStyle(.primary)
-            }
-            .multilineTextAlignment(.center)
-
-            Spacer()
-            Spacer()
-        }
-        .toolbar {
-            if totalSessionsCompleted > 0 {
-                ToolbarItem(placement: .bottomBar) {
-                    Button(action: {
-                        showingDeletionAlert = true
-                        Haptics.playClick()
-                    }) {
-                        Image(systemName: "trash")
-                    }
-                    .foregroundStyle(.red)
-                    .background(.red.secondary)
-                    .clipShape(Capsule())
+    var weeklyView: some View {
+        List {
+            ForEach(statisticsViewModel.recordsThisWeek) { record in
+                HStack {
+                    Text("\(record.formattedDate)")
+                    Text("\(record.workSessionsCompleted)/\(record.dailyTarget)")
                 }
             }
         }
-        .padding()
     }
+    
+    var monthlyView: some View {
+        List {
+            ForEach(statisticsViewModel.recordsThisMonth) { record in
+                HStack {
+                    Text("\(record.formattedDate)")
+                    Text("\(record.workSessionsCompleted)/\(record.dailyTarget)")
+                }
+            }
+        }
+    }
+    
+    var allTimeView: some View {
+        VStack {
+            Button("Add") {
+                statisticsViewModel.addRecord()
+            }
+            
+            Button("Delete") {
+                statisticsViewModel.deleteAllRecords()
+            }
+            List {
+                ForEach(statisticsViewModel.allRecords) { record in
+                    HStack {
+                        Text("\(record.formattedDate)")
+                        Text("\(record.workSessionsCompleted)/\(record.dailyTarget)")
+                    }
+                    .listRowBackground(record.isDailyTargetMet ? Color.green : Color.red)
+                }
+                .onDelete(perform: statisticsViewModel.deleteRecord)
+            }
+        }
+        .onAppear() {
+            
+        }
+    }
+    
+    // TODO: Add a graph of how many were done over the past week
+//    var allTimeView: some View {
+//        VStack {
+//            Spacer()
+//            
+//            HStack {
+//                Text("Total completed: ")
+//                    .font(.body)
+//                    .foregroundStyle(.primary)
+//                + Text("\(totalSessionsCompleted)")
+//                    .font(.body)
+//                    .bold()
+//                    .foregroundStyle(.primary)
+//            }
+//            .multilineTextAlignment(.center)
+//
+//            Spacer()
+//            Spacer()
+//        }
+//        .toolbar {
+//            if totalSessionsCompleted > 0 {
+//                ToolbarItem(placement: .bottomBar) {
+//                    Button(action: {
+//                        showingDeletionAlert = true
+//                        Haptics.playClick()
+//                    }) {
+//                        Image(systemName: "trash")
+//                    }
+//                    .foregroundStyle(.red)
+//                    .background(.red.secondary)
+//                    .clipShape(Capsule())
+//                }
+//            }
+//        }
+//        .padding()
+//    }
+//
     
     var deletionAlert: Alert {
         Alert(
             title: Text("Reset sessions?"),
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
-                statisticsViewModel.resetSessions()
+//                statisticsViewModel.resetSessions()
                 Haptics.playSuccess()
                 
                 dismiss()
@@ -169,6 +200,16 @@ private extension StatisticsView {
                 Haptics.playClick()
             }
         )
+    }
+}
+
+extension Record {
+    var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        formatter.timeStyle = .none
+        
+        return formatter.string(from: date)
     }
 }
 

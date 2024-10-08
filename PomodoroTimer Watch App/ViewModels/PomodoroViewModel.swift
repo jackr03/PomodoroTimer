@@ -17,6 +17,7 @@ final class PomodoroViewModel {
     private let pomodoroTimer = PomodoroTimer.shared
     private let extendedSessionService = ExtendedSessionService.shared
     private let notificationService = NotificationService.shared
+    private let dataService = DataService.shared
     
     private(set) var cachedFormattedRemainingTime: String = ""
     private(set) var cachedProgress: CGFloat = 1.0
@@ -104,17 +105,6 @@ final class PomodoroViewModel {
         return pomodoroTimer.remainingTime
     }
     
-    func refreshDailySessions() {
-        if let lastDailyReset = Defaults.getObjectFrom("lastDailyReset") as? Date {
-            if !Calendar.current.isDateInToday(lastDailyReset) {
-                Defaults.set("lastDailyReset", to: Date.now)
-                Defaults.set("sessionsCompletedToday", to: 0)
-            }
-        } else {
-            Defaults.set("lastDailyReset", to: Date.now)
-        }
-    }
-    
     func startTimerIfAutoContinueEnabled() {
         if Defaults.getBoolFrom("autoContinue") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -122,6 +112,12 @@ final class PomodoroViewModel {
             }
         }
     }
+    
+    func incrementWorkSessionsCompleted() {
+        let record = dataService.fetchRecordToday()
+        record.workSessionsCompleted += 1
+    }
+
     
     // MARK: - Haptic functions
     func playHaptics() {

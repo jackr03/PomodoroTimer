@@ -21,25 +21,80 @@ final class DataService {
         self.modelContext = modelContainer.mainContext
     }
     
-    func fetchRecords() -> [Record] {
+    func fetchRecords(with descriptor: FetchDescriptor<Record>) -> [Record] {
         do {
-            return try modelContext.fetch(FetchDescriptor<Record>())
+            return try modelContext.fetch(descriptor)
         } catch {
             fatalError(error.localizedDescription)
         }
     }
     
-    func fetchRecordByDate(_ date: Date) -> Record {
-        var descriptor = FetchDescriptor<Record>(
-            predicate: #Predicate { $0.date == date }
+    // Attempt to fetch the record for today
+    // If it doesn't exist, then create a new one and return that
+    func fetchRecordToday() -> Record {
+        let normalisedDate = Calendar.current.startOfDay(for: Date.now)
+
+        let descriptor = FetchDescriptor<Record>(
+            predicate: #Predicate { record in
+                record.date == normalisedDate
+            }
         )
-        descriptor.fetchLimit = 1
         
-        do {
-            return try modelContext.fetch(descriptor)[0]
-        } catch {
-            fatalError(error.localizedDescription)
+        if let record = fetchRecords(with: descriptor).first {
+            return record
+        } else {
+            let newRecord = Record()
+            addRecord(newRecord)
+            
+            return newRecord
         }
+    }
+    
+    // TODO: Log issues properly if dateIntervals cannot be found
+    func fetchRecordsThisWeek() -> [Record] {
+        guard let weekRange = Calendar.current.dateInterval(of: .weekOfYear, for: Date.now) else {
+            return []
+        }
+        
+        var descriptor = FetchDescriptor<Record>(
+            predicate: #Predicate { record in
+                record.date >= weekRange.start && record.date < weekRange.end
+            },
+            sortBy: [
+                SortDescriptor(\.date, order: .reverse)
+            ]
+        )
+        descriptor.fetchLimit = 7
+        
+        return fetchRecords(with: descriptor)
+    }
+    
+    func fetchRecordsThisMonth() -> [Record] {
+        guard let monthRange = Calendar.current.dateInterval(of: .month, for: Date.now) else {
+            return []
+        }
+        
+        var descriptor = FetchDescriptor<Record>(
+            predicate: #Predicate { record in
+                record.date >= monthRange.start && record.date < monthRange.end
+            },
+            sortBy: [
+                SortDescriptor(\.date, order: .reverse)
+            ]
+        )
+        descriptor.fetchLimit = 31
+        
+        return fetchRecords(with: descriptor)
+    }
+    
+    func fetchAllRecords() -> [Record] {
+        let descriptor = FetchDescriptor<Record>(
+            sortBy: [
+                SortDescriptor(\.date, order: .reverse)
+            ]
+        )
+        
+        return fetchRecords(with: descriptor)
     }
     
     func addRecord(_ record: Record) {

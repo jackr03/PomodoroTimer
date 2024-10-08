@@ -15,8 +15,8 @@ class Record {
     var dailyTarget: Int
     var isDailyTargetMet: Bool
     
-    init(date: Date, workSessionsCompleted: Int, dailyTarget: Int, isDailyTargetMet: Bool) {
-        self.date = date
+    public init(date: Date, workSessionsCompleted: Int, dailyTarget: Int, isDailyTargetMet: Bool) {
+        self.date = Calendar.current.startOfDay(for: date)
         self.workSessionsCompleted = workSessionsCompleted
         self.dailyTarget = dailyTarget
         self.isDailyTargetMet = isDailyTargetMet
