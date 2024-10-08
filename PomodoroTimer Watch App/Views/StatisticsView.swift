@@ -15,10 +15,11 @@ struct StatisticsView: View {
     
     @AppStorage("dailyTarget") private var dailyTarget: Int = 12
         
-    @State private var recordToday: Record = Record()
     @State private var showingDeletionAlert = false
     
     // MARK: - Computed properties
+    var recordToday: Record { statisticsViewModel.recordToday }
+    
     var inflectedSessionsCount: String {
         recordToday.workSessionsCompleted == 1 ? "session" : "sessions"
     }
@@ -37,8 +38,8 @@ struct StatisticsView: View {
     var body: some View {
         TabView {
             dailyView
-            weeklyView
-            monthlyView
+//            weeklyView
+//            monthlyView
             allTimeView
         }
         .tabViewStyle(.verticalPage)
@@ -97,7 +98,7 @@ private extension StatisticsView {
         }
         .padding()
         .onAppear() {
-            print("TEST")
+            statisticsViewModel.updateRecordToday()
         }
     }
     
@@ -110,6 +111,9 @@ private extension StatisticsView {
                 }
             }
         }
+        .onAppear() {
+            statisticsViewModel.updateRecordsThisWeek()
+        }
     }
     
     var monthlyView: some View {
@@ -120,6 +124,9 @@ private extension StatisticsView {
                     Text("\(record.workSessionsCompleted)/\(record.dailyTarget)")
                 }
             }
+        }
+        .onAppear() {
+            statisticsViewModel.updateRecordsThisMonth()
         }
     }
     
@@ -144,7 +151,7 @@ private extension StatisticsView {
             }
         }
         .onAppear() {
-            
+            statisticsViewModel.updateAllRecords()
         }
     }
     
@@ -185,7 +192,7 @@ private extension StatisticsView {
 //        .padding()
 //    }
 //
-    
+    // TODO: - Replace this with SwiftData equivalent
     var deletionAlert: Alert {
         Alert(
             title: Text("Reset sessions?"),

@@ -76,7 +76,7 @@ class PomodoroTimer {
     }
     
     func skipSession() {
-        nextSession(skipped: true)
+        nextSession()
     }
     
     func endCycle() {
@@ -97,14 +97,10 @@ class PomodoroTimer {
         }
     }
     
-    private func nextSession(skipped: Bool = false) {
+    private func nextSession() {
         pauseTimer()
         
         if currentSession.isWorkSession {
-            if !skipped {
-                incrementSessionsCompleted()
-            }
-
             currentSessionNumber += 1
             currentSession = currentSessionNumber == maxSessions ? .longBreak : .shortBreak
         } else {
@@ -117,17 +113,5 @@ class PomodoroTimer {
         
         remainingTime = currentSession.duration
         isSessionInProgress = false
-    }
-    
-    // TODO: Move to PomodoroViewModel and use dataService
-    private func incrementSessionsCompleted() {
-        let totalSessionsCompletedKey = "totalSessionsCompleted"
-        let sessionsCompletedTodayKey = "sessionsCompletedToday"
-        
-        let currentTotalSessionsCompleted = Defaults.getIntFrom(totalSessionsCompletedKey) + 1
-        let currentSessionsCompletedToday = Defaults.getIntFrom(sessionsCompletedTodayKey) + 1
-        
-        Defaults.set(totalSessionsCompletedKey, to: currentTotalSessionsCompleted)
-        Defaults.set(sessionsCompletedTodayKey, to: currentSessionsCompletedToday)
     }
 }

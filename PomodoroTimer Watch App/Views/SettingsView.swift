@@ -56,7 +56,9 @@ struct SettingsView: View {
                     numberPicker(label: "Daily target",
                                  selection: $dailyTarget,
                                  range: 1...24,
-                                 unit: "session")
+                                 unit: "session",
+                                 onChange: { newValue in settingsViewModel.updateRecordDailyTarget(to: newValue) }
+                    )
                 }
                 
                 Section {
@@ -159,7 +161,8 @@ private extension SettingsView {
                         selection: Binding<Int>,
                         range: ClosedRange<Int>,
                         unit: String,
-                        tagModifier: @escaping (Int) -> Int = { $0 }
+                        tagModifier: @escaping (Int) -> Int = { $0 },
+                        onChange: ((Int) -> Void)? = nil
     ) -> some View {
         Picker(selection: selection) {
             ForEach(range, id: \.self) {
@@ -173,16 +176,21 @@ private extension SettingsView {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .onChange(of: selection.wrappedValue) {
+        .onChange(of: selection.wrappedValue) { _, newValue in
+            onChange?(newValue)
             settingsViewModel.syncSettings()
         }
     }
     
-    func togglePicker(label: String, isOn: Binding<Bool>) -> some View {
+    func togglePicker(label: String,
+                      isOn: Binding<Bool>,
+                      onChange: ((Bool) -> Void)? = nil
+    ) -> some View {
         Toggle(label, isOn: isOn)
             .font(.caption)
             .foregroundStyle(.secondary)
-            .onChange(of: isOn.wrappedValue) {
+            .onChange(of: isOn.wrappedValue) { _, newValue in
+                onChange?(newValue)
                 settingsViewModel.syncSettings()
             }
     }

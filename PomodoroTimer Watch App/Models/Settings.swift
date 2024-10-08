@@ -30,7 +30,6 @@ protocol Setting: CaseIterable where T: Equatable {
     var currentValue: T { get }
     var defaultValue: T { get}
     var isDefault: Bool { get }
-    func update(to value: T)
     func reset()
 }
 
@@ -74,11 +73,6 @@ enum NumberSetting: String, Setting {
             return false
         }
     }
-    
-    // MARK: - Functions
-    func update(to value: Int) {
-        Defaults.set(rawValue, to: value)
-    }
 }
 
 enum ToggleSetting: String, Setting {
@@ -92,10 +86,5 @@ enum ToggleSetting: String, Setting {
         switch self {
         case .autoContinue: return true
         }
-    }
-    
-    // MARK: - Functions
-    func update(to value: Bool) {
-        Defaults.set(rawValue, to: value)
     }
 }

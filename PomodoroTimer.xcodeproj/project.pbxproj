@@ -60,9 +60,9 @@
 		1508843B2CA6EA120012FB55 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				15D4CA452CB460540017C3D4 /* DataService.swift */,
 				150884392CA6E9DE0012FB55 /* ExtendedSessionService.swift */,
 				15C54A342CAAEF4300CC93C3 /* NotificationService.swift */,
-				15D4CA452CB460540017C3D4 /* DataService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -71,9 +71,9 @@
 			isa = PBXGroup;
 			children = (
 				151D60C32C8E33A100156456 /* PomodoroTimer.swift */,
+				159A17C72CB0C5B600F4ECAD /* Record.swift */,
 				151A8EA12CA5F3CF0022E5D2 /* Settings.swift */,
 				151A8EA72CA6072B0022E5D2 /* Utilities.swift */,
-				159A17C72CB0C5B600F4ECAD /* Record.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -81,8 +81,8 @@
 		151D60C12C8E338100156456 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1512B4AA2C9116B8002BA07B /* SettingsView.swift */,
 				151D60C72C8E579500156456 /* PomodoroView.swift */,
+				1512B4AA2C9116B8002BA07B /* SettingsView.swift */,
 				1586A52F2CA0E70B004FF41F /* StatisticsView.swift */,
 			);
 			path = Views;
@@ -91,8 +91,8 @@
 		151D60C22C8E338400156456 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				1512B4A82C9116A0002BA07B /* SettingsViewModel.swift */,
 				151D60C52C8E3CE700156456 /* PomodoroViewModel.swift */,
+				1512B4A82C9116A0002BA07B /* SettingsViewModel.swift */,
 				1586A5312CA0EC23004FF41F /* StatisticsViewModel.swift */,
 			);
 			path = ViewModels;

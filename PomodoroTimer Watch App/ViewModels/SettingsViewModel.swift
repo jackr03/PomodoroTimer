@@ -15,6 +15,7 @@ final class SettingsViewModel {
     static let shared = SettingsViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
+    private let dataService = DataService.shared
     private let notificationService = NotificationService.shared
     
     public var settingsAreAllDefault = true
@@ -33,7 +34,13 @@ final class SettingsViewModel {
     
     func resetSettings() {
         SettingsManager.resetSettings()
+        updateRecordDailyTarget(to: NumberSetting.dailyTarget.defaultValue)
         syncSettings()
+    }
+    
+    func updateRecordDailyTarget(to value: Int) {
+        let record = dataService.fetchRecordToday()
+        record.dailyTarget = value
     }
     
     func updateTimer() {
