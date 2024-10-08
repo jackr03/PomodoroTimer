@@ -12,27 +12,10 @@ struct StatisticsView: View {
     private let statisticsViewModel = StatisticsViewModel.shared
     
     @Environment(\.dismiss) private var dismiss
-    
-    @AppStorage("dailyTarget") private var dailyTarget: Int = 12
         
     @State private var showingDeletionAlert = false
     
     // MARK: - Computed properties
-    var recordToday: Record { statisticsViewModel.recordToday }
-    
-    var inflectedSessionsCount: String {
-        recordToday.workSessionsCompleted == 1 ? "session" : "sessions"
-    }
-    
-    var statusMessage: String {
-        if recordToday.workSessionsCompleted == 0 {
-            return "Let's get to work!"
-        } else if recordToday.workSessionsCompleted > 0 && recordToday.workSessionsCompleted < recordToday.dailyTarget {
-            return "Keep it up!"
-        } else {
-            return "Well done!"
-        }
-    }
     
     // MARK: - View
     var body: some View {
@@ -67,24 +50,28 @@ struct StatisticsView: View {
 }
 
 private extension StatisticsView {
+    // MARK: - Daily view
+    var recordToday: Record { statisticsViewModel.recordToday }
+    
+    var statusMessage: String {
+        if recordToday.workSessionsCompleted == 0 {
+            return "Let's get to work!"
+        } else if recordToday.workSessionsCompleted > 0 && recordToday.workSessionsCompleted < recordToday.dailyTarget {
+            return "Keep it up!"
+        } else {
+            return "Well done!"
+        }
+    }
+    
     // TODO: Add a progress bar
     var dailyView: some View {
         VStack {
             Spacer()
             
-            HStack {
-                Text("You've completed ")
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                + Text("\(recordToday.workSessionsCompleted)/\(recordToday.dailyTarget)")
-                    .font(.body)
-                    .bold()
-                    .foregroundStyle(.primary)
-                + Text(" \(inflectedSessionsCount) today.")
-                    .font(.body)
-                    .foregroundStyle(.primary)
-            }
-            .multilineTextAlignment(.center)
+            Text("\(recordToday.workSessionsCompleted)/\(recordToday.dailyTarget)")
+                .font(.title)
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.center)
             
             Spacer()
             
@@ -97,6 +84,7 @@ private extension StatisticsView {
             Spacer()
         }
         .padding()
+        .navigationTitle("Today")
         .onAppear() {
             statisticsViewModel.updateRecordToday()
         }
@@ -111,6 +99,7 @@ private extension StatisticsView {
                 }
             }
         }
+        .navigationTitle("This week")
         .onAppear() {
             statisticsViewModel.updateRecordsThisWeek()
         }
@@ -125,6 +114,7 @@ private extension StatisticsView {
                 }
             }
         }
+        .navigationTitle("This month")
         .onAppear() {
             statisticsViewModel.updateRecordsThisMonth()
         }
@@ -150,6 +140,7 @@ private extension StatisticsView {
                 .onDelete(perform: statisticsViewModel.deleteRecord)
             }
         }
+        .navigationTitle("All time")
         .onAppear() {
             statisticsViewModel.updateAllRecords()
         }

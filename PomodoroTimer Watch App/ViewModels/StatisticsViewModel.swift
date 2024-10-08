@@ -24,17 +24,13 @@ final class StatisticsViewModel {
     
     // MARK: - Init
     // TODO: Initialise all records
-    private init() {
-        updateRecordToday()
-        updateRecordsThisWeek()
-        updateRecordsThisMonth()
-        updateAllRecords()
-    }
+    private init() {}
     
     // MARK: - Computed properties
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
     
     // MARK: - Functions
+    // FIXME: Remove, just for testing
     func addRecord() {
         let record = Record(date: Date.distantFuture, workSessionsCompleted: 0, dailyTarget: 0)
         let record2 = Record(date: Date.distantPast, workSessionsCompleted: 0, dailyTarget: 0)
@@ -84,7 +80,6 @@ final class StatisticsViewModel {
         allRecords = dataService.fetchAllRecords()
     }
     
-    // FIXME: Currently doesn't delete today's record, which is good but need to check behaviour with weekly and monthly records
     func deleteAllRecords() {
         performFunctionAndFetchRecords {
             dataService.deleteAllRecords()
@@ -96,6 +91,7 @@ final class StatisticsViewModel {
             let record = allRecords[index]
             dataService.deleteRecord(record)
         }
+        
         allRecords = dataService.fetchAllRecords()
     }
     
