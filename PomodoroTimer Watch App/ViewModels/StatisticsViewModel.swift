@@ -36,8 +36,8 @@ final class StatisticsViewModel {
     
     // MARK: - Functions
     func addRecord() {
-        let record = Record(date: Date.distantFuture, workSessionsCompleted: 0, dailyTarget: 0, isDailyTargetMet: false)
-        let record2 = Record(date: Date.distantPast, workSessionsCompleted: 0, dailyTarget: 0, isDailyTargetMet: false)
+        let record = Record(date: Date.distantFuture, workSessionsCompleted: 0, dailyTarget: 0)
+        let record2 = Record(date: Date.distantPast, workSessionsCompleted: 0, dailyTarget: 0)
         
         performFunctionAndFetchRecords {
             dataService.addRecord(record)
@@ -54,7 +54,7 @@ final class StatisticsViewModel {
         while currentDate < monthRange.end {
             print(currentDate)
             
-            let record3 = Record(date: currentDate, workSessionsCompleted: 0, dailyTarget: 0, isDailyTargetMet: false)
+            let record3 = Record(date: currentDate, workSessionsCompleted: 0, dailyTarget: 0)
             performFunctionAndFetchRecords {
                 dataService.addRecord(record3)
             }
@@ -84,6 +84,7 @@ final class StatisticsViewModel {
         allRecords = dataService.fetchAllRecords()
     }
     
+    // FIXME: Currently doesn't delete today's record, which is good but need to check behaviour with weekly and monthly records
     func deleteAllRecords() {
         performFunctionAndFetchRecords {
             dataService.deleteAllRecords()
