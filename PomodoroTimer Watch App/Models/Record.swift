@@ -12,20 +12,20 @@ import SwiftData
 class Record {
     // MARK: - Properties
     @Attribute(.unique) var date: Date
-    var workSessionsCompleted: Int
+    var sessionsCompleted: Int
     var dailyTarget: Int
     
     // MARK: - Inits
-    public init(date: Date, workSessionsCompleted: Int, dailyTarget: Int) {
+    public init(date: Date, sessionsCompleted: Int, dailyTarget: Int) {
         self.date = Calendar.current.startOfDay(for: date)
-        self.workSessionsCompleted = workSessionsCompleted
+        self.sessionsCompleted = sessionsCompleted
         self.dailyTarget = dailyTarget
     }
     
     convenience init() {
-        self.init(date: Date.now, workSessionsCompleted: 0, dailyTarget: NumberSetting.dailyTarget.currentValue)
+        self.init(date: Date.now, sessionsCompleted: 0, dailyTarget: NumberSetting.dailyTarget.currentValue)
     }
     
     // MARK: - Computed properties
-    var isDailyTargetMet: Bool { workSessionsCompleted >= dailyTarget }
+    var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
 }

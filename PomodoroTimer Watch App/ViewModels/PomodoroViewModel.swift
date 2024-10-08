@@ -115,7 +115,7 @@ final class PomodoroViewModel {
     
     func incrementWorkSessionsCompleted() {
         let record = dataService.fetchRecordToday()
-        record.workSessionsCompleted += 1
+        record.sessionsCompleted += 1
     }
 
     

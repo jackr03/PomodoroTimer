@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Charts
 
 struct StatisticsView: View {
     // MARK: - Properties
@@ -16,12 +17,24 @@ struct StatisticsView: View {
     @State private var showingDeletionAlert = false
     
     // MARK: - Computed properties
+    var recordToday: Record { statisticsViewModel.recordToday }
+    var recordsThisWeek: [Record?] { statisticsViewModel.recordsThisWeek }
+    
+    var statusMessage: String {
+        if recordToday.sessionsCompleted == 0 {
+            return "Let's get to work!"
+        } else if recordToday.sessionsCompleted > 0 && recordToday.sessionsCompleted < recordToday.dailyTarget {
+            return "Keep it up!"
+        } else {
+            return "Well done!"
+        }
+    }
     
     // MARK: - View
     var body: some View {
         TabView {
             dailyView
-//            weeklyView
+            weeklyView
 //            monthlyView
             allTimeView
         }
@@ -50,25 +63,12 @@ struct StatisticsView: View {
 }
 
 private extension StatisticsView {
-    // MARK: - Daily view
-    var recordToday: Record { statisticsViewModel.recordToday }
-    
-    var statusMessage: String {
-        if recordToday.workSessionsCompleted == 0 {
-            return "Let's get to work!"
-        } else if recordToday.workSessionsCompleted > 0 && recordToday.workSessionsCompleted < recordToday.dailyTarget {
-            return "Keep it up!"
-        } else {
-            return "Well done!"
-        }
-    }
-    
     // TODO: Add a progress bar
     var dailyView: some View {
         VStack {
             Spacer()
             
-            Text("\(recordToday.workSessionsCompleted)/\(recordToday.dailyTarget)")
+            Text("\(recordToday.sessionsCompleted)/\(recordToday.dailyTarget)")
                 .font(.title)
                 .foregroundStyle(.primary)
                 .multilineTextAlignment(.center)
@@ -90,13 +90,17 @@ private extension StatisticsView {
         }
     }
     
+    // TODO: Shorten days of the week, decrease size of chart and other UI improvements
     var weeklyView: some View {
-        List {
-            ForEach(statisticsViewModel.recordsThisWeek) { record in
-                HStack {
-                    Text("\(record.formattedDate)")
-                    Text("\(record.workSessionsCompleted)/\(record.dailyTarget)")
-                }
+        Chart {
+            ForEach(recordsThisWeek.indices, id: \.self) { index in
+                let normalisedIndex = (index + 1) % 7
+                let day = Calendar.current.weekdaySymbols[normalisedIndex]
+                
+                BarMark(
+                    x: .value("Day", day),
+                    y: .value("Sessions completed", recordsThisWeek[index]?.sessionsCompleted ?? 0 )
+                )
             }
         }
         .navigationTitle("This week")
@@ -105,20 +109,20 @@ private extension StatisticsView {
         }
     }
     
-    var monthlyView: some View {
-        List {
-            ForEach(statisticsViewModel.recordsThisMonth) { record in
-                HStack {
-                    Text("\(record.formattedDate)")
-                    Text("\(record.workSessionsCompleted)/\(record.dailyTarget)")
-                }
-            }
-        }
-        .navigationTitle("This month")
-        .onAppear() {
-            statisticsViewModel.updateRecordsThisMonth()
-        }
-    }
+//    var monthlyView: some View {
+//        List {
+//            ForEach(statisticsViewModel.recordsThisMonth) { record in
+//                HStack {
+//                    Text("\(record.formattedDate)")
+//                    Text("\(record.sessionsCompleted)/\(record.dailyTarget)")
+//                }
+//            }
+//        }
+//        .navigationTitle("This month")
+//        .onAppear() {
+//            statisticsViewModel.updateRecordsThisMonth()
+//        }
+//    }
     
     var allTimeView: some View {
         VStack {
@@ -133,7 +137,7 @@ private extension StatisticsView {
                 ForEach(statisticsViewModel.allRecords) { record in
                     HStack {
                         Text("\(record.formattedDate)")
-                        Text("\(record.workSessionsCompleted)/\(record.dailyTarget)")
+                        Text("\(record.sessionsCompleted)/\(record.dailyTarget)")
                     }
                     .listRowBackground(record.isDailyTargetMet ? Color.green : Color.red)
                 }
