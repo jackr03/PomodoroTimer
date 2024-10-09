@@ -18,7 +18,7 @@ final class StatisticsViewModel {
     private let dataService = DataService.shared
     
     private(set) var recordToday: Record = Record()
-    private(set) var recordsThisWeek: [Record?] = Array(repeating: nil, count: 7)
+    private(set) var recordsThisWeek: [Record] = []
     private(set) var recordsThisMonth: [Record] = []
     private(set) var allRecords: [Record] = []
     
@@ -33,36 +33,18 @@ final class StatisticsViewModel {
     // MARK: - Functions
     // FIXME: Remove, just for testing
     func addRecord() {
-        let record = Record(date: Date.distantFuture, sessionsCompleted: 0, dailyTarget: 0)
-        let record2 = Record(date: Date.distantPast, sessionsCompleted: 0, dailyTarget: 0)
+        let weekRange = Calendar.current.currentWeekRange
         
-        performFunctionAndFetchRecords {
-            dataService.addRecord(record)
-        }
-        performFunctionAndFetchRecords {
-            dataService.addRecord(record2)
+        var currentDate = weekRange.lowerBound
+        while currentDate < weekRange.upperBound {
+                let record = Record(date: currentDate, sessionsCompleted: Int.random(in: 1...12), dailyTarget: 8)
+                performFunctionAndFetchRecords {
+                    dataService.addRecord(record)
+                }
+            currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
         }
         
-        guard let monthRange = Calendar.current.dateInterval(of: .month, for: Date.now) else {
-            return
-        }
-        var currentDate = monthRange.start
-        
-        while currentDate < monthRange.end {
-            print(currentDate)
-            
-            let record3 = Record(date: currentDate, sessionsCompleted: 0, dailyTarget: 0)
-            performFunctionAndFetchRecords {
-                dataService.addRecord(record3)
-            }
-            guard let nextDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) else {
-                break
-            }
-            
-            currentDate = nextDate
-        }
         allRecords = dataService.fetchAllRecords()
-
     }
     
     func updateRecordToday() {
@@ -71,16 +53,7 @@ final class StatisticsViewModel {
     
     // FIXME: Clean up the way we get the indexes, e.g. use a dictionary?
     func updateRecordsThisWeek() {
-        recordsThisWeek = Array(repeating: nil, count: 7)
-        
-        let records = dataService.fetchRecordsThisWeek()
-        if records.isEmpty { return }
-        
-        for record in records {
-            let dayOfWeek = Calendar.current.component(.weekday, from: record.date)
-            let normalisedIndex = (dayOfWeek + 5) % 7
-            recordsThisWeek[normalisedIndex] = record
-        }
+        recordsThisWeek = dataService.fetchRecordsThisWeek()
     }
     
     func updateRecordsThisMonth() {

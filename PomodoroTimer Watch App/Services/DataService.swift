@@ -52,13 +52,11 @@ final class DataService {
     
     // TODO: Log issues properly if dateIntervals cannot be found
     func fetchRecordsThisWeek() -> [Record] {
-        guard let weekRange = Calendar.current.dateInterval(of: .weekOfYear, for: Date.now) else {
-            return []
-        }
+        let weekRange = Calendar.current.currentWeekRange
         
         var descriptor = FetchDescriptor<Record>(
             predicate: #Predicate { record in
-                record.date >= weekRange.start && record.date < weekRange.end
+                record.date >= weekRange.lowerBound && record.date < weekRange.upperBound
             },
             sortBy: [
                 SortDescriptor(\.date, order: .reverse)

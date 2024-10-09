@@ -58,3 +58,14 @@ struct Haptics {
         device.play(.click)
     }
 }
+
+extension Calendar {
+    // TODO: Figure out a better approach if weekRange is nil
+    var currentWeekRange: ClosedRange<Date> {
+        if let weekRange = self.dateInterval(of: .weekOfYear, for: Date.now) {
+            return weekRange.start...weekRange.end
+        } else {
+            return Date.now...Date.now
+        }
+    }
+}

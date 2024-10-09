@@ -15,10 +15,12 @@ struct StatisticsView: View {
     @Environment(\.dismiss) private var dismiss
         
     @State private var showingDeletionAlert = false
+    @State private var animateBars = false
     
     // MARK: - Computed properties
     var recordToday: Record { statisticsViewModel.recordToday }
-    var recordsThisWeek: [Record?] { statisticsViewModel.recordsThisWeek }
+    var recordsThisWeek: [Record] { statisticsViewModel.recordsThisWeek }
+    var recordsThisMonth: [Record] { statisticsViewModel.recordsThisMonth}
     
     var statusMessage: String {
         if recordToday.sessionsCompleted == 0 {
@@ -33,7 +35,7 @@ struct StatisticsView: View {
     // MARK: - View
     var body: some View {
         TabView {
-            dailyView
+//            dailyView
             weeklyView
 //            monthlyView
             allTimeView
@@ -63,6 +65,7 @@ struct StatisticsView: View {
 }
 
 private extension StatisticsView {
+    // TODO: Overhaul
     // TODO: Add a progress bar
     var dailyView: some View {
         VStack {
@@ -90,39 +93,96 @@ private extension StatisticsView {
         }
     }
     
-    // TODO: Shorten days of the week, decrease size of chart and other UI improvements
+    // TODO: Clickable bars to go to the record screen, from which it can be deleted
+    // TODO: Could maybe fetch directly from allRecords, which is why .chartXScale is kept here
+    // TODO: Clean up max calculation, maybe convert this into a @ViewBuilder function
     var weeklyView: some View {
-        Chart {
-            ForEach(recordsThisWeek.indices, id: \.self) { index in
-                let normalisedIndex = (index + 1) % 7
-                let day = Calendar.current.weekdaySymbols[normalisedIndex]
-                
-                BarMark(
-                    x: .value("Day", day),
-                    y: .value("Sessions completed", recordsThisWeek[index]?.sessionsCompleted ?? 0 )
-                )
+        VStack {
+            Chart {
+                ForEach(recordsThisWeek) { record in
+                    BarMark(
+                        x: .value("Day", record.date, unit: .weekday),
+                        y: .value("Sessions completed", animateBars ? record.sessionsCompleted : 0)
+                    )
+                    .foregroundStyle(record.isDailyTargetMet ? .green : .red)
+                    .annotation(position: .top) {
+                        Text("\(record.sessionsCompleted)")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
+            .chartXScale(domain: Calendar.current.currentWeekRange)
+            .chartYScale(domain: 0...((recordsThisWeek.map { $0.sessionsCompleted }.max() ?? 0) + 5))
+            .chartXAxis {
+                AxisMarks(values: .stride(by: .day)) { date in
+                    AxisValueLabel(format: .dateTime.weekday(.abbreviated), centered: true)
+                }
+            }
+            .chartYAxis(.hidden)
+            .padding()
+            
+            Spacer()
+            
+            Text("Sessions completed")
+                .font(.footnote)
+                .foregroundStyle(.primary)
         }
         .navigationTitle("This week")
         .onAppear() {
             statisticsViewModel.updateRecordsThisWeek()
+            withAnimation(.easeInOut(duration: 0.5)) {
+                animateBars = true
+            }
+        }
+        .onDisappear() {
+            animateBars = false
         }
     }
     
-//    var monthlyView: some View {
-//        List {
-//            ForEach(statisticsViewModel.recordsThisMonth) { record in
-//                HStack {
-//                    Text("\(record.formattedDate)")
-//                    Text("\(record.sessionsCompleted)/\(record.dailyTarget)")
-//                }
-//            }
-//        }
-//        .navigationTitle("This month")
-//        .onAppear() {
-//            statisticsViewModel.updateRecordsThisMonth()
-//        }
-//    }
+    var monthlyView: some View {
+        VStack {
+            Chart {
+                ForEach(recordsThisMonth) { record in
+                    BarMark(
+                        x: .value("Day", record.date, unit: .weekday),
+                        y: .value("Sessions completed", animateBars ? record.sessionsCompleted : 0)
+                    )
+                    .foregroundStyle(record.isDailyTargetMet ? .green : .red)
+                    .annotation(position: .top) {
+                        Text("\(record.sessionsCompleted)")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .chartXScale(domain: Calendar.current.currentWeekRange)
+            .chartYScale(domain: 0...((recordsThisWeek.map { $0.sessionsCompleted }.max() ?? 0) + 5))
+            .chartXAxis {
+                AxisMarks(values: .stride(by: .day)) { date in
+                    AxisValueLabel(format: .dateTime.weekday(.abbreviated), centered: true)
+                }
+            }
+            .chartYAxis(.hidden)
+            .padding()
+            
+            Spacer()
+            
+            Text("Sessions completed")
+                .font(.footnote)
+                .foregroundStyle(.primary)
+        }
+        .navigationTitle("This month")
+        .onAppear() {
+            statisticsViewModel.updateRecordsThisMonth()
+            withAnimation(.easeInOut(duration: 0.5)) {
+                animateBars = true
+            }
+        }
+        .onDisappear() {
+            animateBars = false
+        }
+    }
     
     var allTimeView: some View {
         VStack {
@@ -150,7 +210,7 @@ private extension StatisticsView {
         }
     }
     
-    // TODO: Add a graph of how many were done over the past week
+    // TODO: Reintegrate total and delete button into new allTimeView
 //    var allTimeView: some View {
 //        VStack {
 //            Spacer()
@@ -187,7 +247,7 @@ private extension StatisticsView {
 //        .padding()
 //    }
 //
-    // TODO: - Replace this with SwiftData equivalent
+    // TODO: - Replace reset with SwiftData equivalent
     var deletionAlert: Alert {
         Alert(
             title: Text("Reset sessions?"),
