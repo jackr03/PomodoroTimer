@@ -8,6 +8,7 @@
 import Foundation
 import WatchKit
 
+// TODO: Remove once everything has been integrated into SettingsService
 struct Defaults {
     static let defaults = UserDefaults.standard
     
@@ -39,6 +40,7 @@ struct Defaults {
     }
 }
 
+// TODO: Convert to an extension
 struct Haptics {
     static let device = WKInterfaceDevice.current()
     
@@ -59,8 +61,9 @@ struct Haptics {
     }
 }
 
-// TODO: Figure out a better approach if range is nil
 extension Calendar {
+    var startOfToday: Date { Calendar.current.startOfDay(for: Date.now) }
+    
     var currentWeekRange: ClosedRange<Date> {
         if let weekRange = self.dateInterval(of: .weekOfYear, for: Date.now) {
             return weekRange.start...weekRange.end

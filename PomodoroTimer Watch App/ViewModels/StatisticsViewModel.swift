@@ -17,17 +17,37 @@ final class StatisticsViewModel {
     private let pomodoroTimer = PomodoroTimer.shared
     private let dataService = DataService.shared
     
-    private(set) var recordToday: Record = Record()
-    private(set) var recordsThisWeek: [Record] = []
-    private(set) var recordsThisMonth: [Record] = []
-    private(set) var allRecords: [Record] = []
+    private(set) var records: [Record] = []
     
     // MARK: - Init
-    // TODO: Initialise all records
     private init() {}
     
     // MARK: - Computed properties
+    var recordToday: Record {
+        records.filter { record in
+            record.date == Calendar.current.startOfToday
+        }
+        .first ?? dataService.fetchRecordToday()
+    }
+    
+    var recordsThisWeek: [Record] {
+        let weekRange = Calendar.current.currentWeekRange
+        
+        return records.filter { record in
+            record.date >= weekRange.lowerBound && record.date < weekRange.upperBound
+        }
+    }
+    
+    var recordsThisMonth: [Record] {
+        let monthRange = Calendar.current.currentMonthRange
+        
+        return records.filter { record in
+            record.date >= monthRange.lowerBound && record.date < monthRange.upperBound
+        }
+    }
+    
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
+    
     
     // MARK: - Functions
     // FIXME: Remove, just for testing
@@ -46,24 +66,11 @@ final class StatisticsViewModel {
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
         }
         
-        allRecords = dataService.fetchAllRecords()
+        records = dataService.fetchAllRecords()
     }
     
-    func updateRecordToday() {
-        recordToday = dataService.fetchRecordToday()
-    }
-    
-    // FIXME: Clean up the way we get the indexes, e.g. use a dictionary?
-    func updateRecordsThisWeek() {
-        recordsThisWeek = dataService.fetchRecordsThisWeek()
-    }
-    
-    func updateRecordsThisMonth() {
-        recordsThisMonth = dataService.fetchRecordsThisMonth()
-    }
-    
-    func updateAllRecords() {
-        allRecords = dataService.fetchAllRecords()
+    func fetchRecords() {
+        records = dataService.fetchAllRecords()
     }
     
     func deleteAllRecords() {
@@ -74,16 +81,16 @@ final class StatisticsViewModel {
     
     func deleteRecord(_ indexSet: IndexSet) {
         for index in indexSet {
-            let record = allRecords[index]
+            let record = records[index]
             dataService.deleteRecord(record)
         }
         
-        allRecords = dataService.fetchAllRecords()
+        records = dataService.fetchAllRecords()
     }
     
     // MARK: - Private functions
     private func performFunctionAndFetchRecords(_ operation: () -> Void) {
         operation()
-        allRecords = dataService.fetchAllRecords()
+        records = dataService.fetchAllRecords()
     }
 }

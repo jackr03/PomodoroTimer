@@ -21,6 +21,7 @@ final class DataService {
         self.modelContext = modelContainer.mainContext
     }
     
+    // TODO: Rename to follow CRUD name scheme
     func fetchRecords(with descriptor: FetchDescriptor<Record>) -> [Record] {
         do {
             return try modelContext.fetch(descriptor)
@@ -29,6 +30,7 @@ final class DataService {
         }
     }
     
+    // TODO: Remove specific, and just have a generic readRecord() function that takes a date. If it doesn't exist, create a new one and return that
     // Attempt to fetch the record for today
     // If it doesn't exist, then create a new one and return that
     func fetchRecordToday() -> Record {
@@ -48,38 +50,6 @@ final class DataService {
             
             return newRecord
         }
-    }
-    
-    func fetchRecordsThisWeek() -> [Record] {
-        let weekRange = Calendar.current.currentWeekRange
-        
-        var descriptor = FetchDescriptor<Record>(
-            predicate: #Predicate { record in
-                record.date >= weekRange.lowerBound && record.date < weekRange.upperBound
-            },
-            sortBy: [
-                SortDescriptor(\.date, order: .reverse)
-            ]
-        )
-        descriptor.fetchLimit = 7
-        
-        return fetchRecords(with: descriptor)
-    }
-    
-    func fetchRecordsThisMonth() -> [Record] {
-        let monthRange = Calendar.current.currentMonthRange
-        
-        var descriptor = FetchDescriptor<Record>(
-            predicate: #Predicate { record in
-                record.date >= monthRange.lowerBound && record.date < monthRange.upperBound
-            },
-            sortBy: [
-                SortDescriptor(\.date, order: .reverse)
-            ]
-        )
-        descriptor.fetchLimit = 31
-        
-        return fetchRecords(with: descriptor)
     }
     
     func fetchAllRecords() -> [Record] {

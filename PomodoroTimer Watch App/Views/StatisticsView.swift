@@ -55,6 +55,9 @@ struct StatisticsView: View {
                 .handGestureShortcut(.primaryAction)
             }
         }
+        .onAppear() {
+            statisticsViewModel.fetchRecords()
+        }
         .onChange(of: statisticsViewModel.isSessionFinished) { _, isFinished in
             if isFinished {
                 dismiss()
@@ -91,7 +94,6 @@ private extension StatisticsView {
         .padding()
         .navigationTitle("Today")
         .onAppear() {
-            statisticsViewModel.updateRecordToday()
         }
     }
     
@@ -132,7 +134,6 @@ private extension StatisticsView {
         }
         .navigationTitle("This week")
         .onAppear() {
-            statisticsViewModel.updateRecordsThisWeek()
             withAnimation(.easeInOut(duration: 0.5)) {
                 animateWeeklyPoints = true
             }
@@ -173,7 +174,6 @@ private extension StatisticsView {
         }
         .navigationTitle("This month")
         .onAppear() {
-            statisticsViewModel.updateRecordsThisMonth()
             withAnimation(.easeInOut(duration: 0.5)) {
                 animateMonthlyPoints = true
             }
@@ -193,7 +193,7 @@ private extension StatisticsView {
                 statisticsViewModel.deleteAllRecords()
             }
             List {
-                ForEach(statisticsViewModel.allRecords) { record in
+                ForEach(statisticsViewModel.records) { record in
                     HStack {
                         Text("\(record.formattedDate)")
                         Text("\(record.sessionsCompleted)/\(record.dailyTarget)")
@@ -205,7 +205,6 @@ private extension StatisticsView {
         }
         .navigationTitle("All time")
         .onAppear() {
-            statisticsViewModel.updateAllRecords()
         }
     }
     

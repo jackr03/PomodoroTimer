@@ -105,6 +105,7 @@ final class PomodoroViewModel {
         return pomodoroTimer.remainingTime
     }
     
+    // TODO: Get using SettingsService
     func startTimerIfAutoContinueEnabled() {
         if Defaults.getBoolFrom("autoContinue") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -117,7 +118,6 @@ final class PomodoroViewModel {
         let record = dataService.fetchRecordToday()
         record.sessionsCompleted += 1
     }
-
     
     // MARK: - Haptic functions
     func playHaptics() {
