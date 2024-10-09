@@ -25,7 +25,4 @@ class Record {
     convenience init() {
         self.init(date: Date.now, sessionsCompleted: 0, dailyTarget: NumberSetting.dailyTarget.currentValue)
     }
-    
-    // MARK: - Computed properties
-    var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
 }

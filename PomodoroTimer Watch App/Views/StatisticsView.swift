@@ -213,6 +213,8 @@ extension Record {
         
         return formatter.string(from: date)
     }
+    
+    var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
 }
 
 #Preview {
