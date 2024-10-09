@@ -15,7 +15,9 @@ struct StatisticsView: View {
     @Environment(\.dismiss) private var dismiss
         
     @State private var showingDeletionAlert = false
-    @State private var animateBars = false
+    @State private var animateDailyProgressBar = false
+    @State private var animateWeeklyPoints = false
+    @State private var animateMonthlyPoints = false
     
     // MARK: - Computed properties
     var recordToday: Record { statisticsViewModel.recordToday }
@@ -37,7 +39,7 @@ struct StatisticsView: View {
         TabView {
 //            dailyView
             weeklyView
-//            monthlyView
+            monthlyView
             allTimeView
         }
         .tabViewStyle(.verticalPage)
@@ -95,14 +97,14 @@ private extension StatisticsView {
     
     // TODO: Clickable bars to go to the record screen, from which it can be deleted
     // TODO: Could maybe fetch directly from allRecords, which is why .chartXScale is kept here
-    // TODO: Clean up max calculation, maybe convert this into a @ViewBuilder function
+    // TODO: Clean up, maybe convert this into a @ViewBuilder function and move computed and state variables into it
     var weeklyView: some View {
         VStack {
             Chart {
                 ForEach(recordsThisWeek) { record in
                     BarMark(
                         x: .value("Day", record.date, unit: .weekday),
-                        y: .value("Sessions completed", animateBars ? record.sessionsCompleted : 0)
+                        y: .value("Sessions completed", animateWeeklyPoints ? record.sessionsCompleted : 0)
                     )
                     .foregroundStyle(record.isDailyTargetMet ? .green : .red)
                     .annotation(position: .top) {
@@ -115,12 +117,12 @@ private extension StatisticsView {
             .chartXScale(domain: Calendar.current.currentWeekRange)
             .chartYScale(domain: 0...((recordsThisWeek.map { $0.sessionsCompleted }.max() ?? 0) + 5))
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { date in
+                AxisMarks(values: .stride(by: .day)) {
                     AxisValueLabel(format: .dateTime.weekday(.abbreviated), centered: true)
                 }
             }
             .chartYAxis(.hidden)
-            .padding()
+            .padding(.vertical, 10)
             
             Spacer()
             
@@ -132,11 +134,11 @@ private extension StatisticsView {
         .onAppear() {
             statisticsViewModel.updateRecordsThisWeek()
             withAnimation(.easeInOut(duration: 0.5)) {
-                animateBars = true
+                animateWeeklyPoints = true
             }
         }
         .onDisappear() {
-            animateBars = false
+             animateWeeklyPoints = false
         }
     }
     
@@ -144,27 +146,24 @@ private extension StatisticsView {
         VStack {
             Chart {
                 ForEach(recordsThisMonth) { record in
-                    BarMark(
-                        x: .value("Day", record.date, unit: .weekday),
-                        y: .value("Sessions completed", animateBars ? record.sessionsCompleted : 0)
+                    LineMark(
+                        x: .value("Day", record.date, unit: .day),
+                        y: .value("Sessions completed", animateMonthlyPoints ? record.sessionsCompleted : 0)
                     )
-                    .foregroundStyle(record.isDailyTargetMet ? .green : .red)
-                    .annotation(position: .top) {
-                        Text("\(record.sessionsCompleted)")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
+                    .interpolationMethod(.catmullRom)
+                    .foregroundStyle(.blue)
+                    .symbol(.circle)
+                    .symbolSize(30)
                 }
             }
-            .chartXScale(domain: Calendar.current.currentWeekRange)
-            .chartYScale(domain: 0...((recordsThisWeek.map { $0.sessionsCompleted }.max() ?? 0) + 5))
+            .chartXScale(domain: Calendar.current.currentMonthRange)
+            .chartYScale(domain: 0...((recordsThisMonth.map { $0.sessionsCompleted }.max() ?? 0) + 5))
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { date in
-                    AxisValueLabel(format: .dateTime.weekday(.abbreviated), centered: true)
+                AxisMarks(values: .stride(by: .weekOfYear)) {
+                    AxisValueLabel(format: .dateTime.day(.defaultDigits), centered: true)
                 }
             }
-            .chartYAxis(.hidden)
-            .padding()
+            .padding(.vertical, 10)
             
             Spacer()
             
@@ -176,11 +175,11 @@ private extension StatisticsView {
         .onAppear() {
             statisticsViewModel.updateRecordsThisMonth()
             withAnimation(.easeInOut(duration: 0.5)) {
-                animateBars = true
+                animateMonthlyPoints = true
             }
         }
         .onDisappear() {
-            animateBars = false
+            animateMonthlyPoints = false
         }
     }
     

@@ -59,11 +59,19 @@ struct Haptics {
     }
 }
 
+// TODO: Figure out a better approach if range is nil
 extension Calendar {
-    // TODO: Figure out a better approach if weekRange is nil
     var currentWeekRange: ClosedRange<Date> {
         if let weekRange = self.dateInterval(of: .weekOfYear, for: Date.now) {
             return weekRange.start...weekRange.end
+        } else {
+            return Date.now...Date.now
+        }
+    }
+    
+    var currentMonthRange: ClosedRange<Date> {
+        if let monthRange = self.dateInterval(of: .month, for: Date.now) {
+            return monthRange.start...monthRange.end
         } else {
             return Date.now...Date.now
         }

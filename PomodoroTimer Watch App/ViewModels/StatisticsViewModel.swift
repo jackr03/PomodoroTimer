@@ -24,8 +24,7 @@ final class StatisticsViewModel {
     
     // MARK: - Init
     // TODO: Initialise all records
-    private init() {
-    }
+    private init() {}
     
     // MARK: - Computed properties
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
@@ -33,14 +32,17 @@ final class StatisticsViewModel {
     // MARK: - Functions
     // FIXME: Remove, just for testing
     func addRecord() {
-        let weekRange = Calendar.current.currentWeekRange
+        let monthRange = Calendar.current.currentMonthRange
         
-        var currentDate = weekRange.lowerBound
-        while currentDate < weekRange.upperBound {
+        var currentDate = monthRange.lowerBound
+        while currentDate < monthRange.upperBound {
+            if Bool.random() {
                 let record = Record(date: currentDate, sessionsCompleted: Int.random(in: 1...12), dailyTarget: 8)
                 performFunctionAndFetchRecords {
                     dataService.addRecord(record)
                 }
+            }
+                
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
         }
         

@@ -50,7 +50,6 @@ final class DataService {
         }
     }
     
-    // TODO: Log issues properly if dateIntervals cannot be found
     func fetchRecordsThisWeek() -> [Record] {
         let weekRange = Calendar.current.currentWeekRange
         
@@ -68,13 +67,11 @@ final class DataService {
     }
     
     func fetchRecordsThisMonth() -> [Record] {
-        guard let monthRange = Calendar.current.dateInterval(of: .month, for: Date.now) else {
-            return []
-        }
+        let monthRange = Calendar.current.currentMonthRange
         
         var descriptor = FetchDescriptor<Record>(
             predicate: #Predicate { record in
-                record.date >= monthRange.start && record.date < monthRange.end
+                record.date >= monthRange.lowerBound && record.date < monthRange.upperBound
             },
             sortBy: [
                 SortDescriptor(\.date, order: .reverse)
