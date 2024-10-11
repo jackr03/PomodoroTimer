@@ -289,7 +289,9 @@ private extension StatisticsView {
                 Haptics.playClick()
             }) {
                 Image(systemName: "trash")
+                    .font(.caption)
                 Text("Delete all records")
+                    .font(.caption)
             }
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.roundedRectangle(radius: 12))

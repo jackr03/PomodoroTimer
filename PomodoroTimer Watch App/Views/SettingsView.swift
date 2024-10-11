@@ -104,13 +104,6 @@ struct SettingsView: View {
     }
     
     // MARK: - Private functions
-    private func resetToDefault() {
-        settingsViewModel.resetSettings()
-        settingsViewModel.updateTimer()
-        Haptics.playClick()
-        
-        dismiss()
-    }
 }
 
 private extension SettingsView {
@@ -140,21 +133,21 @@ private extension SettingsView {
     
     var resetSettingsButton: some View {
         HStack {
-            Spacer()
-            
             Button(action: {
-                resetToDefault()
-//                haptics
+                settingsViewModel.resetSettings()
+                settingsViewModel.updateTimer()
+                Haptics.playClick()
+                
+                dismiss()
             }) {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .font(.caption)
                 Text("Reset to default")
-                    .padding()
-                    .font(.callout)
-                    .foregroundStyle(.red)
-                    .background(.red.secondary)
-                    .clipShape(Capsule())
+                    .font(.caption)
             }
-            
-            Spacer()
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.roundedRectangle(radius: 12))
+            .tint(.red)
         }
     }
     
