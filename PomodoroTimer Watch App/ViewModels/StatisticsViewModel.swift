@@ -62,7 +62,6 @@ final class StatisticsViewModel {
     
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
     
-    
     // MARK: - Functions
     // FIXME: Remove, just for testing
     func addRecord() {
@@ -93,13 +92,10 @@ final class StatisticsViewModel {
         }
     }
     
-    func deleteRecord(_ indexSet: IndexSet) {
-        for index in indexSet {
-            let record = records[index]
+    func deleteRecord(_ record: Record) {
+        performFunctionAndFetchRecords {
             dataService.deleteRecord(record)
         }
-        
-        records = dataService.fetchAllRecords()
     }
     
     // MARK: - Private functions
