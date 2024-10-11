@@ -39,8 +39,8 @@ struct StatisticsView: View {
     var body: some View {
         TabView {
             dailyStatistics
-//            weeklyStatistics
-//            monthlyStatistics
+            weeklyStatistics
+            monthlyStatistics
             allTimeStatistics
         }
         .tabViewStyle(.verticalPage)
@@ -71,7 +71,7 @@ private extension StatisticsView {
         recordStatistics(for: recordToday, isToday: true)
     }
     
-    // TODO: Clickable bars to go to the record screen, from which it can be deleted
+    // TODO: Clickable bars to go to the record screen
     var weeklyStatistics: some View {
         VStack {
             Chart {
@@ -89,7 +89,6 @@ private extension StatisticsView {
                 }
             }
             .chartXScale(domain: Calendar.current.currentWeekRange)
-            .chartYScale(domain: calculateYDomain(from: recordsThisWeek))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) {
                     AxisValueLabel(format: .dateTime.weekday(.abbreviated),
@@ -131,7 +130,6 @@ private extension StatisticsView {
                 }
             }
             .chartXScale(domain: Calendar.current.currentMonthRange)
-            .chartYScale(domain: calculateYDomain(from: recordsThisMonth))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .weekOfYear)) {
                     AxisValueLabel(format: .dateTime.day(.defaultDigits),
@@ -224,26 +222,26 @@ private extension StatisticsView {
                 
                 HStack {
                     Image(systemName: "checkmark.seal")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundStyle(.blue)
                     Text("Total sessions: \(statisticsViewModel.totalSessions)")
-                        .font(.body)
+                        .font(.subheadline)
                 }
                 
                 HStack {
                     Image(systemName: "flame")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundStyle(.orange)
                     Text("Current streak: \(statisticsViewModel.currentStreak)")
-                        .font(.body)
+                        .font(.subheadline)
                 }
                 
                 HStack {
                     Image(systemName: "flame")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundStyle(.red)
                     Text("Longest streak: \(statisticsViewModel.longestStreak)")
-                        .font(.body)
+                        .font(.subheadline)
                 }
             }
         }
@@ -331,11 +329,6 @@ private extension StatisticsView {
                 Haptics.playClick()
             }
         )
-    }
-    
-    func calculateYDomain(from records: [Record]) -> ClosedRange<Int> {
-        let maxSessions = records.map { $0.sessionsCompleted }.max() ?? 0
-        return 0...maxSessions + 5
     }
 }
 
