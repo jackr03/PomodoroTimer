@@ -10,6 +10,7 @@ import SwiftUI
 struct PomodoroView: View {
     // MARK: - Properties
     @Bindable private var pomodoroViewModel = PomodoroViewModel.shared
+    @Bindable private var coordinator = NavigationCoordinator.shared
     
     @Environment(\.scenePhase) private var scenePhase
     
@@ -31,11 +32,14 @@ struct PomodoroView: View {
 
     // MARK: - Views
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $coordinator.path) {
             VStack() {
                 circularProgressBar
             }
             .ignoresSafeArea()
+            .navigationDestination(for: NavigationDestination.self) { destination in
+                coordinator.destination(for: destination)
+            }
             .toolbar {
                 if !isScreenInactive && !pomodoroViewModel.isSessionFinished {
                     toolbarItems()
@@ -46,6 +50,7 @@ struct PomodoroView: View {
             }
             .onChange(of: pomodoroViewModel.isSessionFinished) { _, isFinished in
                 if isFinished {
+                    coordinator.popToRoot()
                     pomodoroViewModel.incrementWorkSessionsCompleted()
                     pomodoroViewModel.playHaptics()
                 }
@@ -219,14 +224,18 @@ private extension PomodoroView {
     @ToolbarContentBuilder
     func toolbarItems() -> some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
-            NavigationLink(destination: StatisticsView()) {
+            Button(action: {
+                coordinator.push(.statistics)
+            }) {
                 Image(systemName: "chart.line.uptrend.xyaxis")
                     .foregroundStyle(.gray)
             }
         }
         
         ToolbarItem(placement: .topBarTrailing) {
-            NavigationLink(destination: SettingsView()) {
+            Button(action: {
+                coordinator.push(.settings)
+            }) {
                 if pomodoroViewModel.isPermissionGranted {
                     Image(systemName: "gear")
                         .foregroundStyle(.gray)

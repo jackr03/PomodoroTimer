@@ -11,8 +11,7 @@ import Charts
 struct StatisticsView: View {
     // MARK: - Properties
     private let statisticsViewModel = StatisticsViewModel.shared
-    
-    @Environment(\.dismiss) private var dismiss
+    private let coordinator = NavigationCoordinator.shared
     
     @State private var showingDeleteRecordAlert = false
     @State private var showingDeleteAllRecordsAlert = false
@@ -48,16 +47,11 @@ struct StatisticsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
-                    dismiss()
+                    coordinator.pop()
                 }) {
                     Image(systemName: "chevron.left")
                 }
                 .handGestureShortcut(.primaryAction)
-            }
-        }
-        .onChange(of: statisticsViewModel.isSessionFinished) { _, isFinished in
-            if isFinished {
-                dismiss()
             }
         }
         .alert(isPresented: $showingDeleteAllRecordsAlert) {
@@ -82,13 +76,16 @@ private extension StatisticsView {
                     )
                     .foregroundStyle(record.isDailyTargetMet ? .green : .red)
                     .annotation(position: .top) {
-                        Text("\(record.sessionsCompleted)")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
+                        if record.sessionsCompleted > 0 {
+                            Text("\(record.sessionsCompleted)")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
             .chartXScale(domain: Calendar.current.currentWeekRange)
+            .chartYScale(domain: 0...NumberSetting.dailyTarget.currentValue)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) {
                     AxisValueLabel(format: .dateTime.weekday(.abbreviated),
@@ -119,17 +116,20 @@ private extension StatisticsView {
         VStack {
             Chart {
                 ForEach(recordsThisMonth) { record in
-                    LineMark(
-                        x: .value("Day", record.date, unit: .day),
-                        y: .value("Sessions completed", animateMonthlyPoints ? record.sessionsCompleted : 0)
-                    )
-                    .interpolationMethod(.catmullRom)
-                    .foregroundStyle(.blue)
-                    .symbol(.circle)
-                    .symbolSize(30)
+                    if record.sessionsCompleted > 0 {
+                        LineMark(
+                            x: .value("Day", record.date, unit: .day),
+                            y: .value("Sessions completed", animateMonthlyPoints ? record.sessionsCompleted : 0)
+                        )
+                        .interpolationMethod(.catmullRom)
+                        .foregroundStyle(.blue)
+                        .symbol(.circle)
+                        .symbolSize(30)
+                    }
                 }
             }
             .chartXScale(domain: Calendar.current.currentMonthRange)
+            .chartYScale(domain: 0...NumberSetting.dailyTarget.currentValue)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .weekOfYear)) {
                     AxisValueLabel(format: .dateTime.day(.defaultDigits),
@@ -197,6 +197,7 @@ private extension StatisticsView {
             
             Button(action: {
                 showingDeleteAllRecordsAlert = true
+                statisticsViewModel.addRecord()
                 Haptics.playClick()
             }) {
                 Image(systemName: "trash")
@@ -323,7 +324,7 @@ private extension StatisticsView {
                 deleteAction()
                 Haptics.playSuccess()
                 
-                dismiss()
+                coordinator.pop()
             },
             secondaryButton: .cancel(Text("Cancel")) {
                 Haptics.playClick()

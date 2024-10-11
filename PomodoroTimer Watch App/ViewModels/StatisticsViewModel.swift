@@ -29,7 +29,7 @@ final class StatisticsViewModel {
         records.filter { record in
             record.date == Calendar.current.startOfToday
         }
-        .first ?? dataService.fetchRecordToday()
+        .first ?? addNewRecord()
     }
     
     var recordsThisWeek: [Record] {
@@ -80,6 +80,16 @@ final class StatisticsViewModel {
         }
         
         records = dataService.fetchAllRecords()
+    }
+    
+    func addNewRecord() -> Record {
+        let newRecord = Record()
+        
+        performFunctionAndFetchRecords {
+            dataService.addRecord(newRecord)
+        }
+        
+        return newRecord
     }
     
     func fetchRecords() {

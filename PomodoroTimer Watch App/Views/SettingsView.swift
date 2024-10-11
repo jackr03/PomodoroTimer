@@ -11,7 +11,7 @@ struct SettingsView: View {
     // MARK: - Properties
     @Bindable private var settingsViewModel = SettingsViewModel.shared
     
-    @Environment(\.dismiss) var dismiss
+    private let coordinator = NavigationCoordinator.shared
     
     @AppStorage("workDuration") private var workDuration: Int = NumberSetting.workDuration.defaultValue
     @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = NumberSetting.shortBreakDuration.defaultValue
@@ -23,63 +23,61 @@ struct SettingsView: View {
     
     // MARK: - Views
     var body: some View {
-        NavigationStack {
-            Form {
-                if !settingsViewModel.isPermissionGranted {
-                    Section {
-                        missingPermissionView
-                    }
-                    .listRowInsets(EdgeInsets())
-                }
-                
+        Form {
+            if !settingsViewModel.isPermissionGranted {
                 Section {
-                    numberPicker(label: "Work",
-                                 selection: $workDuration,
-                                 range: 1...60,
-                                 unit: "minute",
-                                 tagModifier: { $0 * 60 })
-                    
-                    numberPicker(label: "Short break",
-                                 selection: $shortBreakDuration,
-                                 range: 1...60,
-                                 unit: "minute",
-                                 tagModifier: { $0 * 60 })
-                    
-                    numberPicker(label: "Long break",
-                                 selection: $longBreakDuration,
-                                 range: 1...60,
-                                 unit: "minute",
-                                 tagModifier: { $0 * 60 })
+                    missingPermissionView
                 }
+                .listRowInsets(EdgeInsets())
+            }
+            
+            Section {
+                numberPicker(label: "Work",
+                             selection: $workDuration,
+                             range: 1...60,
+                             unit: "minute",
+                             tagModifier: { $0 * 60 })
                 
-                Section {
-                    numberPicker(label: "Daily target",
-                                 selection: $dailyTarget,
-                                 range: 1...24,
-                                 unit: "session",
-                                 onChange: { newValue in settingsViewModel.updateRecordDailyTarget(to: newValue) }
-                    )
-                }
+                numberPicker(label: "Short break",
+                             selection: $shortBreakDuration,
+                             range: 1...60,
+                             unit: "minute",
+                             tagModifier: { $0 * 60 })
                 
+                numberPicker(label: "Long break",
+                             selection: $longBreakDuration,
+                             range: 1...60,
+                             unit: "minute",
+                             tagModifier: { $0 * 60 })
+            }
+            
+            Section {
+                numberPicker(label: "Daily target",
+                             selection: $dailyTarget,
+                             range: 1...24,
+                             unit: "session",
+                             onChange: { newValue in settingsViewModel.updateRecordDailyTarget(to: newValue) }
+                )
+            }
+            
+            Section {
+                togglePicker(label: "Auto-continue", isOn: $autoContinue)
+            }
+             
+            if !settingsViewModel.settingsAreAllDefault {
                 Section {
-                    togglePicker(label: "Auto-continue", isOn: $autoContinue)
-                }
-                 
-                if !settingsViewModel.settingsAreAllDefault {
-                    Section {
-                        resetSettingsButton
-                            .listRowBackground(Color.clear)
-                    }
+                    resetSettingsButton
+                        .listRowBackground(Color.clear)
                 }
             }
-            .navigationTitle("Settings")
         }
+        .navigationTitle("Settings")
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
                     settingsViewModel.updateTimer()
-                    dismiss()
+                    coordinator.pop()
                 }) {
                     Image(systemName: "chevron.left")
                 }
@@ -89,11 +87,6 @@ struct SettingsView: View {
         .onAppear() {
             settingsViewModel.syncSettings()
         }
-        .onChange(of: settingsViewModel.isSessionFinished) { _, isFinished in
-            if isFinished {
-                dismiss()
-            }
-        }
         .alert(isPresented: $showingPermissionsAlert) {
             Alert(
                 title: Text("Enable notifications"),
@@ -102,8 +95,6 @@ struct SettingsView: View {
             )
         }
     }
-    
-    // MARK: - Private functions
 }
 
 private extension SettingsView {
@@ -138,7 +129,7 @@ private extension SettingsView {
                 settingsViewModel.updateTimer()
                 Haptics.playClick()
                 
-                dismiss()
+                coordinator.pop()
             }) {
                 Image(systemName: "arrow.triangle.2.circlepath")
                     .font(.caption)

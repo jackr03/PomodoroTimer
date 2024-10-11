@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1508843A2CA6E9DE0012FB55 /* ExtendedSessionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150884392CA6E9DE0012FB55 /* ExtendedSessionService.swift */; };
+		150EE6312CB9D8A3006193F2 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */; };
 		1512B4A92C9116A0002BA07B /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1512B4A82C9116A0002BA07B /* SettingsViewModel.swift */; };
 		1512B4AB2C9116B8002BA07B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1512B4AA2C9116B8002BA07B /* SettingsView.swift */; };
 		151A8EA22CA5F3CF0022E5D2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151A8EA12CA5F3CF0022E5D2 /* Settings.swift */; };
@@ -27,6 +28,7 @@
 
 /* Begin PBXFileReference section */
 		150884392CA6E9DE0012FB55 /* ExtendedSessionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedSessionService.swift; sourceTree = "<group>"; };
+		150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
 		1512B4A82C9116A0002BA07B /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		1512B4AA2C9116B8002BA07B /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		151A8EA12CA5F3CF0022E5D2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 			children = (
 				15D4CA452CB460540017C3D4 /* DataService.swift */,
 				150884392CA6E9DE0012FB55 /* ExtendedSessionService.swift */,
+				150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */,
 				15C54A342CAAEF4300CC93C3 /* NotificationService.swift */,
 			);
 			path = Services;
@@ -217,6 +220,7 @@
 				15D4CA462CB460540017C3D4 /* DataService.swift in Sources */,
 				159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */,
 				1512B4AB2C9116B8002BA07B /* SettingsView.swift in Sources */,
+				150EE6312CB9D8A3006193F2 /* NavigationCoordinator.swift in Sources */,
 				1586A5302CA0E70C004FF41F /* StatisticsView.swift in Sources */,
 				151D60C62C8E3CE700156456 /* PomodoroViewModel.swift in Sources */,
 				15D5B5152C88F789004B29E8 /* PomodoroTimerApp.swift in Sources */,
