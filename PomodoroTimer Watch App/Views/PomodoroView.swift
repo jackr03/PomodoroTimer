@@ -57,52 +57,6 @@ struct PomodoroView: View {
         .background(pomodoroViewModel.isSessionFinished ? .white : .clear)
     }
     
-    // MARK: - Toolbar
-    @ToolbarContentBuilder
-    private func toolbarItems() -> some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            NavigationLink(destination: StatisticsView()) {
-                Image(systemName: "chart.line.uptrend.xyaxis")
-                    .foregroundStyle(.gray)
-            }
-        }
-        
-        ToolbarItem(placement: .topBarTrailing) {
-            NavigationLink(destination: SettingsView()) {
-                if pomodoroViewModel.isPermissionGranted {
-                    Image(systemName: "gear")
-                        .foregroundStyle(.gray)
-                } else {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.red)
-                }
-            }
-        }
-        
-        ToolbarItemGroup(placement: .bottomBar) {
-            Button(action: {
-                pomodoroViewModel.endCycle()
-                Haptics.playClick()
-            }) {
-                Image(systemName: "stop.fill")
-            }
-            
-            Button(action: {
-                pomodoroViewModel.resetTimer()
-                Haptics.playClick()
-            }) {
-                Image(systemName: "arrow.circlepath")
-            }
-            
-            Button(action: {
-                pomodoroViewModel.skipSession()
-                Haptics.playClick()
-            }) {
-                Image(systemName: "forward.end.fill")
-            }
-        }
-    }
-    
     // MARK: - Private functions
     private func handlePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase) {
         // Slow down updates if screen is inactive
@@ -259,6 +213,51 @@ private extension PomodoroView {
             .position(x: centerX,
                       y: isCentered ? centerY : (centerY - geometry.size.height * 0.04))
             .animation(.easeInOut, value: isCentered)
+        }
+    }
+    
+    @ToolbarContentBuilder
+    func toolbarItems() -> some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            NavigationLink(destination: StatisticsView()) {
+                Image(systemName: "chart.line.uptrend.xyaxis")
+                    .foregroundStyle(.gray)
+            }
+        }
+        
+        ToolbarItem(placement: .topBarTrailing) {
+            NavigationLink(destination: SettingsView()) {
+                if pomodoroViewModel.isPermissionGranted {
+                    Image(systemName: "gear")
+                        .foregroundStyle(.gray)
+                } else {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.red)
+                }
+            }
+        }
+        
+        ToolbarItemGroup(placement: .bottomBar) {
+            Button(action: {
+                pomodoroViewModel.endCycle()
+                Haptics.playClick()
+            }) {
+                Image(systemName: "stop.fill")
+            }
+            
+            Button(action: {
+                pomodoroViewModel.resetTimer()
+                Haptics.playClick()
+            }) {
+                Image(systemName: "arrow.circlepath")
+            }
+            
+            Button(action: {
+                pomodoroViewModel.skipSession()
+                Haptics.playClick()
+            }) {
+                Image(systemName: "forward.end.fill")
+            }
         }
     }
 }

@@ -144,6 +144,7 @@ private extension SettingsView {
             
             Button(action: {
                 resetToDefault()
+//                haptics
             }) {
                 Text("Reset to default")
                     .padding()

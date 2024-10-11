@@ -20,7 +20,9 @@ final class StatisticsViewModel {
     private(set) var records: [Record] = []
     
     // MARK: - Init
-    private init() {}
+    private init() {
+        self.records = dataService.fetchAllRecords()
+    }
     
     // MARK: - Computed properties
     var recordToday: Record {
@@ -46,6 +48,18 @@ final class StatisticsViewModel {
         }
     }
     
+    var totalSessions: Int {
+        return 5
+    }
+    
+    var currentStreak: Int {
+        return 10
+    }
+    
+    var longestStreak: Int {
+        return 12
+    }
+    
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
     
     
@@ -57,7 +71,7 @@ final class StatisticsViewModel {
         var currentDate = monthRange.lowerBound
         while currentDate < monthRange.upperBound {
             if Bool.random() {
-                let record = Record(date: currentDate, sessionsCompleted: Int.random(in: 1...12), dailyTarget: 8)
+                let record = Record(date: currentDate, sessionsCompleted: Int.random(in: 1...12), dailyTarget: 6)
                 performFunctionAndFetchRecords {
                     dataService.addRecord(record)
                 }
