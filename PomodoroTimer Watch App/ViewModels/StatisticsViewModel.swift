@@ -63,7 +63,7 @@ final class StatisticsViewModel {
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
     
     // MARK: - Functions
-    // FIXME: Remove, just for testing
+    // TODO: Remove, just for testing
     func addRecord() {
         let monthRange = Calendar.current.currentMonthRange
         

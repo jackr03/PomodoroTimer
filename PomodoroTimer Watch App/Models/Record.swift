@@ -27,3 +27,24 @@ class Record {
         self.init(date: Date.now, sessionsCompleted: 0, dailyTarget: NumberSetting.dailyTarget.currentValue)
     }
 }
+
+extension Record {
+    var formattedDateShort: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        
+        return formatter.string(from: date)
+
+    }
+    
+    var formattedDateMedium: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        
+        return formatter.string(from: date)
+    }
+    
+    var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
+}

@@ -13,26 +13,14 @@ struct StatisticsView: View {
     private let statisticsViewModel = StatisticsViewModel.shared
     private let coordinator = NavigationCoordinator.shared
     
-    @State private var showingDeleteRecordAlert = false
-    @State private var showingDeleteAllRecordsAlert = false
-    @State private var animateDailyProgress = false
     @State private var animateWeeklyPoints = false
     @State private var animateMonthlyPoints = false
+    @State private var showingDeleteAllRecordsAlert = false
     
     // MARK: - Computed properties
     var recordToday: Record { statisticsViewModel.recordToday }
     var recordsThisWeek: [Record] { statisticsViewModel.recordsThisWeek }
-    var recordsThisMonth: [Record] { statisticsViewModel.recordsThisMonth}
-
-    var statusMessage: String {
-        if recordToday.sessionsCompleted == 0 {
-            return "Let's get to work!"
-        } else if recordToday.sessionsCompleted > 0 && recordToday.sessionsCompleted < recordToday.dailyTarget {
-            return "Keep it up!"
-        } else {
-            return "Well done!"
-        }
-    }
+    var recordsThisMonth: [Record] { statisticsViewModel.recordsThisMonth }
 
     // MARK: - View
     var body: some View {
@@ -62,7 +50,7 @@ struct StatisticsView: View {
 
 private extension StatisticsView {
     var dailyStatistics: some View {
-        recordStatistics(for: recordToday, isToday: true)
+        RecordView(record: recordToday)
     }
     
     // TODO: Clickable bars to go to the record screen
@@ -85,7 +73,7 @@ private extension StatisticsView {
                 }
             }
             .chartXScale(domain: Calendar.current.currentWeekRange)
-            .chartYScale(domain: 0...NumberSetting.dailyTarget.currentValue)
+            .chartYScale(domain: calculateYDomain(from: recordsThisWeek))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) {
                     AxisValueLabel(format: .dateTime.weekday(.abbreviated),
@@ -129,7 +117,7 @@ private extension StatisticsView {
                 }
             }
             .chartXScale(domain: Calendar.current.currentMonthRange)
-            .chartYScale(domain: 0...NumberSetting.dailyTarget.currentValue)
+            .chartYScale(domain: calculateYDomain(from: recordsThisMonth))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .weekOfYear)) {
                     AxisValueLabel(format: .dateTime.day(.defaultDigits),
@@ -156,6 +144,7 @@ private extension StatisticsView {
     }
     
     // TODO: Collapsible sections by month
+    // FIXME: Using @Environment's dismiss currently
     var allTimeStatistics: some View {
         ScrollView {
             LazyVStack {
@@ -164,7 +153,10 @@ private extension StatisticsView {
                 .padding(.bottom, 10)
                     
                 ForEach(statisticsViewModel.records) { record in
-                    NavigationLink(destination: recordStatistics(for: record)) {
+                    NavigationLink(destination: RecordView(record: record,
+                                                deleteAction: { record in
+                        statisticsViewModel.deleteRecord(record)
+                    })) {
                         HStack {
                             VStack(alignment: .leading) {
                                 HStack {
@@ -197,7 +189,6 @@ private extension StatisticsView {
             
             Button(action: {
                 showingDeleteAllRecordsAlert = true
-                statisticsViewModel.addRecord()
                 Haptics.playClick()
             }) {
                 Image(systemName: "trash")
@@ -248,80 +239,12 @@ private extension StatisticsView {
         }
     }
     
-    // FIXME: Need to fix views, by popping off the stack
-    func recordStatistics(for record: Record, isToday: Bool = false) -> some View {
-        HStack {
-            ProgressView(value: animateDailyProgress ? Double(min(record.sessionsCompleted, record.dailyTarget)) : 0,
-                         total: Double(record.dailyTarget))
-            .progressViewStyle(LinearProgressViewStyle())
-            .tint(record.isDailyTargetMet ? .green : .red)
-            .rotationEffect(.degrees(-90))
-                
-            VStack {
-                Text("\(record.sessionsCompleted)/\(record.dailyTarget) sessions")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                
-                if isToday {
-                    Text(statusMessage)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-            }
-        }
-        .navigationTitle(isToday ? "Today" : record.formattedDateMedium)
-        .toolbar {
-            if !isToday {
-                ToolbarItem(placement: .bottomBar) {
-                    Button(action: {
-                        showingDeleteRecordAlert = true
-                        Haptics.playClick()
-                    }) {
-                        Image(systemName: "trash")
-                    }
-                    .foregroundStyle(.red)
-                    .background(.red.secondary)
-                    .clipShape(Capsule())
-                }
-            }
-        }
-        .onAppear() {
-            withAnimation(.easeInOut(duration: 0.5)) {
-                animateDailyProgress = true
-            }
-        }
-        .onDisappear() {
-            animateDailyProgress = false
-        }
-        .alert(isPresented: $showingDeleteRecordAlert) {
-            deleteAlert(record)
-        }
-    }
-    
-    func deleteAlert(_ record: Record? = nil) -> Alert {
-        let title: String
-        let deleteAction: () -> Void
-        
-        if let record = record {
-            title = "Delete record for \(record.formattedDateShort)?"
-            deleteAction = {
-                statisticsViewModel.deleteRecord(record)
-            }
-        } else {
-            title = "Delete all records?"
-            deleteAction = {
-                statisticsViewModel.deleteAllRecords()
-            }
-        }
-        
-        return Alert(
-            title: Text(title),
+    func deleteAlert() -> Alert {
+        Alert(
+            title: Text("Delete all records?"),
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
-                deleteAction()
+                statisticsViewModel.deleteAllRecords()
                 Haptics.playSuccess()
                 
                 coordinator.pop()
@@ -331,27 +254,11 @@ private extension StatisticsView {
             }
         )
     }
-}
-
-extension Record {
-    var formattedDateShort: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .none
-        
-        return formatter.string(from: date)
-
-    }
     
-    var formattedDateMedium: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        
-        return formatter.string(from: date)
+    func calculateYDomain(from records: [Record]) -> ClosedRange<Int> {
+        let maxSessions = records.map { $0.sessionsCompleted }.max() ?? 0
+        return 0...maxSessions + 5
     }
-    
-    var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
 }
 
 #Preview {
