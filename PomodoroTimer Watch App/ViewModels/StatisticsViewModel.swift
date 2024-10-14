@@ -49,7 +49,9 @@ final class StatisticsViewModel {
     }
     
     var totalSessions: Int {
-        return 5
+        return records.reduce(0, { sum, record in
+            sum + record.sessionsCompleted
+        })
     }
     
     var currentStreak: Int {
