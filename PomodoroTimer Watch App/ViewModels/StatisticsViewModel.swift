@@ -55,7 +55,19 @@ final class StatisticsViewModel {
     }
     
     var currentStreak: Int {
-        return 10
+        var streak = 0
+        var currentDate = Calendar.current.startOfToday
+        
+        for record in records {
+            guard Calendar.current.isDate(record.date, inSameDayAs: currentDate), record.isDailyTargetMet else {
+                break
+            }
+            
+            streak += 1
+            currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+        }
+        
+        return streak
     }
     
     var longestStreak: Int {
@@ -67,16 +79,17 @@ final class StatisticsViewModel {
     // MARK: - Functions
     // TODO: Remove, just for testing
     func addRecord() {
-        let monthRange = Calendar.current.currentMonthRange
-        
-        var currentDate = monthRange.lowerBound
-        while currentDate < monthRange.upperBound {
-            if Bool.random() {
-                let record = Record(date: currentDate, sessionsCompleted: Int.random(in: 1...12), dailyTarget: 6)
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let firstOfOctober = calendar.date(from: DateComponents(year: 2024, month: 10, day: 1))!
+
+        // Start looping from the 1st of October to today
+        var currentDate = firstOfOctober
+        while currentDate <= today {
+                let record = Record(date: currentDate, sessionsCompleted: Int.random(in: 1...12), dailyTarget: 4)
                 performFunctionAndFetchRecords {
                     dataService.addRecord(record)
                 }
-            }
                 
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
         }
