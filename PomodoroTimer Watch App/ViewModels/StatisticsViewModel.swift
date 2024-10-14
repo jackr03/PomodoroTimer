@@ -55,7 +55,7 @@ final class StatisticsViewModel {
     }
     
     var currentStreak: Int {
-        var streak = 0
+        var currentStreak = 0
         var currentDate = Calendar.current.startOfToday
         
         for record in records {
@@ -63,15 +63,32 @@ final class StatisticsViewModel {
                 break
             }
             
-            streak += 1
+            currentStreak += 1
             currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
         }
         
-        return streak
+        return currentStreak
     }
     
     var longestStreak: Int {
-        return 12
+        var currentStreak = 0
+        var longestStreak = 0
+        var currentDate = Calendar.current.startOfToday
+        
+        for record in records {
+            if Calendar.current.isDate(record.date, inSameDayAs: currentDate) && record.isDailyTargetMet {
+                currentStreak += 1
+            } else {
+                longestStreak = max(currentStreak, longestStreak)
+                currentStreak = 0
+            }
+            
+            currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+        }
+        
+        longestStreak = max(currentStreak, longestStreak)
+        
+        return longestStreak
     }
     
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
