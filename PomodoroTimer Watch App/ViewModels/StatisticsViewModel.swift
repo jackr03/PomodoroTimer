@@ -93,27 +93,7 @@ final class StatisticsViewModel {
     
     var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
     
-    // MARK: - Functions
-    // TODO: Remove, just for testing
-    func addRecord() {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        let firstOfOctober = calendar.date(from: DateComponents(year: 2024, month: 10, day: 1))!
-
-        // Start looping from the 1st of October to today
-        var currentDate = firstOfOctober
-        while currentDate <= today {
-                let record = Record(date: currentDate, sessionsCompleted: Int.random(in: 1...12), dailyTarget: 4)
-                performFunctionAndFetchRecords {
-                    dataService.addRecord(record)
-                }
-                
-            currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
-        }
-        
-        records = dataService.fetchAllRecords()
-    }
-    
+    // MARK: - Functions    
     func addNewRecord() -> Record {
         let newRecord = Record()
         
