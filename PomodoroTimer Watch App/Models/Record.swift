@@ -24,7 +24,7 @@ class Record {
     }
     
     convenience init() {
-        self.init(date: Date.now, sessionsCompleted: 0, dailyTarget: NumberSetting.dailyTarget.currentValue)
+        self.init(date: Date.now, sessionsCompleted: 0, dailyTarget: SettingsManager.shared.get(.dailyTarget))
     }
 }
 

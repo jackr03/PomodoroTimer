@@ -15,6 +15,8 @@ class PomodoroTimer {
     
     public let maxSessions = 4
 
+    private let settings = SettingsManager.shared
+    
     private(set) var remainingTime = SessionType.work.duration
     private(set) var currentSession: SessionType = .work
     private(set) var currentSessionNumber = 0
@@ -36,9 +38,9 @@ class PomodoroTimer {
 
         var duration: Int {
             switch self {
-            case .work: return NumberSetting.workDuration.currentValue
-            case .shortBreak: return NumberSetting.shortBreakDuration.currentValue
-            case .longBreak: return NumberSetting.longBreakDuration.currentValue
+            case .work: return SettingsManager.shared.get(.workDuration)
+            case .shortBreak: return SettingsManager.shared.get(.shortBreakDuration)
+            case .longBreak: return SettingsManager.shared.get(.longBreakDuration)
             }
         }
         

@@ -7,22 +7,6 @@
 
 import Foundation
 
-struct SettingsManager {
-    // MARK: - Properties
-    static let settings: [any Setting] = NumberSetting.allCases + ToggleSetting.allCases
-    
-    // MARK: - Functions
-    static func checkIfSettingsAreAllDefault() -> Bool {
-        return settings.allSatisfy(\.isDefault)
-    }
-        
-    static func resetSettings() {
-        settings.forEach { setting in
-            setting.reset()
-        }
-    }
-}
-
 protocol Setting: CaseIterable where T: Equatable {
     associatedtype T
     
@@ -39,7 +23,7 @@ extension Setting {
     
     // MARK: - Functions
     func reset() {
-        Defaults.set(rawValue, to: defaultValue)
+        UserDefaults.standard.set(defaultValue, forKey: rawValue)
     }
 }
 
@@ -52,7 +36,7 @@ enum NumberSetting: String, Setting {
     
     // MARK: - Computed properties
     var currentValue: Int {
-        let storedValue = Defaults.getIntFrom(rawValue)
+        let storedValue = UserDefaults.standard.integer(forKey: rawValue)
         return storedValue == 0 ? defaultValue: storedValue
     }
     
@@ -80,7 +64,7 @@ enum ToggleSetting: String, Setting {
     case autoContinue
     
     // MARK: - Computed properties
-    var currentValue: Bool { Defaults.getBoolFrom(rawValue) }
+    var currentValue: Bool { UserDefaults.standard.bool(forKey: rawValue) }
     
     var defaultValue: Bool {
         switch self {

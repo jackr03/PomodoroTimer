@@ -8,38 +8,6 @@
 import Foundation
 import WatchKit
 
-// TODO: Remove once everything has been integrated into SettingsService
-struct Defaults {
-    static let defaults = UserDefaults.standard
-    
-    // MARK: - Integer functions
-    static func getIntFrom(_ key: String) -> Int {
-        return defaults.integer(forKey: key)
-    }
-    
-    static func set(_ key: String, to value: Int) {
-        defaults.set(value, forKey: key)
-    }
-    
-    // MARK: - Boolean functions
-    static func getBoolFrom(_ key: String) -> Bool {
-        return defaults.bool(forKey: key)
-    }
-    
-    static func set(_ key: String, to value: Bool) {
-        defaults.set(value, forKey: key)
-    }
-    
-    // MARK: - Object functions
-    static func getObjectFrom(_ key: String) -> Any? {
-        return defaults.object(forKey: key)
-    }
-    
-    static func set(_ key: String, to value: Any?) {
-        defaults.set(value, forKey: key)
-    }
-}
-
 // TODO: Convert to an extension
 struct Haptics {
     static let device = WKInterfaceDevice.current()

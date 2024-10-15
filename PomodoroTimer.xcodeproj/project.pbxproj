@@ -17,6 +17,7 @@
 		151D60C42C8E33A100156456 /* PomodoroTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151D60C32C8E33A100156456 /* PomodoroTimer.swift */; };
 		151D60C62C8E3CE700156456 /* PomodoroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151D60C52C8E3CE700156456 /* PomodoroViewModel.swift */; };
 		151D60C82C8E579500156456 /* PomodoroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151D60C72C8E579500156456 /* PomodoroView.swift */; };
+		155835912CBF02C9000422D2 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 155835902CBF02C9000422D2 /* SettingsManager.swift */; };
 		1586A5302CA0E70C004FF41F /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1586A52F2CA0E70B004FF41F /* StatisticsView.swift */; };
 		1586A5322CA0EC23004FF41F /* StatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1586A5312CA0EC23004FF41F /* StatisticsViewModel.swift */; };
 		159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159A17C72CB0C5B600F4ECAD /* Record.swift */; };
@@ -38,6 +39,7 @@
 		151D60C32C8E33A100156456 /* PomodoroTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTimer.swift; sourceTree = "<group>"; };
 		151D60C52C8E3CE700156456 /* PomodoroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroViewModel.swift; sourceTree = "<group>"; };
 		151D60C72C8E579500156456 /* PomodoroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroView.swift; sourceTree = "<group>"; };
+		155835902CBF02C9000422D2 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		1582628D2C9DEC7900D18B5C /* PomodoroTimer-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "PomodoroTimer-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1586A52F2CA0E70B004FF41F /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		1586A5312CA0EC23004FF41F /* StatisticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewModel.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 				150884392CA6E9DE0012FB55 /* ExtendedSessionService.swift */,
 				150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */,
 				15C54A342CAAEF4300CC93C3 /* NotificationService.swift */,
+				155835902CBF02C9000422D2 /* SettingsManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 				151A8EA22CA5F3CF0022E5D2 /* Settings.swift in Sources */,
 				1508843A2CA6E9DE0012FB55 /* ExtendedSessionService.swift in Sources */,
 				15D4CA462CB460540017C3D4 /* DataService.swift in Sources */,
+				155835912CBF02C9000422D2 /* SettingsManager.swift in Sources */,
 				159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */,
 				1512B4AB2C9116B8002BA07B /* SettingsView.swift in Sources */,
 				150EE6312CB9D8A3006193F2 /* NavigationCoordinator.swift in Sources */,

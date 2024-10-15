@@ -107,7 +107,7 @@ final class PomodoroViewModel {
     
     // TODO: Get using SettingsService
     func startTimerIfAutoContinueEnabled() {
-        if Defaults.getBoolFrom("autoContinue") {
+        if SettingsManager.shared.get(.autoContinue) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.startTimer()
             }
