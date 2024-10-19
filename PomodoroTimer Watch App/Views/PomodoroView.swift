@@ -74,6 +74,8 @@ struct PomodoroView: View {
             viewModel.stopCachingTimeAndProgress()
         case (.active, .inactive):
             viewModel.startCachingTimeAndProgress()
+        case (.background, .inactive):
+            viewModel.clearNotifications()
         default:
             break
         }
@@ -100,8 +102,6 @@ struct PomodoroView: View {
             if viewModel.deductBreakTime(by: secondsSinceLastInactive) > 0 {
                 viewModel.startExtendedSession()
             }
-            
-            viewModel.cancelBreakOverNotification()
         default:
             break
         }

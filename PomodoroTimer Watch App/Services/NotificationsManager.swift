@@ -67,8 +67,9 @@ final class NotificationsManager {
                identifier: "breakOverNotification")
     }
     
-    func cancelNotification(withIdentifier identifier: String) {
-        center.removePendingNotificationRequests(withIdentifiers: [identifier])
+    func clearNotifications() {
+        center.removeAllPendingNotificationRequests()
+        center.removeAllDeliveredNotifications()
     }
     
     // MARK: - Private functions

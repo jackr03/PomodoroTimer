@@ -157,8 +157,8 @@ final class PomodoroViewModel {
         notifier.notifyUserWhenBreakOver(timeTilEnd: remainingTime)
     }
     
-    func cancelBreakOverNotification() {
-        notifier.cancelNotification(withIdentifier: "breakOverNotification")
+    func clearNotifications() {
+        notifier.clearNotifications()
     }
     
     // MARK: - Private functions
