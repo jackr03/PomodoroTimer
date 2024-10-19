@@ -10,7 +10,7 @@ import Charts
 
 struct StatisticsView: View {
     // MARK: - Properties
-    private let statisticsViewModel = StatisticsViewModel.shared
+    private let viewModel = StatisticsViewModel.shared
     private let coordinator = NavigationCoordinator.shared
     
     @State private var animateWeeklyPoints = false
@@ -18,9 +18,9 @@ struct StatisticsView: View {
     @State private var showingDeleteAllRecordsAlert = false
     
     // MARK: - Computed properties
-    var recordToday: Record { statisticsViewModel.recordToday }
-    var recordsThisWeek: [Record] { statisticsViewModel.recordsThisWeek }
-    var recordsThisMonth: [Record] { statisticsViewModel.recordsThisMonth }
+    var recordToday: Record { viewModel.recordToday }
+    var recordsThisWeek: [Record] { viewModel.recordsThisWeek }
+    var recordsThisMonth: [Record] { viewModel.recordsThisMonth }
 
     // MARK: - View
     var body: some View {
@@ -152,10 +152,10 @@ private extension StatisticsView {
                 .padding()
                 .padding(.bottom, 10)
                     
-                ForEach(statisticsViewModel.records) { record in
+                ForEach(viewModel.records) { record in
                     NavigationLink(destination: RecordView(record: record,
                                                 deleteAction: { record in
-                        statisticsViewModel.deleteRecord(record)
+                        viewModel.deleteRecord(record)
                     })) {
                         HStack {
                             VStack(alignment: .leading) {
@@ -216,7 +216,7 @@ private extension StatisticsView {
                     Image(systemName: "checkmark.seal")
                         .font(.subheadline)
                         .foregroundStyle(.blue)
-                    Text("Total sessions: \(statisticsViewModel.totalSessions)")
+                    Text("Total sessions: \(viewModel.totalSessions)")
                         .font(.subheadline)
                 }
                 
@@ -224,7 +224,7 @@ private extension StatisticsView {
                     Image(systemName: "flame")
                         .font(.subheadline)
                         .foregroundStyle(.orange)
-                    Text("Current streak: \(statisticsViewModel.currentStreak)")
+                    Text("Current streak: \(viewModel.currentStreak)")
                         .font(.subheadline)
                 }
                 
@@ -232,7 +232,7 @@ private extension StatisticsView {
                     Image(systemName: "flame")
                         .font(.subheadline)
                         .foregroundStyle(.red)
-                    Text("Longest streak: \(statisticsViewModel.longestStreak)")
+                    Text("Longest streak: \(viewModel.longestStreak)")
                         .font(.subheadline)
                 }
             }
@@ -244,7 +244,7 @@ private extension StatisticsView {
             title: Text("Delete all records?"),
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
-                statisticsViewModel.deleteAllRecords()
+                viewModel.deleteAllRecords()
                 Haptics.playSuccess()
                 
                 coordinator.pop()

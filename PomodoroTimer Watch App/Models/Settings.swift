@@ -45,7 +45,7 @@ enum IntSetting: String, Setting {
         case .workDuration: return 1500
         case .shortBreakDuration: return 300
         case .longBreakDuration: return 1800
-        case .dailyTarget: return 12
+        case .dailyTarget: return 8
         }
     }
     

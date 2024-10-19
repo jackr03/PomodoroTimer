@@ -14,9 +14,9 @@ final class SettingsViewModel {
     // MARK: - Properties
     static let shared = SettingsViewModel()
     
-    private let pomodoroTimer = PomodoroTimer.shared
-    private let dataService = DataStoreService.shared
-    private let notificationService = NotificationsManager.shared
+    private let timer = PomodoroTimer.shared
+    private let dataStore = DataStoreService.shared
+    private let notifier = NotificationsManager.shared
     private let settings = SettingsManager.shared
     
     public var settingsAreAllDefault = true
@@ -25,8 +25,7 @@ final class SettingsViewModel {
     private init() {}
     
     // MARK: - Computed properties
-    var isPermissionGranted: Bool { notificationService.permissionsGranted ?? true }
-    var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
+    var isPermissionGranted: Bool { notifier.permissionsGranted ?? true }
     
     // MARK: - Functions
     func syncSettings() {
@@ -40,13 +39,13 @@ final class SettingsViewModel {
     }
     
     func updateRecordDailyTarget(to value: Int) {
-        let record = dataService.fetchRecordToday()
+        let record = dataStore.fetchRecordToday()
         record.dailyTarget = value
     }
     
     func updateTimer() {
-        guard !pomodoroTimer.isTimerTicking && !pomodoroTimer.isSessionInProgress else { return }
+        guard !timer.isTimerTicking && !timer.isSessionInProgress else { return }
         
-        pomodoroTimer.resetTimer()
+        timer.resetTimer()
     }
 }

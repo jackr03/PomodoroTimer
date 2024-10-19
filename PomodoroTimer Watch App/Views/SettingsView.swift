@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     // MARK: - Properties
-    @Bindable private var settingsViewModel = SettingsViewModel.shared
+    @Bindable private var viewModel = SettingsViewModel.shared
     
     private let coordinator = NavigationCoordinator.shared
     
@@ -24,7 +24,7 @@ struct SettingsView: View {
     // MARK: - Views
     var body: some View {
         Form {
-            if !settingsViewModel.isPermissionGranted {
+            if !viewModel.isPermissionGranted {
                 Section {
                     missingPermissionView
                 }
@@ -56,7 +56,7 @@ struct SettingsView: View {
                              selection: $dailyTarget,
                              range: 1...24,
                              unit: "session",
-                             onChange: { newValue in settingsViewModel.updateRecordDailyTarget(to: newValue) }
+                             onChange: { newValue in viewModel.updateRecordDailyTarget(to: newValue) }
                 )
             }
             
@@ -64,7 +64,7 @@ struct SettingsView: View {
                 togglePicker(label: "Auto-continue", isOn: $autoContinue)
             }
              
-            if !settingsViewModel.settingsAreAllDefault {
+            if !viewModel.settingsAreAllDefault {
                 Section {
                     resetSettingsButton
                         .listRowBackground(Color.clear)
@@ -76,7 +76,7 @@ struct SettingsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
-                    settingsViewModel.updateTimer()
+                    viewModel.updateTimer()
                     coordinator.pop()
                 }) {
                     Image(systemName: "chevron.left")
@@ -85,7 +85,7 @@ struct SettingsView: View {
             }
         }
         .onAppear() {
-            settingsViewModel.syncSettings()
+            viewModel.syncSettings()
         }
         .alert(isPresented: $showingPermissionsAlert) {
             Alert(
@@ -125,8 +125,8 @@ private extension SettingsView {
     var resetSettingsButton: some View {
         HStack {
             Button(action: {
-                settingsViewModel.resetSettings()
-                settingsViewModel.updateTimer()
+                viewModel.resetSettings()
+                viewModel.updateTimer()
                 Haptics.playClick()
                 
                 coordinator.pop()
@@ -163,7 +163,7 @@ private extension SettingsView {
         }
         .onChange(of: selection.wrappedValue) { _, newValue in
             onChange?(newValue)
-            settingsViewModel.syncSettings()
+            viewModel.syncSettings()
         }
     }
     
@@ -176,7 +176,7 @@ private extension SettingsView {
             .foregroundStyle(.secondary)
             .onChange(of: isOn.wrappedValue) { _, newValue in
                 onChange?(newValue)
-                settingsViewModel.syncSettings()
+                viewModel.syncSettings()
             }
     }
 }

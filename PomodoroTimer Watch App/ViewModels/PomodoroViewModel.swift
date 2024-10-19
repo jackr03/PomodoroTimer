@@ -14,10 +14,10 @@ final class PomodoroViewModel {
     // MARK: - Properties
     static let shared = PomodoroViewModel()
     
-    private let pomodoroTimer = PomodoroTimer.shared
-    private let dataService = DataStoreService.shared
-    private let extendedSessionService = ExtendedSessionManager.shared
-    private let notificationService = NotificationsManager.shared
+    private let timer = PomodoroTimer.shared
+    private let dataStore = DataStoreService.shared
+    private let session = ExtendedRuntimeSessionManager.shared
+    private let notifier = NotificationsManager.shared
     private let settings = SettingsManager.shared
     
     private(set) var cachedFormattedRemainingTime: String = ""
@@ -33,55 +33,55 @@ final class PomodoroViewModel {
     
     // MARK: - Computed properties
     var formattedRemainingTime: String {
-        let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
-        let remainingTimeInSeconds: Int = pomodoroTimer.remainingTime % 60
+        let remainingTimeInMinutes: Int = timer.remainingTime / 60
+        let remainingTimeInSeconds: Int = timer.remainingTime % 60
         
         return String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
     }
     
     var progress: CGFloat {
-        CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration)
+        CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
     }
     
-    var maxSessions: Int { pomodoroTimer.maxSessions }
-    var currentSession: String { pomodoroTimer.currentSession.rawValue }
-    var currentSessionsDone: Int { pomodoroTimer.currentSessionNumber }
-    var isWorkSession: Bool { pomodoroTimer.isWorkSession }
-    var isTimerTicking: Bool { pomodoroTimer.isTimerTicking }
+    var maxSessions: Int { timer.maxSessions }
+    var currentSession: String { timer.currentSession.rawValue }
+    var currentSessionsDone: Int { timer.currentSessionNumber }
+    var isWorkSession: Bool { timer.isWorkSession }
+    var isTimerTicking: Bool { timer.isTimerTicking }
     var isSessionFinished: Bool {
-        get { return pomodoroTimer.isSessionFinished }
-        set { pomodoroTimer.isSessionFinished = newValue }
+        get { return timer.isSessionFinished }
+        set { timer.isSessionFinished = newValue }
     }
     // Return true if not determined so that the warning is only shown when explicitly denied
-    var isPermissionGranted: Bool { notificationService.permissionsGranted ?? true }
+    var isPermissionGranted: Bool { notifier.permissionsGranted ?? true }
     
     // MARK: - Timer functions
     func startTimer() {
-        pomodoroTimer.startTimer()
+        timer.startTimer()
         
-        if notificationService.permissionsGranted == nil {
-            notificationService.requestPermissions()
+        if notifier.permissionsGranted == nil {
+            notifier.requestPermissions()
         }
         
         startExtendedSession()
     }
         
     func pauseTimer() {
-        pomodoroTimer.pauseTimer()
+        timer.pauseTimer()
         stopExtendedSession()
     }
     
     func endCycle() {
-        pomodoroTimer.endCycle()
+        timer.endCycle()
         stopExtendedSession()
     }
 
     func resetTimer() {
-        pomodoroTimer.resetTimer()
+        timer.resetTimer()
     }
     
     func skipSession() {
-        pomodoroTimer.skipSession()
+        timer.skipSession()
         stopExtendedSession()
     }
     
@@ -99,11 +99,11 @@ final class PomodoroViewModel {
     }
     
     func deductBreakTime(by seconds: Int) -> Int {
-        guard !pomodoroTimer.isWorkSession else { return -1 }
+        guard !timer.isWorkSession else { return -1 }
         
-        pomodoroTimer.deductTime(by: seconds)
+        timer.deductTime(by: seconds)
         
-        return pomodoroTimer.remainingTime
+        return timer.remainingTime
     }
     
     func startTimerIfAutoContinueEnabled() {
@@ -115,7 +115,7 @@ final class PomodoroViewModel {
     }
     
     func incrementWorkSessionsCompleted() {
-        let record = dataService.fetchRecordToday()
+        let record = dataStore.fetchRecordToday()
         record.sessionsCompleted += 1
     }
     
@@ -139,45 +139,45 @@ final class PomodoroViewModel {
     
     // MARK: - Extended session functions
     func startExtendedSession() {
-        extendedSessionService.startSession()
+        session.startSession()
     }
     
     func stopExtendedSession() {
-        extendedSessionService.stopSession()
+        session.stopSession()
     }
     
     // MARK: - Notification functions
     func checkPermissions() {
         Task {
-            await notificationService.checkPermissions()
+            await notifier.checkPermissions()
         }
     }
     
     func notifyUserToResume() {
-        guard pomodoroTimer.isWorkSession else { return }
+        guard timer.isWorkSession else { return }
         
-        notificationService.notifyUserToResume()
+        notifier.notifyUserToResume()
     }
     
     func notifyUserWhenBreakOver() {
-        guard !pomodoroTimer.isWorkSession else { return }
+        guard !timer.isWorkSession else { return }
         
-        let remainingTime = Double(pomodoroTimer.remainingTime)
+        let remainingTime = Double(timer.remainingTime)
         guard remainingTime > 0 else { return }
 
-        notificationService.notifyUserWhenBreakOver(timeTilEnd: remainingTime)
+        notifier.notifyUserWhenBreakOver(timeTilEnd: remainingTime)
     }
     
     func cancelBreakOverNotification() {
-        notificationService.cancelNotification(withIdentifier: "breakOverNotification")
+        notifier.cancelNotification(withIdentifier: "breakOverNotification")
     }
     
     // MARK: - Private functions
     private func updateTimeAndProgress() {
-        let remainingTimeInMinutes: Int = pomodoroTimer.remainingTime / 60
-        let remainingTimeInSeconds: Int = pomodoroTimer.remainingTime % 60
+        let remainingTimeInMinutes: Int = timer.remainingTime / 60
+        let remainingTimeInSeconds: Int = timer.remainingTime % 60
         
         cachedFormattedRemainingTime = String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
-        cachedProgress = CGFloat(pomodoroTimer.remainingTime) / CGFloat(pomodoroTimer.currentSession.duration)
+        cachedProgress = CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
     }
 }

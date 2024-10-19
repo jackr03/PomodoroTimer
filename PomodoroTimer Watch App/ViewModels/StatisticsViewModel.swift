@@ -14,14 +14,13 @@ final class StatisticsViewModel {
     // MARK: - Properties
     static let shared = StatisticsViewModel()
     
-    private let pomodoroTimer = PomodoroTimer.shared
-    private let dataService = DataStoreService.shared
+    private let dataStore = DataStoreService.shared
     
     private(set) var records: [Record] = []
     
     // MARK: - Init
     private init() {
-        self.records = dataService.fetchAllRecords()
+        self.records = dataStore.fetchAllRecords()
     }
     
     // MARK: - Computed properties
@@ -91,38 +90,36 @@ final class StatisticsViewModel {
         return longestStreak
     }
     
-    var isSessionFinished: Bool { pomodoroTimer.isSessionFinished }
-    
     // MARK: - Functions    
     func addNewRecord() -> Record {
         let newRecord = Record()
         
         performFunctionAndFetchRecords {
-            dataService.addRecord(newRecord)
+            dataStore.addRecord(newRecord)
         }
         
         return newRecord
     }
     
     func fetchRecords() {
-        records = dataService.fetchAllRecords()
+        records = dataStore.fetchAllRecords()
     }
     
     func deleteAllRecords() {
         performFunctionAndFetchRecords {
-            dataService.deleteAllRecords()
+            dataStore.deleteAllRecords()
         }
     }
     
     func deleteRecord(_ record: Record) {
         performFunctionAndFetchRecords {
-            dataService.deleteRecord(record)
+            dataStore.deleteRecord(record)
         }
     }
     
     // MARK: - Private functions
     private func performFunctionAndFetchRecords(_ operation: () -> Void) {
         operation()
-        records = dataService.fetchAllRecords()
+        records = dataStore.fetchAllRecords()
     }
 }

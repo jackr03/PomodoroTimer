@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1508843A2CA6E9DE0012FB55 /* ExtendedSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150884392CA6E9DE0012FB55 /* ExtendedSessionManager.swift */; };
+		1508843A2CA6E9DE0012FB55 /* ExtendedRuntimeSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150884392CA6E9DE0012FB55 /* ExtendedRuntimeSessionManager.swift */; };
 		150EE6312CB9D8A3006193F2 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */; };
 		150EE6332CB9E73C006193F2 /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150EE6322CB9E73C006193F2 /* RecordView.swift */; };
 		1512B4A92C9116A0002BA07B /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1512B4A82C9116A0002BA07B /* SettingsViewModel.swift */; };
@@ -29,7 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		150884392CA6E9DE0012FB55 /* ExtendedSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedSessionManager.swift; sourceTree = "<group>"; };
+		150884392CA6E9DE0012FB55 /* ExtendedRuntimeSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedRuntimeSessionManager.swift; sourceTree = "<group>"; };
 		150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
 		150EE6322CB9E73C006193F2 /* RecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
 		1512B4A82C9116A0002BA07B /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -67,7 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				15D4CA452CB460540017C3D4 /* DataStoreService.swift */,
-				150884392CA6E9DE0012FB55 /* ExtendedSessionManager.swift */,
+				150884392CA6E9DE0012FB55 /* ExtendedRuntimeSessionManager.swift */,
 				150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */,
 				15C54A342CAAEF4300CC93C3 /* NotificationsManager.swift */,
 				155835902CBF02C9000422D2 /* SettingsManager.swift */,
@@ -223,7 +223,7 @@
 				15C54A352CAAEF4300CC93C3 /* NotificationsManager.swift in Sources */,
 				150EE6332CB9E73C006193F2 /* RecordView.swift in Sources */,
 				151A8EA22CA5F3CF0022E5D2 /* Settings.swift in Sources */,
-				1508843A2CA6E9DE0012FB55 /* ExtendedSessionManager.swift in Sources */,
+				1508843A2CA6E9DE0012FB55 /* ExtendedRuntimeSessionManager.swift in Sources */,
 				15D4CA462CB460540017C3D4 /* DataStoreService.swift in Sources */,
 				155835912CBF02C9000422D2 /* SettingsManager.swift in Sources */,
 				159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */,
