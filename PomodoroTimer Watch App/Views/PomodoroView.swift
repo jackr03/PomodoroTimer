@@ -83,7 +83,7 @@ struct PomodoroView: View {
         
         switch (oldPhase, newPhase) {
         // If user has left in the middle of a work session, pause timer and send a notification
-        case (.active, .inactive) where viewModel.isWorkSession:
+        case (.inactive, .background) where viewModel.isWorkSession:
             viewModel.pauseTimer(untilReopened: true)
             viewModel.notifyUserToResume()
         // Record time when user closed app and queue a notification to remind them when break ends
