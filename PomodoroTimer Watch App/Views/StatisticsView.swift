@@ -11,8 +11,8 @@ import Charts
 struct StatisticsView: View {
     // MARK: - Properties
     private let viewModel = StatisticsViewModel.shared
-    private let coordinator = NavigationCoordinator.shared
     private let haptics = HapticsManager()
+    private let coordinator = NavigationCoordinator.shared
     
     @State private var animateWeeklyPoints = false
     @State private var animateMonthlyPoints = false
@@ -42,6 +42,9 @@ struct StatisticsView: View {
                 }
                 .handGestureShortcut(.primaryAction)
             }
+        }
+        .onAppear() {
+            viewModel.fetchAllRecords()
         }
         .alert(isPresented: $showingDeleteAllRecordsAlert) {
             deleteAlert()
@@ -154,10 +157,9 @@ private extension StatisticsView {
                 .padding(.bottom, 10)
                     
                 ForEach(viewModel.records) { record in
-                    NavigationLink(destination: RecordView(record: record,
-                                                deleteAction: { record in
-                        viewModel.deleteRecord(record)
-                    })) {
+                    Button(action: {
+                        coordinator.push(.record(record: record))
+                    }) {
                         HStack {
                             VStack(alignment: .leading) {
                                 HStack {

@@ -37,11 +37,13 @@ final class NavigationCoordinator {
         switch destination {
         case .statistics: StatisticsView()
         case .settings: SettingsView()
+        case .record(let record): RecordView(record: record)
         }
     }
 }
 
-enum NavigationDestination {
+enum NavigationDestination: Hashable {
     case statistics
     case settings
+    case record(record: Record)
 }

@@ -11,8 +11,8 @@ struct SettingsView: View {
     // MARK: - Properties
     @Bindable private var viewModel = SettingsViewModel.shared
     
-    private let coordinator = NavigationCoordinator.shared
     private let haptics = HapticsManager()
+    private let coordinator = NavigationCoordinator.shared
     
     @AppStorage(.workDuration) private var workDuration: Int = SettingsManager.shared.getDefault(.workDuration)
     @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int = SettingsManager.shared.getDefault(.shortBreakDuration)

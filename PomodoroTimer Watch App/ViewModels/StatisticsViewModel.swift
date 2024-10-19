@@ -19,16 +19,14 @@ final class StatisticsViewModel {
     private(set) var records: [Record] = []
     
     // MARK: - Init
-    private init() {
-        self.records = repository.readAllRecords()
-    }
+    private init() {}
     
     // MARK: - Computed properties
     var recordToday: Record {
         records.filter { record in
             record.date == Calendar.current.startOfToday
         }
-        .first ?? createNewRecord()
+        .first ?? addNewRecord()
     }
     
     var recordsThisWeek: [Record] {
@@ -90,10 +88,17 @@ final class StatisticsViewModel {
         return longestStreak
     }
     
-    // MARK: - Functions    
-    func createNewRecord() -> Record {
-        let newRecord = repository.createRecord()
+    // MARK: - Functions
+    func fetchAllRecords() {
         records = repository.readAllRecords()
+    }
+    
+    func addNewRecord() -> Record {
+        let newRecord = Record()
+        
+        performFunctionAndFetchRecords {
+            repository.createRecord(newRecord)
+        }
         
         return newRecord
     }
@@ -104,15 +109,9 @@ final class StatisticsViewModel {
         }
     }
     
-    func deleteRecord(_ record: Record) {
-        performFunctionAndFetchRecords {
-            repository.deleteRecord(record)
-        }
-    }
-    
     // MARK: - Private functions
     private func performFunctionAndFetchRecords(_ operation: () -> Void) {
         operation()
-        records = repository.readAllRecords()
+        fetchAllRecords()
     }
 }

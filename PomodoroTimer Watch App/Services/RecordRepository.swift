@@ -22,8 +22,7 @@ final class RecordRepository {
         self.modelContext = modelContainer.mainContext
     }
     
-    func createRecord() -> Record {
-        let record = Record()
+    func createRecord(_ record: Record) {
         modelContext.insert(record)
         
         do {
@@ -31,8 +30,6 @@ final class RecordRepository {
         } catch {
             fatalError(error.localizedDescription)
         }
-        
-        return record
     }
         
     func readRecord(byDate date: Date) -> Record? {

@@ -121,8 +121,13 @@ final class PomodoroViewModel {
     }
 
     func incrementWorkSessionsCompleted() {
-        let record = repository.readRecord(byDate: Date.now) ?? repository.createRecord()
-        record.sessionsCompleted += 1
+        if let record = repository.readRecord(byDate: Date.now) {
+            record.sessionsCompleted += 1
+        } else {
+            let record = Record()
+            record.sessionsCompleted += 1
+            repository.createRecord(record)
+        }
     }
     
     // MARK: - Extended session functions

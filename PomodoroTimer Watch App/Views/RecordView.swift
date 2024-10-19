@@ -10,21 +10,18 @@ import SwiftUI
 struct RecordView: View {
     // MARK: - Properties
     // TODO: Use coordinator to pop off stack instead of using dismiss()
-    private let coordinator = NavigationCoordinator.shared
+    private let viewModel = RecordViewModel()
     private let haptics = HapticsManager()
-    
-    @Environment(\.dismiss) private var dismiss
+    private let coordinator = NavigationCoordinator.shared
     
     @State private var animateDailyProgress = false
     @State private var showingDeleteRecordAlert = false
     
     var record: Record
-    var deleteAction: ((Record) -> Void)?
     
     // MARK: - Init
-    init(record: Record, deleteAction: ((Record) -> Void)? = nil) {
+    init(record: Record) {
         self.record = record
-        self.deleteAction = deleteAction
     }
     
     // MARK: - Computed properties
@@ -64,7 +61,16 @@ struct RecordView: View {
             }
         }
         .navigationTitle(isToday ? "Today" : record.formattedDateMedium)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    coordinator.pop()
+                }) {
+                    Image(systemName: "chevron.left")
+                }
+                .handGestureShortcut(.primaryAction)
+            }
             if !isToday {
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: {
@@ -88,20 +94,20 @@ struct RecordView: View {
             animateDailyProgress = false
         }
         .alert(isPresented: $showingDeleteRecordAlert) {
-            deleteAlert(record)
+            deleteAlert()
         }
     }
     
     // MARK: - Functions
-    private func deleteAlert(_ record: Record) -> Alert {
+    private func deleteAlert() -> Alert {
         Alert(
             title: Text("Delete record for \(record.formattedDateShort)?"),
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
-                deleteAction?(record)
+                viewModel.deleteRecord(self.record)
                 haptics.playSuccess()
                 
-                dismiss()
+                coordinator.pop()
             },
             secondaryButton: .cancel(Text("Cancel")) {
                 haptics.playClick()
