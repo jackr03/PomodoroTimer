@@ -11,7 +11,6 @@ final class SettingsManager {
     // MARK: - Properties
     static let shared = SettingsManager()
 
-    private let defaults = UserDefaults.standard
     private let settings: [any Setting] = IntSetting.allCases + BoolSetting.allCases
         
     // MARK: - Inits

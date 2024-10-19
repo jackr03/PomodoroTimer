@@ -8,27 +8,6 @@
 import Foundation
 import WatchKit
 
-// TODO: Convert to an extension
-struct Haptics {
-    static let device = WKInterfaceDevice.current()
-    
-    static func playSuccess() {
-        device.play(.success)
-    }
-    
-    static func playStart() {
-        device.play(.start)
-    }
-    
-    static func playStop() {
-        device.play(.stop)
-    }
-    
-    static func playClick() {
-        device.play(.click)
-    }
-}
-
 extension Calendar {
     var startOfToday: Date { Calendar.current.startOfDay(for: Date.now) }
     

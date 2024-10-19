@@ -85,6 +85,17 @@ final class PomodoroViewModel {
         stopExtendedSession()
     }
     
+    func prepareForNextSession() {
+        isSessionFinished = false
+        stopExtendedSession()
+        
+        if settings.get(.autoContinue) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.startTimer()
+            }
+        }
+    }
+    
     func startCachingTimeAndProgress() {
         updateTimeAndProgress()
         
@@ -106,35 +117,9 @@ final class PomodoroViewModel {
         return timer.remainingTime
     }
     
-    func startTimerIfAutoContinueEnabled() {
-        if settings.get(.autoContinue) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.startTimer()
-            }
-        }
-    }
-    
     func incrementWorkSessionsCompleted() {
         let record = dataStore.fetchRecordToday()
         record.sessionsCompleted += 1
-    }
-    
-    // MARK: - Haptic functions
-    func playHaptics() {
-        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-            Haptics.playStop()
-        }
-    }
-    
-    func stopHaptics() {
-        if let hapticTimer = hapticTimer {
-            hapticTimer.invalidate()
-            self.hapticTimer = nil
-        }
-
-        isSessionFinished = false
-        stopExtendedSession()
-        startTimerIfAutoContinueEnabled()
     }
     
     // MARK: - Extended session functions

@@ -9,7 +9,9 @@ import SwiftUI
 
 struct RecordView: View {
     // MARK: - Properties
+    // TODO: Use coordinator to pop off stack instead of using dismiss()
     private let coordinator = NavigationCoordinator.shared
+    private let haptics = HapticsManager()
     
     @Environment(\.dismiss) private var dismiss
     
@@ -67,7 +69,7 @@ struct RecordView: View {
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: {
                         showingDeleteRecordAlert = true
-                        Haptics.playClick()
+                        haptics.playClick()
                     }) {
                         Image(systemName: "trash")
                     }
@@ -97,12 +99,12 @@ struct RecordView: View {
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
                 deleteAction?(record)
-                Haptics.playSuccess()
+                haptics.playSuccess()
                 
                 dismiss()
             },
             secondaryButton: .cancel(Text("Cancel")) {
-                Haptics.playClick()
+                haptics.playClick()
             }
         )
     }

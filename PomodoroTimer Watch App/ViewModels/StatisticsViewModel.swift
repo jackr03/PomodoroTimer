@@ -101,10 +101,6 @@ final class StatisticsViewModel {
         return newRecord
     }
     
-    func fetchRecords() {
-        records = dataStore.fetchAllRecords()
-    }
-    
     func deleteAllRecords() {
         performFunctionAndFetchRecords {
             dataStore.deleteAllRecords()

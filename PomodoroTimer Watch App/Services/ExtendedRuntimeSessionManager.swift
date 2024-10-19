@@ -13,7 +13,6 @@ final class ExtendedRuntimeSessionManager: NSObject, WKExtendedRuntimeSessionDel
     static let shared = ExtendedRuntimeSessionManager()
     
     private var session: WKExtendedRuntimeSession?
-    private var timer: Timer?
 
     // MARK: - Init
     private override init() {

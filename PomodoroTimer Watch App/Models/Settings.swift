@@ -48,15 +48,6 @@ enum IntSetting: String, Setting {
         case .dailyTarget: return 8
         }
     }
-    
-    var isDurationSetting: Bool {
-        switch self {
-        case .workDuration, .shortBreakDuration, .longBreakDuration:
-            return true
-        default:
-            return false
-        }
-    }
 }
 
 enum BoolSetting: String, Setting {

@@ -12,6 +12,7 @@ struct SettingsView: View {
     @Bindable private var viewModel = SettingsViewModel.shared
     
     private let coordinator = NavigationCoordinator.shared
+    private let haptics = HapticsManager()
     
     @AppStorage(.workDuration) private var workDuration: Int = SettingsManager.shared.getDefault(.workDuration)
     @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int = SettingsManager.shared.getDefault(.shortBreakDuration)
@@ -127,7 +128,7 @@ private extension SettingsView {
             Button(action: {
                 viewModel.resetSettings()
                 viewModel.updateTimer()
-                Haptics.playClick()
+                haptics.playClick()
                 
                 coordinator.pop()
             }) {

@@ -12,10 +12,13 @@ struct PomodoroView: View {
     @Bindable private var viewModel = PomodoroViewModel.shared
     @Bindable private var coordinator = NavigationCoordinator.shared
     
+    private let haptics = HapticsManager()
+    
     @Environment(\.scenePhase) private var scenePhase
     
     @State private var lastInactiveTime = Date.now
     @State private var isPulsing = false
+    @State private var hapticTimer: Timer?
     
     // MARK: - Computed properties
     var isScreenInactive: Bool { scenePhase == .inactive }
@@ -52,7 +55,7 @@ struct PomodoroView: View {
                 if isFinished {
                     coordinator.popToRoot()
                     viewModel.incrementWorkSessionsCompleted()
-                    viewModel.playHaptics()
+                    playHaptics()
                 }
             }
             .onChange(of: scenePhase) { oldPhase, newPhase in
@@ -103,16 +106,30 @@ struct PomodoroView: View {
     
     private func buttonAction() {
         if isSessionFinished {
-            viewModel.stopHaptics()
-            Haptics.playClick()
+            stopHaptics()
+            viewModel.prepareForNextSession()
+            haptics.playClick()
         } else {
             if viewModel.isTimerTicking {
                 viewModel.pauseTimer()
-                Haptics.playClick()
+                haptics.playClick()
             } else {
                 viewModel.startTimer()
-                Haptics.playStart()
+                haptics.playStart()
             }
+        }
+    }
+    
+    private func playHaptics() {
+        hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            haptics.playStop()
+        }
+    }
+
+    private func stopHaptics() {
+        if let hapticTimer = hapticTimer {
+            hapticTimer.invalidate()
+            self.hapticTimer = nil
         }
     }
 }
@@ -249,21 +266,21 @@ private extension PomodoroView {
         ToolbarItemGroup(placement: .bottomBar) {
             Button(action: {
                 viewModel.endCycle()
-                Haptics.playClick()
+                haptics.playClick()
             }) {
                 Image(systemName: "stop.fill")
             }
             
             Button(action: {
                 viewModel.resetTimer()
-                Haptics.playClick()
+                haptics.playClick()
             }) {
                 Image(systemName: "arrow.circlepath")
             }
             
             Button(action: {
                 viewModel.skipSession()
-                Haptics.playClick()
+                haptics.playClick()
             }) {
                 Image(systemName: "forward.end.fill")
             }

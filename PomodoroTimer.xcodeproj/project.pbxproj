@@ -20,6 +20,7 @@
 		155835912CBF02C9000422D2 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 155835902CBF02C9000422D2 /* SettingsManager.swift */; };
 		1586A5302CA0E70C004FF41F /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1586A52F2CA0E70B004FF41F /* StatisticsView.swift */; };
 		1586A5322CA0EC23004FF41F /* StatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1586A5312CA0EC23004FF41F /* StatisticsViewModel.swift */; };
+		158E7D2F2CC3E2EE005EBC8E /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158E7D2E2CC3E2EE005EBC8E /* HapticsManager.swift */; };
 		159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159A17C72CB0C5B600F4ECAD /* Record.swift */; };
 		15C54A352CAAEF4300CC93C3 /* NotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15C54A342CAAEF4300CC93C3 /* NotificationsManager.swift */; };
 		15D4CA462CB460540017C3D4 /* DataStoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D4CA452CB460540017C3D4 /* DataStoreService.swift */; };
@@ -43,6 +44,7 @@
 		1582628D2C9DEC7900D18B5C /* PomodoroTimer-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "PomodoroTimer-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1586A52F2CA0E70B004FF41F /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		1586A5312CA0EC23004FF41F /* StatisticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewModel.swift; sourceTree = "<group>"; };
+		158E7D2E2CC3E2EE005EBC8E /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
 		159A17C72CB0C5B600F4ECAD /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		15C54A342CAAEF4300CC93C3 /* NotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManager.swift; sourceTree = "<group>"; };
 		15D4CA452CB460540017C3D4 /* DataStoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreService.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 			children = (
 				15D4CA452CB460540017C3D4 /* DataStoreService.swift */,
 				150884392CA6E9DE0012FB55 /* ExtendedRuntimeSessionManager.swift */,
+				158E7D2E2CC3E2EE005EBC8E /* HapticsManager.swift */,
 				150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */,
 				15C54A342CAAEF4300CC93C3 /* NotificationsManager.swift */,
 				155835902CBF02C9000422D2 /* SettingsManager.swift */,
@@ -216,6 +219,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				158E7D2F2CC3E2EE005EBC8E /* HapticsManager.swift in Sources */,
 				1512B4A92C9116A0002BA07B /* SettingsViewModel.swift in Sources */,
 				151D60C42C8E33A100156456 /* PomodoroTimer.swift in Sources */,
 				151A8EA82CA6072B0022E5D2 /* Utilities.swift in Sources */,
