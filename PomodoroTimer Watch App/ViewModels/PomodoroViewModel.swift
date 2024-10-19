@@ -18,6 +18,7 @@ final class PomodoroViewModel {
     private let dataService = DataService.shared
     private let extendedSessionService = ExtendedSessionService.shared
     private let notificationService = NotificationService.shared
+    private let settings = SettingsManager.shared
     
     private(set) var cachedFormattedRemainingTime: String = ""
     private(set) var cachedProgress: CGFloat = 1.0
@@ -105,9 +106,8 @@ final class PomodoroViewModel {
         return pomodoroTimer.remainingTime
     }
     
-    // TODO: Get using SettingsService
     func startTimerIfAutoContinueEnabled() {
-        if SettingsManager.shared.get(.autoContinue) {
+        if settings.get(.autoContinue) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.startTimer()
             }

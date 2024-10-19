@@ -13,11 +13,11 @@ struct SettingsView: View {
     
     private let coordinator = NavigationCoordinator.shared
     
-    @AppStorage("workDuration") private var workDuration: Int = NumberSetting.workDuration.defaultValue
-    @AppStorage("shortBreakDuration") private var shortBreakDuration: Int = NumberSetting.shortBreakDuration.defaultValue
-    @AppStorage("longBreakDuration") private var longBreakDuration: Int = NumberSetting.longBreakDuration.defaultValue
-    @AppStorage("dailyTarget") private var dailyTarget: Int = NumberSetting.dailyTarget.defaultValue
-    @AppStorage("autoContinue") private var autoContinue: Bool = ToggleSetting.autoContinue.defaultValue
+    @AppStorage(.workDuration) private var workDuration: Int = SettingsManager.shared.getDefault(.workDuration)
+    @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int = SettingsManager.shared.getDefault(.shortBreakDuration)
+    @AppStorage(.longBreakDuration) private var longBreakDuration: Int = SettingsManager.shared.getDefault(.longBreakDuration)
+    @AppStorage(.dailyTarget) private var dailyTarget: Int = SettingsManager.shared.getDefault(.dailyTarget)
+    @AppStorage(.autoContinue) private var autoContinue: Bool = SettingsManager.shared.getDefault(.autoContinue)
     
     @State private var showingPermissionsAlert: Bool = false
     

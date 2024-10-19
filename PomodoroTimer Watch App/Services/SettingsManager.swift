@@ -12,18 +12,26 @@ final class SettingsManager {
     static let shared = SettingsManager()
 
     private let defaults = UserDefaults.standard
-    private let settings: [any Setting] = NumberSetting.allCases + ToggleSetting.allCases
+    private let settings: [any Setting] = IntSetting.allCases + BoolSetting.allCases
         
     // MARK: - Inits
     private init() {}
     
     // MARK: - Functions
-    func get(_ setting: NumberSetting) -> Int {
+    func get(_ setting: IntSetting) -> Int {
         return setting.currentValue
     }
     
-    func get(_ setting: ToggleSetting) -> Bool {
+    func getDefault(_ setting: IntSetting) -> Int {
+        return setting.defaultValue
+    }
+    
+    func get(_ setting: BoolSetting) -> Bool {
         return setting.currentValue
+    }
+    
+    func getDefault(_ setting: BoolSetting) -> Bool {
+        return setting.defaultValue
     }
     
     func checkIfAllDefault() -> Bool {

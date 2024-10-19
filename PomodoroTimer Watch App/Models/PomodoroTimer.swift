@@ -14,8 +14,6 @@ class PomodoroTimer {
     static let shared = PomodoroTimer()
     
     public let maxSessions = 4
-
-    private let settings = SettingsManager.shared
     
     private(set) var remainingTime = SessionType.work.duration
     private(set) var currentSession: SessionType = .work

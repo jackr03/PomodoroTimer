@@ -261,6 +261,16 @@ private extension StatisticsView {
     }
 }
 
+extension AppStorage {
+    init(wrappedValue: Value, _ key: IntSetting, store: UserDefaults? = nil) where Value == Int {
+        self.init(wrappedValue: wrappedValue, key.rawValue, store: store)
+    }
+    
+    init(wrappedValue: Value, _ key: BoolSetting, store: UserDefaults? = nil) where Value == Bool {
+        self.init(wrappedValue: wrappedValue, key.rawValue, store: store)
+    }
+}
+
 #Preview {
     StatisticsView()
 }

@@ -27,7 +27,7 @@ extension Setting {
     }
 }
 
-enum NumberSetting: String, Setting {
+enum IntSetting: String, Setting {
     // MARK: - Cases
     case workDuration
     case shortBreakDuration
@@ -59,7 +59,7 @@ enum NumberSetting: String, Setting {
     }
 }
 
-enum ToggleSetting: String, Setting {
+enum BoolSetting: String, Setting {
     // MARK: - Cases
     case autoContinue
     
