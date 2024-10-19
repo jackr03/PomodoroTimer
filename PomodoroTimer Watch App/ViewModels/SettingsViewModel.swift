@@ -15,8 +15,8 @@ final class SettingsViewModel {
     static let shared = SettingsViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
-    private let dataService = DataService.shared
-    private let notificationService = NotificationService.shared
+    private let dataService = DataStoreService.shared
+    private let notificationService = NotificationsManager.shared
     private let settings = SettingsManager.shared
     
     public var settingsAreAllDefault = true

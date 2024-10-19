@@ -15,9 +15,9 @@ final class PomodoroViewModel {
     static let shared = PomodoroViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
-    private let dataService = DataService.shared
-    private let extendedSessionService = ExtendedSessionService.shared
-    private let notificationService = NotificationService.shared
+    private let dataService = DataStoreService.shared
+    private let extendedSessionService = ExtendedSessionManager.shared
+    private let notificationService = NotificationsManager.shared
     private let settings = SettingsManager.shared
     
     private(set) var cachedFormattedRemainingTime: String = ""

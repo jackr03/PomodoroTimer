@@ -1,5 +1,5 @@
 //
-//  DataService.swift
+//  DataStoreService.swift
 //  PomodoroTimer
 //
 //  Created by Jack Rong on 07/10/2024.
@@ -8,9 +8,9 @@
 import Foundation
 import SwiftData
 
-final class DataService {
+final class DataStoreService {
     @MainActor
-    static public let shared = DataService()
+    static public let shared = DataStoreService()
     
     private let modelContainer: ModelContainer
     private let modelContext: ModelContext

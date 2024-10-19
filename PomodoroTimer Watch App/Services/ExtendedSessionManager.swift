@@ -1,5 +1,5 @@
 //
-//  ExtendedSessionService.swift
+//  ExtendedSessionManager.swift
 //  PomodoroTimer Watch App
 //
 //  Created by Jack Rong on 20/09/2024.
@@ -8,9 +8,9 @@
 import Foundation
 import WatchKit
 
-final class ExtendedSessionService: NSObject, WKExtendedRuntimeSessionDelegate {
+final class ExtendedSessionManager: NSObject, WKExtendedRuntimeSessionDelegate {
     // MARK: - Properties
-    static let shared = ExtendedSessionService()
+    static let shared = ExtendedSessionManager()
     
     private var session: WKExtendedRuntimeSession?
     private var timer: Timer?

@@ -15,7 +15,7 @@ final class StatisticsViewModel {
     static let shared = StatisticsViewModel()
     
     private let pomodoroTimer = PomodoroTimer.shared
-    private let dataService = DataService.shared
+    private let dataService = DataStoreService.shared
     
     private(set) var records: [Record] = []
     

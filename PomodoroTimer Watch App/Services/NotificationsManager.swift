@@ -1,5 +1,5 @@
 //
-//  NotificationService.swift
+//  NotificationsManager.swift
 //  PomodoroTimer
 //
 //  Created by Jack Rong on 30/09/2024.
@@ -8,9 +8,9 @@
 import Foundation
 import UserNotifications
 
-final class NotificationService {
+final class NotificationsManager {
     // MARK: - Properties
-    static let shared = NotificationService()
+    static let shared = NotificationsManager()
     
     private let center = UNUserNotificationCenter.current()
     
