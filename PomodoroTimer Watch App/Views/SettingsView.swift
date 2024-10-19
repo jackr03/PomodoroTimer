@@ -143,6 +143,7 @@ private extension SettingsView {
         }
     }
     
+    // TODO: Make picker open up on current selection
     func numberPicker(label: String,
                         selection: Binding<Int>,
                         range: ClosedRange<Int>,

@@ -148,7 +148,6 @@ private extension StatisticsView {
     }
     
     // TODO: Collapsible sections by month
-    // FIXME: Using @Environment's dismiss currently
     var allTimeStatistics: some View {
         ScrollView {
             LazyVStack {
