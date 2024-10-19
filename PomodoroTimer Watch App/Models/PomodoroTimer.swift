@@ -50,6 +50,8 @@ class PomodoroTimer {
     
     // MARK: - Functions
     func startTimer() {
+        guard timer == nil else { return }
+        
         isTimerTicking = true
         isSessionInProgress = true
         
@@ -58,8 +60,8 @@ class PomodoroTimer {
         }
     }
     
-    func pauseTimer() {
-        isTimerTicking = false
+    func pauseTimer(_ isPausedUntilReopened: Bool = false) {
+        isTimerTicking = isPausedUntilReopened
         
         if let timer = timer {
             timer.invalidate()

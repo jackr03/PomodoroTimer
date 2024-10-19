@@ -66,6 +66,7 @@ struct PomodoroView: View {
     }
     
     // MARK: - Private functions
+    // TODO: Cancel notification when reopening app
     private func handlePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase) {
         // Slow down updates if screen is inactive
         switch (oldPhase, newPhase) {
@@ -80,16 +81,18 @@ struct PomodoroView: View {
         guard viewModel.isTimerTicking else { return }
         
         switch (oldPhase, newPhase) {
-        // If user has left in the middle of a work session, send a notification
+        // If user has left in the middle of a work session, pause timer and send a notification
         case (.active, .inactive) where viewModel.isWorkSession:
+            viewModel.pauseTimer(untilReopened: true)
             viewModel.notifyUserToResume()
         // Record time when user closed app and queue a notification to remind them when break ends
         case (.active, .inactive) where !viewModel.isWorkSession:
             lastInactiveTime = Date.now
             viewModel.notifyUserWhenBreakOver()
         // Restart the extended session if the user comes back
+        // FIXME: Fix error logs with session not running (still works though)
         case (.background, .inactive) where viewModel.isWorkSession:
-            viewModel.startExtendedSession()
+            viewModel.startTimer()
         // Deduct time from the break session and restart the session if there is still time remaining
         // Cancel notification regardless
         case (.background, .inactive) where !viewModel.isWorkSession:

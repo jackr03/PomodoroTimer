@@ -66,9 +66,12 @@ final class PomodoroViewModel {
         startExtendedSession()
     }
         
-    func pauseTimer() {
-        timer.pauseTimer()
-        stopExtendedSession()
+    func pauseTimer(untilReopened: Bool = false) {
+        timer.pauseTimer(untilReopened)
+        
+        if !untilReopened {
+            stopExtendedSession()
+        }
     }
     
     func endCycle() {
@@ -117,6 +120,7 @@ final class PomodoroViewModel {
         return timer.remainingTime
     }
     
+    // FIXME: Doesn't work if no record today?
     func incrementWorkSessionsCompleted() {
         let record = dataStore.fetchRecordToday()
         record.sessionsCompleted += 1
