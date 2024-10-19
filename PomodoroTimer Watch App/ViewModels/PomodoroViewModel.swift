@@ -15,7 +15,7 @@ final class PomodoroViewModel {
     static let shared = PomodoroViewModel()
     
     private let timer = PomodoroTimer.shared
-    private let dataStore = DataStoreService.shared
+    private let repository = RecordRepository.shared
     private let session = ExtendedRuntimeSessionManager.shared
     private let notifier = NotificationsManager.shared
     private let settings = SettingsManager.shared
@@ -119,10 +119,9 @@ final class PomodoroViewModel {
         
         return timer.remainingTime
     }
-    
-    // FIXME: Doesn't work if no record today?
+
     func incrementWorkSessionsCompleted() {
-        let record = dataStore.fetchRecordToday()
+        let record = repository.readRecord(byDate: Date.now) ?? repository.createRecord()
         record.sessionsCompleted += 1
     }
     

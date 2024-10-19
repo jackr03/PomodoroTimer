@@ -66,7 +66,6 @@ struct PomodoroView: View {
     }
     
     // MARK: - Private functions
-    // TODO: Cancel notification when reopening app
     private func handlePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase) {
         // Slow down updates if screen is inactive
         switch (oldPhase, newPhase) {

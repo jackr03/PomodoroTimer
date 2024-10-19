@@ -23,7 +23,7 @@
 		158E7D2F2CC3E2EE005EBC8E /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158E7D2E2CC3E2EE005EBC8E /* HapticsManager.swift */; };
 		159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159A17C72CB0C5B600F4ECAD /* Record.swift */; };
 		15C54A352CAAEF4300CC93C3 /* NotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15C54A342CAAEF4300CC93C3 /* NotificationsManager.swift */; };
-		15D4CA462CB460540017C3D4 /* DataStoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D4CA452CB460540017C3D4 /* DataStoreService.swift */; };
+		15D4CA462CB460540017C3D4 /* RecordRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D4CA452CB460540017C3D4 /* RecordRepository.swift */; };
 		15D5B5152C88F789004B29E8 /* PomodoroTimerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D5B5142C88F789004B29E8 /* PomodoroTimerApp.swift */; };
 		15D5B5192C88F78B004B29E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15D5B5182C88F78B004B29E8 /* Assets.xcassets */; };
 		15D5B51C2C88F78B004B29E8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15D5B51B2C88F78B004B29E8 /* Preview Assets.xcassets */; };
@@ -47,7 +47,7 @@
 		158E7D2E2CC3E2EE005EBC8E /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
 		159A17C72CB0C5B600F4ECAD /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		15C54A342CAAEF4300CC93C3 /* NotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManager.swift; sourceTree = "<group>"; };
-		15D4CA452CB460540017C3D4 /* DataStoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreService.swift; sourceTree = "<group>"; };
+		15D4CA452CB460540017C3D4 /* RecordRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordRepository.swift; sourceTree = "<group>"; };
 		15D5B50F2C88F789004B29E8 /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PomodoroTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15D5B5142C88F789004B29E8 /* PomodoroTimerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTimerApp.swift; sourceTree = "<group>"; };
 		15D5B5182C88F78B004B29E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -68,12 +68,12 @@
 		1508843B2CA6EA120012FB55 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				15D4CA452CB460540017C3D4 /* DataStoreService.swift */,
+				15D4CA452CB460540017C3D4 /* RecordRepository.swift */,
 				150884392CA6E9DE0012FB55 /* ExtendedRuntimeSessionManager.swift */,
 				158E7D2E2CC3E2EE005EBC8E /* HapticsManager.swift */,
-				150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */,
 				15C54A342CAAEF4300CC93C3 /* NotificationsManager.swift */,
 				155835902CBF02C9000422D2 /* SettingsManager.swift */,
+				150EE6302CB9D8A3006193F2 /* NavigationCoordinator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -228,7 +228,7 @@
 				150EE6332CB9E73C006193F2 /* RecordView.swift in Sources */,
 				151A8EA22CA5F3CF0022E5D2 /* Settings.swift in Sources */,
 				1508843A2CA6E9DE0012FB55 /* ExtendedRuntimeSessionManager.swift in Sources */,
-				15D4CA462CB460540017C3D4 /* DataStoreService.swift in Sources */,
+				15D4CA462CB460540017C3D4 /* RecordRepository.swift in Sources */,
 				155835912CBF02C9000422D2 /* SettingsManager.swift in Sources */,
 				159A17C82CB0C5B600F4ECAD /* Record.swift in Sources */,
 				1512B4AB2C9116B8002BA07B /* SettingsView.swift in Sources */,

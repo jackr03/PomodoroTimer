@@ -14,13 +14,13 @@ final class StatisticsViewModel {
     // MARK: - Properties
     static let shared = StatisticsViewModel()
     
-    private let dataStore = DataStoreService.shared
+    private let repository = RecordRepository.shared
     
     private(set) var records: [Record] = []
     
     // MARK: - Init
     private init() {
-        self.records = dataStore.fetchAllRecords()
+        self.records = repository.readAllRecords()
     }
     
     // MARK: - Computed properties
@@ -28,7 +28,7 @@ final class StatisticsViewModel {
         records.filter { record in
             record.date == Calendar.current.startOfToday
         }
-        .first ?? addNewRecord()
+        .first ?? createNewRecord()
     }
     
     var recordsThisWeek: [Record] {
@@ -91,31 +91,28 @@ final class StatisticsViewModel {
     }
     
     // MARK: - Functions    
-    func addNewRecord() -> Record {
-        let newRecord = Record()
-        
-        performFunctionAndFetchRecords {
-            dataStore.addRecord(newRecord)
-        }
+    func createNewRecord() -> Record {
+        let newRecord = repository.createRecord()
+        records = repository.readAllRecords()
         
         return newRecord
     }
     
     func deleteAllRecords() {
         performFunctionAndFetchRecords {
-            dataStore.deleteAllRecords()
+            repository.deleteAllRecords()
         }
     }
     
     func deleteRecord(_ record: Record) {
         performFunctionAndFetchRecords {
-            dataStore.deleteRecord(record)
+            repository.deleteRecord(record)
         }
     }
     
     // MARK: - Private functions
     private func performFunctionAndFetchRecords(_ operation: () -> Void) {
         operation()
-        records = dataStore.fetchAllRecords()
+        records = repository.readAllRecords()
     }
 }

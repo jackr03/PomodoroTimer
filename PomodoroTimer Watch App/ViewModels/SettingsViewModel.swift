@@ -15,7 +15,7 @@ final class SettingsViewModel {
     static let shared = SettingsViewModel()
     
     private let timer = PomodoroTimer.shared
-    private let dataStore = DataStoreService.shared
+    private let repository = RecordRepository.shared
     private let notifier = NotificationsManager.shared
     private let settings = SettingsManager.shared
     
@@ -39,8 +39,9 @@ final class SettingsViewModel {
     }
     
     func updateRecordDailyTarget(to value: Int) {
-        let record = dataStore.fetchRecordToday()
-        record.dailyTarget = value
+        if let record = repository.readRecord(byDate: Date.now) {
+            record.dailyTarget = value
+        }
     }
     
     func updateTimer() {

@@ -205,7 +205,6 @@ private extension StatisticsView {
         .navigationTitle("All time")
     }
     
-    // TODO: Implement actual logic behind computed variables
     var summaryCard: some View {
         HStack {
             VStack(alignment: .leading) {
