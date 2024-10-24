@@ -50,7 +50,14 @@ final class PomodoroViewModel {
     var isTimerTicking: Bool { timer.isTimerTicking }
     var isSessionFinished: Bool {
         get { return timer.isSessionFinished }
-        set { timer.isSessionFinished = newValue }
+        set {
+            // Increment count when !isWorkSession, as this means we have just transitioned from a work session
+            if isSessionFinished && !timer.isWorkSession {
+                incrementSessionsCompleted()
+            }
+            
+            timer.isSessionFinished = newValue
+        }
     }
     // Return true if not determined so that the warning is only shown when explicitly denied
     var isPermissionGranted: Bool { notifier.permissionsGranted ?? true }
@@ -120,7 +127,7 @@ final class PomodoroViewModel {
         return timer.remainingTime
     }
 
-    func incrementWorkSessionsCompleted() {
+    func incrementSessionsCompleted() {
         if let record = repository.readRecord(byDate: Date.now) {
             record.sessionsCompleted += 1
         } else {

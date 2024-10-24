@@ -54,7 +54,6 @@ struct PomodoroView: View {
             .onChange(of: viewModel.isSessionFinished) { _, isFinished in
                 if isFinished {
                     coordinator.popToRoot()
-                    viewModel.incrementWorkSessionsCompleted()
                     playHaptics()
                 }
             }
