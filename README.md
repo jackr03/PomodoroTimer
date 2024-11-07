@@ -3,7 +3,7 @@
 ![screenshot1](https://github.com/user-attachments/assets/f0316f3e-0d77-4106-8c68-8f2ac802b9e9)
 ![screenshot2](https://github.com/user-attachments/assets/0f6ff631-169a-4fba-bf4d-00aef90718c8)
 
-A simple and minimalistic Pomodoro timer app developed for WatchOS using Swift and SwiftUI following the MVVM architecture.
+A simple, minimalistic Pomodoro app developed for WatchOS using Swift and SwiftUI following the MVVM architecture.
 
 ## Features
 
