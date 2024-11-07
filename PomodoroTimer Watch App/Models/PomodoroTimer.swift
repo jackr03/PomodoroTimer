@@ -18,7 +18,6 @@ class PomodoroTimer {
     private(set) var remainingTime = SessionType.work.duration
     private(set) var currentSession: SessionType = .work
     private(set) var currentSessionNumber = 0
-    private(set) var isTimerTicking = false
     private(set) var isSessionInProgress = false
     
     private var timer: Timer?
@@ -41,18 +40,16 @@ class PomodoroTimer {
             case .longBreak: return SettingsManager.shared.get(.longBreakDuration)
             }
         }
-        
-        var isWorkSession: Bool { self == .work }
     }
     
     // MARK: - Computed properties
-    var isWorkSession: Bool { currentSession.isWorkSession }
+    var isWorkSession: Bool { currentSession == .work }
+    var isTimerTicking: Bool { timer != nil }
     
     // MARK: - Functions
     func startTimer() {
         guard timer == nil else { return }
         
-        isTimerTicking = true
         isSessionInProgress = true
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
@@ -60,9 +57,7 @@ class PomodoroTimer {
         }
     }
     
-    func pauseTimer(_ isPausedUntilReopened: Bool = false) {
-        isTimerTicking = isPausedUntilReopened
-        
+    func pauseTimer() {
         if let timer = timer {
             timer.invalidate()
             self.timer = nil
@@ -102,7 +97,7 @@ class PomodoroTimer {
     private func nextSession() {
         pauseTimer()
         
-        if currentSession.isWorkSession {
+        if isWorkSession {
             currentSessionNumber += 1
             currentSession = currentSessionNumber == maxSessions ? .longBreak : .shortBreak
         } else {

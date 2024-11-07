@@ -74,11 +74,8 @@ final class PomodoroViewModel {
     }
         
     func pauseTimer(untilReopened: Bool = false) {
-        timer.pauseTimer(untilReopened)
-        
-        if !untilReopened {
-            stopExtendedSession()
-        }
+        timer.pauseTimer()
+        stopExtendedSession()
     }
     
     func endCycle() {
