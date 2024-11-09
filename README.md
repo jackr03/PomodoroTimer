@@ -1,4 +1,6 @@
 # Pomodoro Timer
+![Swift](https://img.shields.io/badge/swift-F54A2A?style=for-the-badge&logo=swift&logoColor=white)
+![SwiftUI](https://img.shields.io/badge/swiftui-007AFF?style=for-the-badge&logo=swift&logoColor=white)
 
 ![screenshot1](https://github.com/user-attachments/assets/f0316f3e-0d77-4106-8c68-8f2ac802b9e9)
 ![screenshot2](https://github.com/user-attachments/assets/0f6ff631-169a-4fba-bf4d-00aef90718c8)
@@ -29,5 +31,3 @@ A simple, minimalistic Pomodoro app developed for WatchOS using Swift and SwiftU
 ![screenshot6](https://github.com/user-attachments/assets/24d3daaf-2381-492d-a6cc-2829c7d9ef42)
 ![screenshot7](https://github.com/user-attachments/assets/8fd3aef0-a4d7-4842-bf12-2a12a35e3391)
 ![screenshot8](https://github.com/user-attachments/assets/2f3f3eb9-0d14-4d3a-ae60-c0674d6daa11)
-
-![Swift](https://img.shields.io/badge/swift-F54A2A?style=for-the-badge&logo=swift&logoColor=white)
