@@ -92,4 +92,8 @@ iOSInjectionProject/
 # Mac
 .DS_STORE
 
+# Ignore Xcode user-specific files
+*.xcuserstate
+*.xcuserdata/
+
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Swift
