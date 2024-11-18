@@ -11,12 +11,12 @@ import Observation
 
 @Observable
 final class NavigationCoordinator {
-    // MARK: - Properties
+    // MARK: - Stored properties
     static let shared = NavigationCoordinator()
     
     public var path: [NavigationDestination] = []
     
-    // MARK: - Init
+    // MARK: - Inits
     private init() {}
     
     // MARK: - Functions
@@ -35,7 +35,7 @@ final class NavigationCoordinator {
     @ViewBuilder
     func destination(for destination: NavigationDestination) -> some View {
         switch destination {
-        case .statistics: StatisticsView()
+        case .statistics: StatisticsView(viewModel: StatisticsViewModel())
         case .settings: SettingsView()
         case .record(let record): RecordView(record: record)
         }

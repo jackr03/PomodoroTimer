@@ -11,7 +11,8 @@ import SwiftData
 // TODO: Track total time done
 @Model
 class Record {
-    // MARK: - Properties
+    
+    // MARK: - Stored properties
     @Attribute(.unique) var date: Date
     var sessionsCompleted: Int
     var dailyTarget: Int
@@ -25,6 +26,10 @@ class Record {
     
     convenience init() {
         self.init(date: Date.now, sessionsCompleted: 0, dailyTarget: SettingsManager.shared.get(.dailyTarget))
+    }
+    
+    convenience init(date: Date) {
+        self.init(date: date, sessionsCompleted: 0, dailyTarget: SettingsManager.shared.get(.dailyTarget))
     }
 }
 

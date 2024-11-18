@@ -9,14 +9,20 @@ import SwiftUI
 import Charts
 
 struct StatisticsView: View {
-    // MARK: - Properties
-    private let viewModel = StatisticsViewModel.shared
+    
+    // MARK: - Stored properties
+    private let viewModel: StatisticsViewModel
     private let haptics = HapticsManager()
     private let coordinator = NavigationCoordinator.shared
     
     @State private var animateWeeklyPoints = false
     @State private var animateMonthlyPoints = false
     @State private var showingDeleteAllRecordsAlert = false
+    
+    // MARK: - Inits
+    public init(viewModel: StatisticsViewModel) {
+        self.viewModel = viewModel
+    }
     
     // MARK: - Computed properties
     var recordToday: Record { viewModel.recordToday }
@@ -76,7 +82,7 @@ private extension StatisticsView {
                     }
                 }
             }
-            .chartXScale(domain: Calendar.current.currentWeekRange)
+            .chartXScale(domain: Calendar.current.weekRange())
             .chartYScale(domain: calculateYDomain(from: recordsThisWeek))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) {
@@ -120,7 +126,7 @@ private extension StatisticsView {
                     }
                 }
             }
-            .chartXScale(domain: Calendar.current.currentMonthRange)
+            .chartXScale(domain: Calendar.current.monthRange())
             .chartYScale(domain: calculateYDomain(from: recordsThisMonth))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .weekOfYear)) {
@@ -273,5 +279,5 @@ extension AppStorage {
 }
 
 #Preview {
-    StatisticsView()
+    StatisticsView(viewModel: StatisticsViewModel())
 }

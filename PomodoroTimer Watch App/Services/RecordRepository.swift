@@ -8,20 +8,32 @@
 import Foundation
 import SwiftData
 
+protocol RecordRepositoryProtocol {
+    func createRecord(_ record: Record)
+    func readRecord(byDate date: Date) -> Record?
+    func readAllRecords() -> [Record]
+    func deleteRecord(_ record: Record)
+    func deleteAllRecords()
+}
+
 // FIXME: Fix warning 'Main actor-isolated static property shared...'
-final class RecordRepository {
+final class RecordRepository: RecordRepositoryProtocol {
+    
+    // MARK: - Stored properties
     @MainActor
     static public let shared = RecordRepository()
     
     private let modelContainer: ModelContainer
     private let modelContext: ModelContext
     
+    // MARK: - Inits
     @MainActor
     private init() {
         self.modelContainer = try! ModelContainer(for: Record.self)
         self.modelContext = modelContainer.mainContext
     }
     
+    // MARK: - Functions
     func createRecord(_ record: Record) {
         modelContext.insert(record)
         
