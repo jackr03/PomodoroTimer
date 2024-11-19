@@ -10,6 +10,7 @@ import Foundation
 
 final class MockRecordRepository: RecordRepositoryProtocol {
     
+    // MARK: - Stored properties
     var mockRecords: [Record]
     
     // MARK: - Inits
@@ -17,7 +18,7 @@ final class MockRecordRepository: RecordRepositoryProtocol {
         self.mockRecords = mockRecords
     }
     
-    // MARK: - Mock implementations
+    // MARK: - Functions
     func createRecord(_ record: Record) {
         mockRecords.append(record)
     }
@@ -34,7 +35,16 @@ final class MockRecordRepository: RecordRepositoryProtocol {
         return mockRecords
     }
     
-    // MARK: - No-Op implementations
-    func deleteRecord(_ record: Record) {}
-    func deleteAllRecords() {}
+    
+    func deleteRecord(_ record: Record) {
+        if let index = mockRecords.firstIndex(where: {
+            $0.date == record.date
+        }) {
+            mockRecords.remove(at: index)
+        }
+    }
+    
+    func deleteAllRecords() {
+        mockRecords.removeAll()
+    }
 }

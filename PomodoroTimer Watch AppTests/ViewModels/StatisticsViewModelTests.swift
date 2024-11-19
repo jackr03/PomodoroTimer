@@ -8,7 +8,6 @@
 import XCTest
 @testable import PomodoroTimer
 
-// TODO: Tests for repository interacting methods
 final class StatisticsViewModelTests: XCTestCase {
 
     var sut: StatisticsViewModel!
@@ -22,6 +21,42 @@ final class StatisticsViewModelTests: XCTestCase {
         sut = nil
         mockRecordRepository = nil
         super.tearDown()
+    }
+        
+    func testFetchAllRecords_returnsAllRecords() {
+        let records = [
+            Record(date: createDate(year: 2024, month: 1, day: 1)),
+            Record(date: createDate(year: 2024, month: 1, day: 2))
+        ]
+        
+        setUpWithMockRecords(records)
+        
+        sut.fetchAllRecords()
+        
+        XCTAssertEqual(2, sut.records.count)
+    }
+        
+    func testAddNewRecord_addsNewRecord() {
+        setUpWithNoRecords()
+        
+        let recordToday = sut.addNewRecord()
+        
+        XCTAssertEqual(1, sut.records.count)
+        XCTAssertEqual(Calendar.current.startOfToday, recordToday.date)
+        XCTAssertEqual(0, recordToday.sessionsCompleted)
+    }
+        
+    func testDeleteAllRecord_deletesAllRecords() {
+        let records = [
+            Record(date: createDate(year: 2024, month: 1, day: 1)),
+            Record(date: createDate(year: 2024, month: 1, day: 2))
+        ]
+
+        setUpWithMockRecords(records)
+        
+        sut.deleteAllRecords()
+        
+        XCTAssertEqual(0, sut.records.count)
     }
     
     func testNoRecords_returnZeroOrEmptyValues() {

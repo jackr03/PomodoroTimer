@@ -19,7 +19,9 @@ class Record {
     
     // MARK: - Inits
     public init(date: Date, sessionsCompleted: Int, dailyTarget: Int) {
-        self.date = Calendar.current.startOfDay(for: date)
+        let normalisedDate = Calendar.current.startOfDay(for: date)
+        
+        self.date = normalisedDate
         self.sessionsCompleted = sessionsCompleted
         self.dailyTarget = dailyTarget
     }
@@ -40,7 +42,6 @@ extension Record {
         formatter.timeStyle = .none
         
         return formatter.string(from: date)
-
     }
     
     var formattedDateMedium: String {

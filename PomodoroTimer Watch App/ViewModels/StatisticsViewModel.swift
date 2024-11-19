@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import WatchKit
 import Observation
 
 @Observable
@@ -18,15 +17,11 @@ final class StatisticsViewModel {
     private(set) var records: [Record] = []
     
     // MARK: - Inits
-    public init(repository: RecordRepositoryProtocol) {
+    public init(repository: RecordRepositoryProtocol = RecordRepository.shared) {
         self.repository = repository
         self.records = repository.readAllRecords()
     }
-    
-    public convenience init() {
-        self.init(repository: RecordRepository.shared)
-    }
-    
+        
     // MARK: - Computed properties
     var recordToday: Record {
         records.filter { record in

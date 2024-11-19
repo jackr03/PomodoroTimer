@@ -28,8 +28,10 @@ final class RecordRepository: RecordRepositoryProtocol {
     
     // MARK: - Inits
     @MainActor
-    private init() {
-        self.modelContainer = try! ModelContainer(for: Record.self)
+    init(isInMemory: Bool = false) {
+        let modelConfiguration = ModelConfiguration(isStoredInMemoryOnly: isInMemory)
+        
+        self.modelContainer = try! ModelContainer(for: Record.self, configurations: modelConfiguration)
         self.modelContext = modelContainer.mainContext
     }
     
