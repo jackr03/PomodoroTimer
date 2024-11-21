@@ -9,19 +9,19 @@ import SwiftUI
 
 struct RecordView: View {
     // MARK: - Properties
-    // TODO: Use coordinator to pop off stack instead of using dismiss()
-    private let viewModel = RecordViewModel()
+    var record: Record
+    
+    private let viewModel: RecordViewModel
     private let haptics = HapticsManager()
     private let coordinator = NavigationCoordinator.shared
     
     @State private var animateDailyProgress = false
     @State private var showingDeleteRecordAlert = false
     
-    var record: Record
-    
     // MARK: - Init
     init(record: Record) {
         self.record = record
+        self.viewModel = RecordViewModel(record: record)
     }
     
     // MARK: - Computed properties
@@ -104,7 +104,7 @@ struct RecordView: View {
             title: Text("Delete record for \(record.formattedDateShort)?"),
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
-                viewModel.deleteRecord(self.record)
+                viewModel.deleteRecord()
                 haptics.playSuccess()
                 
                 coordinator.pop()

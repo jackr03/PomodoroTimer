@@ -20,6 +20,7 @@ final class StatisticsViewModelTests: XCTestCase {
     override func tearDown() {
         sut = nil
         mockRecordRepository = nil
+        
         super.tearDown()
     }
         
@@ -168,6 +169,7 @@ final class StatisticsViewModelTests: XCTestCase {
 
 // MARK: - Helper methods
 extension StatisticsViewModelTests {
+    
     func setUpWithNoRecords() {
         mockRecordRepository = MockRecordRepository(mockRecords: [])
         sut = StatisticsViewModel(repository: mockRecordRepository)
@@ -177,4 +179,5 @@ extension StatisticsViewModelTests {
         mockRecordRepository = MockRecordRepository(mockRecords: records)
         sut = StatisticsViewModel(repository: mockRecordRepository)
     }
+    
 }

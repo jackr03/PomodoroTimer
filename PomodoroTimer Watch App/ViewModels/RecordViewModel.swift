@@ -8,11 +8,22 @@
 import Foundation
 
 final class RecordViewModel {
-    // MARK: - Properties
-    private let repository = RecordRepository.shared
+    
+    // MARK: - Stored properties
+    private let record: Record
+    private let repository: RecordRepositoryProtocol
+    
+    // MARK: - Inits
+    // TODO: Inject the repository instead of using a singleton
+    @MainActor
+    init(record: Record, repository: RecordRepositoryProtocol = RecordRepository.shared) {
+        self.record = record
+        self.repository = repository
+    }
     
     // MARK: - Functions
-    func deleteRecord(_ record: Record) {
-        repository.deleteRecord(record)
+    func deleteRecord() {
+        repository.deleteRecord(self.record)
     }
+    
 }
