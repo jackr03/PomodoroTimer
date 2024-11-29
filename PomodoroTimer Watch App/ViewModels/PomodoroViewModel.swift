@@ -30,7 +30,7 @@ final class PomodoroViewModel {
     init(timer: PomodoroTimer = PomodoroTimer(),
          repository: RecordRepositoryProtocol? = nil
     ) {
-        self.timer = PomodoroTimer()
+        self.timer = timer
         self.repository = repository ?? RecordRepository.shared
         updateTimeAndProgress()
     }

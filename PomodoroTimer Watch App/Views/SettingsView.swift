@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     
     // MARK: - Stored properties
-    private let viewModel: SettingsViewModel
+    @State private var viewModel: SettingsViewModel
     private let haptics = HapticsManager()
     
     @Environment(NavigationCoordinator.self) private var coordinator
@@ -83,6 +83,7 @@ struct SettingsView: View {
         }
         .navigationTitle("Settings")
         .navigationBarBackButtonHidden(true)
+        // TODO: Handle updating timer differently
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {

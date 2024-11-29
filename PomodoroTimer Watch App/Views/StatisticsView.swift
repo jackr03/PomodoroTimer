@@ -11,7 +11,7 @@ import Charts
 struct StatisticsView: View {
     
     // MARK: - Stored properties
-    private let viewModel: StatisticsViewModel
+    @State private var viewModel: StatisticsViewModel
     private let haptics = HapticsManager()
     
     @Environment(NavigationCoordinator.self) private var coordinator

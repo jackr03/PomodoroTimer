@@ -10,7 +10,7 @@ import SwiftUI
 struct PomodoroView: View {
     
     // MARK: - Stored properties
-    private let viewModel: PomodoroViewModel
+    @State private var viewModel: PomodoroViewModel
     private let haptics = HapticsManager()
     
     @Environment(NavigationCoordinator.self) private var coordinator
@@ -41,7 +41,6 @@ struct PomodoroView: View {
 
     // MARK: - Views
     var body: some View {
-        @Bindable var viewModel = viewModel
         @Bindable var coordinator = coordinator
         
         VStack() {
