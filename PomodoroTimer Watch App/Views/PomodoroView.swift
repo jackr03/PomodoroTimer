@@ -1,5 +1,5 @@
 //
-//  PomoroView.swift
+//  PomodoroView.swift
 //  PomodoroTimer Watch App
 //
 //  Created by Jack Rong on 08/09/2024.
@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct PomodoroView: View {
-    // MARK: - Properties
-    @Bindable private var viewModel = PomodoroViewModel.shared
-    @Bindable private var coordinator = NavigationCoordinator.shared
     
+    // MARK: - Stored properties
+    private let viewModel: PomodoroViewModel
     private let haptics = HapticsManager()
     
+    @Environment(NavigationCoordinator.self) private var coordinator
     @Environment(\.scenePhase) private var scenePhase
     
     @State private var lastInactiveTime = Date.now
     @State private var isPulsing = false
     @State private var hapticTimer: Timer?
     @State private var shouldRestartTimer = false
+    
+    // MARK: - Inits
+    init(viewModel: PomodoroViewModel) {
+        self.viewModel = viewModel
+    }
     
     // MARK: - Computed properties
     var isScreenInactive: Bool { scenePhase == .inactive }
@@ -36,33 +41,31 @@ struct PomodoroView: View {
 
     // MARK: - Views
     var body: some View {
-        NavigationStack(path: $coordinator.path) {
-            VStack() {
-                circularProgressBar
-            }
-            .ignoresSafeArea()
-            .navigationDestination(for: NavigationDestination.self) { destination in
-                coordinator.destination(for: destination)
-            }
-            .toolbar {
-                if !isScreenInactive && !viewModel.isSessionFinished {
-                    toolbarItems()
-                }
-            }
-            .onAppear {
-                viewModel.checkPermissions()
-            }
-            .onChange(of: viewModel.isSessionFinished) { _, isFinished in
-                if isFinished {
-                    coordinator.popToRoot()
-                    playHaptics()
-                }
-            }
-            .onChange(of: scenePhase) { oldPhase, newPhase in
-                handlePhaseChange(oldPhase, newPhase)
+        @Bindable var viewModel = viewModel
+        @Bindable var coordinator = coordinator
+        
+        VStack() {
+            circularProgressBar
+        }
+        .ignoresSafeArea()
+        .background(viewModel.isSessionFinished ? .white : .clear)
+        .toolbar {
+            if !isScreenInactive && !viewModel.isSessionFinished {
+                toolbarItems()
             }
         }
-        .background(viewModel.isSessionFinished ? .white : .clear)
+        .onAppear {
+            viewModel.checkPermissions()
+        }
+        .onChange(of: viewModel.isSessionFinished) { _, isFinished in
+            if isFinished {
+                coordinator.popToRoot()
+                playHaptics()
+            }
+        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            handlePhaseChange(oldPhase, newPhase)
+        }
     }
     
     // MARK: - Private functions
@@ -293,5 +296,11 @@ private extension PomodoroView {
 }
 
  #Preview {
-    PomodoroView()
+     let viewModel = PomodoroViewModel()
+     let coordinator = NavigationCoordinator()
+     
+     NavigationStack() {
+         PomodoroView(viewModel: viewModel)
+             .environment(coordinator)
+     }
 }

@@ -13,14 +13,15 @@ struct StatisticsView: View {
     // MARK: - Stored properties
     private let viewModel: StatisticsViewModel
     private let haptics = HapticsManager()
-    private let coordinator = NavigationCoordinator.shared
+    
+    @Environment(NavigationCoordinator.self) private var coordinator
     
     @State private var animateWeeklyPoints = false
     @State private var animateMonthlyPoints = false
     @State private var showingDeleteAllRecordsAlert = false
     
     // MARK: - Inits
-    public init(viewModel: StatisticsViewModel) {
+    init(viewModel: StatisticsViewModel) {
         self.viewModel = viewModel
     }
     
@@ -29,8 +30,10 @@ struct StatisticsView: View {
     var recordsThisWeek: [Record] { viewModel.recordsThisWeek }
     var recordsThisMonth: [Record] { viewModel.recordsThisMonth }
 
-    // MARK: - View
+    // MARK: - Body
     var body: some View {
+        @Bindable var coordinator = coordinator
+
         TabView {
             dailyStatistics
             weeklyStatistics
@@ -60,7 +63,8 @@ struct StatisticsView: View {
 
 private extension StatisticsView {
     var dailyStatistics: some View {
-        RecordView(record: recordToday)
+        let recordViewModel = RecordViewModel(record: recordToday)
+        return RecordView(viewModel: recordViewModel)
     }
     
     // TODO: Clickable bars to go to the record screen
@@ -162,36 +166,7 @@ private extension StatisticsView {
                 .padding(.bottom, 10)
                     
                 ForEach(viewModel.records) { record in
-                    Button(action: {
-                        coordinator.push(.record(record: record))
-                    }) {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Text("\(record.formattedDateMedium)")
-                                        .font(.headline)
-                                        .foregroundStyle(.secondary)
-                                    
-                                    Spacer()
-                                    
-                                    Text("\(record.sessionsCompleted)/\(record.dailyTarget)")
-                                        .font(.body.bold())
-                                        .foregroundStyle(.primary)
-                                }
-                                
-                                ProgressView(value: Double(min(record.sessionsCompleted, record.dailyTarget)),
-                                             total: Double(record.dailyTarget))
-                                .progressViewStyle(LinearProgressViewStyle())
-                                .tint(record.isDailyTargetMet ? .green : .red)
-                            }
-                            .padding()
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.gray.opacity(0.5), lineWidth: 1)
-                            )
-                        }
-                    }
-                    .buttonStyle(PlainButtonStyle())
+                    createRecordCard(for: record)
                 }
             }
             
@@ -246,6 +221,40 @@ private extension StatisticsView {
         }
     }
     
+    func createRecordCard(for record: Record) -> some View {
+        return Button(action: {
+            coordinator.push(.record(record: record))
+        }) {
+            HStack {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("\(record.formatDate(.medium))")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                        
+                        Spacer()
+                        
+                        Text("\(record.sessionsCompleted)/\(record.dailyTarget)")
+                            .font(.body.bold())
+                            .foregroundStyle(.primary)
+                    }
+                    
+                    ProgressView(value: Double(min(record.sessionsCompleted, record.dailyTarget)),
+                                 total: Double(record.dailyTarget))
+                    .progressViewStyle(LinearProgressViewStyle())
+                    .tint(record.isDailyTargetMet ? .green : .red)
+                }
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.gray.opacity(0.5), lineWidth: 1)
+                )
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+
+    }
+    
     func deleteAlert() -> Alert {
         Alert(
             title: Text("Delete all records?"),
@@ -279,5 +288,9 @@ extension AppStorage {
 }
 
 #Preview {
-    StatisticsView(viewModel: StatisticsViewModel())
+    let viewModel = StatisticsViewModel()
+    let coordinator = NavigationCoordinator()
+    
+    StatisticsView(viewModel: viewModel)
+        .environment(coordinator)
 }

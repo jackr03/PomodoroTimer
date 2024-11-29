@@ -10,22 +10,26 @@ import Observation
 
 @Observable
 class PomodoroTimer {
-    // MARK: - Properties
-    static let shared = PomodoroTimer()
     
-    public let maxSessions = 4
-    
-    private(set) var remainingTime = SessionType.work.duration
-    private(set) var currentSession: SessionType = .work
-    private(set) var currentSessionNumber = 0
-    private(set) var isSessionInProgress = false
+    // MARK: - Stored properties
+    private(set) var currentSession: SessionType
+    private(set) var currentSessionNumber: Int
+    private(set) var maxSessions: Int
+    private(set) var isSessionInProgress: Bool
+    private(set) var remainingTime: Int
     
     private var timer: Timer?
 
     public var isSessionFinished = false
     
     // MARK: - Init
-    private init() {}
+    init() {
+        self.currentSession = .work
+        self.currentSessionNumber = 0
+        self.maxSessions = 4
+        self.isSessionInProgress = false
+        self.remainingTime = SessionType.work.duration
+    }
     
     // MARK: - SessionType Enum
     enum SessionType: String {

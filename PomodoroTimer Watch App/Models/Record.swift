@@ -18,7 +18,11 @@ class Record {
     var dailyTarget: Int
     
     // MARK: - Inits
-    public init(date: Date, sessionsCompleted: Int, dailyTarget: Int) {
+    init(
+        date: Date = Date.now,
+        sessionsCompleted: Int = 0,
+        dailyTarget: Int = SettingsManager.shared.get(.dailyTarget)
+    ) {
         let normalisedDate = Calendar.current.startOfDay(for: date)
         
         self.date = normalisedDate
@@ -26,31 +30,19 @@ class Record {
         self.dailyTarget = dailyTarget
     }
     
-    convenience init() {
-        self.init(date: Date.now, sessionsCompleted: 0, dailyTarget: SettingsManager.shared.get(.dailyTarget))
-    }
-    
     convenience init(date: Date) {
         self.init(date: date, sessionsCompleted: 0, dailyTarget: SettingsManager.shared.get(.dailyTarget))
     }
-}
-
-extension Record {
-    var formattedDateShort: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .none
-        
-        return formatter.string(from: date)
-    }
     
-    var formattedDateMedium: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        
-        return formatter.string(from: date)
-    }
-    
+    // MARK: - Computed properties
     var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
+    
+    // MARK: - Functions
+    func formatDate(_ dateStyle: DateFormatter.Style) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = dateStyle
+        formatter.timeStyle = .none
+        
+        return formatter.string(from: date)
+    }
 }

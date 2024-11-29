@@ -11,11 +11,11 @@ import Observation
 
 @Observable
 final class PomodoroViewModel {
-    // MARK: - Properties
-    static let shared = PomodoroViewModel()
     
-    private let timer = PomodoroTimer.shared
-    private let repository = RecordRepository.shared
+    // MARK: - Stored properties
+    private let timer: PomodoroTimer
+    private let repository: RecordRepositoryProtocol
+    
     private let session = ExtendedRuntimeSessionManager.shared
     private let notifier = NotificationsManager.shared
     private let settings = SettingsManager.shared
@@ -24,10 +24,14 @@ final class PomodoroViewModel {
     private(set) var cachedProgress: CGFloat = 1.0
     
     private var updateTimer: Timer?
-    private var hapticTimer: Timer?
     
-    // MARK: - Init
-    private init() {
+    // MARK: - Inits
+    @MainActor
+    init(timer: PomodoroTimer = PomodoroTimer(),
+         repository: RecordRepositoryProtocol? = nil
+    ) {
+        self.timer = PomodoroTimer()
+        self.repository = repository ?? RecordRepository.shared
         updateTimeAndProgress()
     }
     

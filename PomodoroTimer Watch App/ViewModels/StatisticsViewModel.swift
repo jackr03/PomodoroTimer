@@ -17,9 +17,9 @@ final class StatisticsViewModel {
     private(set) var records: [Record] = []
     
     // MARK: - Inits
-    // TODO: Inject the repository instead of using a singleton
-    public init(repository: RecordRepositoryProtocol = RecordRepository.shared) {
-        self.repository = repository
+    @MainActor
+    init(repository: RecordRepositoryProtocol? = nil) {
+        self.repository = repository ?? RecordRepository.shared
         self.fetchAllRecords()
     }
         

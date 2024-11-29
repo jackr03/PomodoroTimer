@@ -8,59 +8,48 @@
 import SwiftUI
 
 struct RecordView: View {
-    // MARK: - Properties
-    var record: Record
     
+    // MARK: - Stored properties
     private let viewModel: RecordViewModel
     private let haptics = HapticsManager()
-    private let coordinator = NavigationCoordinator.shared
+    
+    @Environment(NavigationCoordinator.self) private var coordinator
     
     @State private var animateDailyProgress = false
     @State private var showingDeleteRecordAlert = false
     
-    // MARK: - Init
-    init(record: Record) {
-        self.record = record
-        self.viewModel = RecordViewModel(record: record)
+    // MARK: - Inits
+    init(viewModel: RecordViewModel) {
+        self.viewModel = viewModel
     }
     
-    // MARK: - Computed properties
-    var isToday: Bool { record.date == Calendar.current.startOfToday }
-    
-    var statusMessage: String {
-        if record.sessionsCompleted == 0 {
-            return "Let's get to work!"
-        } else if record.sessionsCompleted > 0 && record.sessionsCompleted < record.dailyTarget {
-            return "Keep it up!"
-        } else {
-            return "Well done!"
-        }
-    }
-    
+    // MARK: - Body
     var body: some View {
+        @Bindable var coordinator = coordinator
+        
         HStack {
-            ProgressView(value: animateDailyProgress ? Double(min(record.sessionsCompleted, record.dailyTarget)) : 0,
-                         total: Double(record.dailyTarget))
+            ProgressView(value: animateDailyProgress ? Double(min(viewModel.sessionsCompleted, viewModel.dailyTarget)) : 0,
+                         total: Double(viewModel.dailyTarget))
             .progressViewStyle(LinearProgressViewStyle())
-            .tint(record.isDailyTargetMet ? .green : .red)
+            .tint(viewModel.isDailyTargetMet ? .green : .red)
             .rotationEffect(.degrees(-90))
                 
             VStack {
-                Text("\(record.sessionsCompleted)/\(record.dailyTarget) sessions")
+                Text("\(viewModel.sessionsCompleted)/\(viewModel.dailyTarget) sessions")
                     .font(.headline)
                     .foregroundStyle(.primary)
                     .multilineTextAlignment(.center)
                     .padding()
                 
-                if isToday {
-                    Text(statusMessage)
+                if viewModel.isToday {
+                    Text(viewModel.statusMessage)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
             }
         }
-        .navigationTitle(isToday ? "Today" : record.formattedDateMedium)
+        .navigationTitle(viewModel.isToday ? "Today" : viewModel.formattedDateMedium)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -71,7 +60,7 @@ struct RecordView: View {
                 }
                 .handGestureShortcut(.primaryAction)
             }
-            if !isToday {
+            if !viewModel.isToday {
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: {
                         showingDeleteRecordAlert = true
@@ -101,7 +90,7 @@ struct RecordView: View {
     // MARK: - Functions
     private func deleteAlert() -> Alert {
         Alert(
-            title: Text("Delete record for \(record.formattedDateShort)?"),
+            title: Text("Delete record for \(viewModel.formattedDateShort)?"),
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
                 viewModel.deleteRecord()
@@ -117,5 +106,10 @@ struct RecordView: View {
 }
 
 #Preview {
-    RecordView(record: Record())
+    let record = Record(date: Date.now, sessionsCompleted: 5, dailyTarget: 12)
+    let viewModel = RecordViewModel(record: record)
+    let coordinator = NavigationCoordinator()
+    
+    RecordView(viewModel: viewModel)
+        .environment(coordinator)
 }

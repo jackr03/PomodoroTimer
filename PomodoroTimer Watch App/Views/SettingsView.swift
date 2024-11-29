@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct SettingsView: View {
-    // MARK: - Properties
-    @Bindable private var viewModel = SettingsViewModel.shared
     
+    // MARK: - Stored properties
+    private let viewModel: SettingsViewModel
     private let haptics = HapticsManager()
-    private let coordinator = NavigationCoordinator.shared
+    
+    @Environment(NavigationCoordinator.self) private var coordinator
     
     @AppStorage(.workDuration) private var workDuration: Int = SettingsManager.shared.getDefault(.workDuration)
     @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int = SettingsManager.shared.getDefault(.shortBreakDuration)
@@ -22,8 +23,16 @@ struct SettingsView: View {
     
     @State private var showingPermissionsAlert: Bool = false
     
-    // MARK: - Views
+    // MARK: - Inits
+    init(viewModel: SettingsViewModel) {
+        self.viewModel = viewModel
+    }
+    
+    // MARK: - Body
     var body: some View {
+        @Bindable var viewModel = viewModel
+        @Bindable var coordinator = coordinator
+        
         Form {
             if !viewModel.isPermissionGranted {
                 Section {
@@ -184,5 +193,9 @@ private extension SettingsView {
 }
 
 #Preview {
-    SettingsView()
+    let viewModel = SettingsViewModel()
+    let coordinator = NavigationCoordinator()
+    
+    SettingsView(viewModel: viewModel)
+        .environment(coordinator)
 }

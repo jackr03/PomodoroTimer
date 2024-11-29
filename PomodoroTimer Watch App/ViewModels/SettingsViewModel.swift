@@ -11,18 +11,22 @@ import Observation
 
 @Observable
 final class SettingsViewModel {
-    // MARK: - Properties
-    static let shared = SettingsViewModel()
     
-    private let timer = PomodoroTimer.shared
-    private let repository = RecordRepository.shared
+    // MARK: - Stored properties
+    // FIXME: Either pass in PomodoroTimer or figure out a way to send notifications
+//    private let timer = PomodoroTimer.shared
+    private let repository: RecordRepositoryProtocol
+    
     private let notifier = NotificationsManager.shared
     private let settings = SettingsManager.shared
     
     public var settingsAreAllDefault = true
     
-    // MARK: - Init
-    private init() {}
+    // MARK: - Inits
+    @MainActor
+    init(repository: RecordRepositoryProtocol? = nil) {
+        self.repository = repository ?? RecordRepository.shared
+    }
     
     // MARK: - Computed properties
     var isPermissionGranted: Bool { notifier.permissionsGranted ?? true }
@@ -45,8 +49,8 @@ final class SettingsViewModel {
     }
     
     func updateTimer() {
-        guard !timer.isTimerTicking && !timer.isSessionInProgress else { return }
-        
-        timer.resetTimer()
+//        guard !timer.isTimerTicking && !timer.isSessionInProgress else { return }
+//        
+//        timer.resetTimer()
     }
 }

@@ -14,16 +14,38 @@ final class RecordViewModel {
     private let repository: RecordRepositoryProtocol
     
     // MARK: - Inits
-    // TODO: Inject the repository instead of using a singleton
     @MainActor
-    init(record: Record, repository: RecordRepositoryProtocol = RecordRepository.shared) {
+    init(
+        record: Record,
+        repository: RecordRepositoryProtocol? = nil
+    ) {
         self.record = record
-        self.repository = repository
+        self.repository = repository ?? RecordRepository.shared
+    }
+    
+    // MARK: - Computed properties
+    var date: Date { record.date }
+    var sessionsCompleted: Int { record.sessionsCompleted }
+    var dailyTarget: Int { record.dailyTarget }
+    
+    var isDailyTargetMet: Bool { record.isDailyTargetMet }
+    var isToday: Bool { record.date == Calendar.current.startOfToday }
+    
+    var formattedDateShort: String { record.formatDate(.short) }
+    var formattedDateMedium: String { record.formatDate(.medium) }
+    
+    var statusMessage: String {
+        if record.sessionsCompleted == 0 {
+            return "Let's get to work!"
+        } else if record.sessionsCompleted > 0 && !record.isDailyTargetMet {
+            return "Keep it up!"
+        } else {
+            return "Well done!"
+        }
     }
     
     // MARK: - Functions
     func deleteRecord() {
         repository.deleteRecord(self.record)
     }
-    
 }

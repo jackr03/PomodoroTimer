@@ -10,13 +10,13 @@ import SwiftUI
 
 @main
 struct PomodoroTimer_Watch_AppApp: App {
-    init() {
-        
-    }
+    
+    private let coordinator = NavigationCoordinator()
     
     var body: some Scene {
         WindowGroup {
-            PomodoroView()
+            CoordinatorView()
+                .environment(coordinator)
         }
     }
 }

@@ -16,7 +16,6 @@ protocol RecordRepositoryProtocol {
     func deleteAllRecords()
 }
 
-// FIXME: Fix warning 'Main actor-isolated static property shared...'
 final class RecordRepository: RecordRepositoryProtocol {
     
     // MARK: - Stored properties
