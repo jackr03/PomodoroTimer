@@ -15,8 +15,8 @@ final class PomodoroViewModel {
     // MARK: - Stored properties
     private let timer: PomodoroTimer
     private let repository: RecordRepositoryProtocol
+    private let sessionManager: ExtendedRuntimeSessionManager
     
-    private let session = ExtendedRuntimeSessionManager.shared
     private let notifier = NotificationsManager.shared
     private let settings = SettingsManager.shared
     
@@ -28,10 +28,13 @@ final class PomodoroViewModel {
     // MARK: - Inits
     @MainActor
     init(timer: PomodoroTimer = PomodoroTimer(),
-         repository: RecordRepositoryProtocol? = nil
+         repository: RecordRepositoryProtocol? = nil,
+         sessionManager: ExtendedRuntimeSessionManager = ExtendedRuntimeSessionManager()
     ) {
         self.timer = timer
         self.repository = repository ?? RecordRepository.shared
+        self.sessionManager = sessionManager
+        
         updateTimeAndProgress()
     }
     
@@ -138,15 +141,6 @@ final class PomodoroViewModel {
         }
     }
     
-    // MARK: - Extended session functions
-    func startExtendedSession() {
-        session.startSession()
-    }
-    
-    func stopExtendedSession() {
-        session.stopSession()
-    }
-    
     // MARK: - Notification functions
     func checkPermissions() {
         Task {
@@ -180,5 +174,14 @@ final class PomodoroViewModel {
         
         cachedFormattedRemainingTime = String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
         cachedProgress = CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
+    }
+    
+    // MARK: - Extended session functions
+    private func startExtendedSession() {
+        sessionManager.startSession()
+    }
+    
+    private func stopExtendedSession() {
+        sessionManager.stopSession()
     }
 }

@@ -7,18 +7,23 @@
 
 import SwiftUI
 
-// TODO: Ensure that popToRoot() doesn't remove the base Pomodoro view
 // TODO: Remove the custom back buttons in the views
 struct CoordinatorView: View {
     
-    @Environment(NavigationCoordinator.self) var coordinator
+    // MARK: - Stored properties
+    @State private var coordinator: NavigationCoordinator
+    private let pomodoroViewModel: PomodoroViewModel
+    
+    // MARK: - Inits
+    init(coordinator: NavigationCoordinator) {
+        self.coordinator = coordinator
+        self.pomodoroViewModel = PomodoroViewModel()
+    }
     
     // MARK: - Body
     var body: some View {
-        @Bindable var coordinator = coordinator
-        
         NavigationStack(path: $coordinator.path) {
-            PomodoroView(viewModel: PomodoroViewModel())
+            PomodoroView(viewModel: pomodoroViewModel)
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .settings:
@@ -30,10 +35,11 @@ struct CoordinatorView: View {
                     }
                 }
         }
+        .environment(coordinator)
     }
 }
 
 #Preview {
-    CoordinatorView()
-        .environment(NavigationCoordinator())
+    let coordinator = NavigationCoordinator()
+    CoordinatorView(coordinator: coordinator)
 }

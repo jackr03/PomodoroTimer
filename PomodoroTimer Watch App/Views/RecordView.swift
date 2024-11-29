@@ -50,16 +50,7 @@ struct RecordView: View {
             }
         }
         .navigationTitle(viewModel.isToday ? "Today" : viewModel.formattedDateMedium)
-        .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    coordinator.pop()
-                }) {
-                    Image(systemName: "chevron.left")
-                }
-                .handGestureShortcut(.primaryAction)
-            }
             if !viewModel.isToday {
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: {

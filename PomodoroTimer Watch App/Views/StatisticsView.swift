@@ -41,17 +41,6 @@ struct StatisticsView: View {
             allTimeStatistics
         }
         .tabViewStyle(.verticalPage)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    coordinator.pop()
-                }) {
-                    Image(systemName: "chevron.left")
-                }
-                .handGestureShortcut(.primaryAction)
-            }
-        }
         .onAppear() {
             viewModel.fetchAllRecords()
         }

@@ -20,7 +20,8 @@ final class StatisticsViewModel {
     @MainActor
     init(repository: RecordRepositoryProtocol? = nil) {
         self.repository = repository ?? RecordRepository.shared
-        self.fetchAllRecords()
+        
+        fetchAllRecords()
     }
         
     // MARK: - Computed properties

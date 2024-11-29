@@ -9,13 +9,12 @@ import Foundation
 import WatchKit
 
 final class ExtendedRuntimeSessionManager: NSObject, WKExtendedRuntimeSessionDelegate {
-    // MARK: - Properties
-    static let shared = ExtendedRuntimeSessionManager()
     
+    // MARK: - Stored properties
     private var session: WKExtendedRuntimeSession?
 
-    // MARK: - Init
-    private override init() {
+    // MARK: - Inits
+    override init() {
         super.init()
     }
         

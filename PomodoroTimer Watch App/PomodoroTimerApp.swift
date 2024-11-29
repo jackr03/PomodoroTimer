@@ -15,8 +15,7 @@ struct PomodoroTimer_Watch_AppApp: App {
     
     var body: some Scene {
         WindowGroup {
-            CoordinatorView()
-                .environment(coordinator)
+            CoordinatorView(coordinator: coordinator)
         }
     }
 }
