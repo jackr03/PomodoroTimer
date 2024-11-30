@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1600"
-   version = "1.7">
+   version = "2.2">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
@@ -22,18 +22,13 @@
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
             buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "15D5B50E2C88F789004B29E8"
-               BuildableName = "PomodoroTimer.app"
-               BlueprintName = "PomodoroTimer"
-               ReferencedContainer = "container:PomodoroTimer.xcodeproj">
-            </BuildableReference>
+            <AutocreatedTestPlanReference>
+            </AutocreatedTestPlanReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
@@ -41,8 +36,13 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:../PomodoroTimer Watch App.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
             skipped = "NO"
@@ -52,6 +52,17 @@
                BlueprintIdentifier = "15400CEF2CEB550400C9FFE7"
                BuildableName = "PomodoroTimer Watch AppTests.xctest"
                BlueprintName = "PomodoroTimer Watch AppTests"
+               ReferencedContainer = "container:PomodoroTimer.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1538012C2CFB59F50070B320"
+               BuildableName = "PomodoroTimer Watch AppUITests.xctest"
+               BlueprintName = "PomodoroTimer Watch AppUITests"
                ReferencedContainer = "container:PomodoroTimer.xcodeproj">
             </BuildableReference>
          </TestableReference>

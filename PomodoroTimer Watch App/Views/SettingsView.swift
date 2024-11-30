@@ -30,7 +30,6 @@ struct SettingsView: View {
     
     // MARK: - Body
     var body: some View {
-        @Bindable var viewModel = viewModel
         @Bindable var coordinator = coordinator
         
         Form {
