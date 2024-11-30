@@ -167,6 +167,7 @@ private extension PomodoroView {
             Image(systemName: viewModel.isTimerTicking ? "pause.fill" : "play.fill")
                 .foregroundStyle(Color.primary)
                 .padding(.top, 6)
+                .accessibilityIdentifier(viewModel.isTimerTicking ? "pauseButton" : "playButton")
         }
     }
     
@@ -253,19 +254,16 @@ private extension PomodoroView {
                 Image(systemName: "chart.line.uptrend.xyaxis")
                     .foregroundStyle(.gray)
             }
+            .accessibilityIdentifier("statisticsButton")
         }
         
         ToolbarItem(placement: .topBarTrailing) {
             Button(action: {
                 coordinator.push(.settings)
             }) {
-                if viewModel.isPermissionGranted {
-                    Image(systemName: "gear")
-                        .foregroundStyle(.gray)
-                } else {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.red)
-                }
+                Image(systemName: viewModel.isPermissionGranted ? "gear" : "exclamationmark.triangle.fill")
+                    .foregroundStyle(viewModel.isPermissionGranted ? .gray : .red)
+                    .accessibilityIdentifier(viewModel.isPermissionGranted ? "settingsButton" : "settingsButtonWithWarning")
             }
         }
         
@@ -276,6 +274,7 @@ private extension PomodoroView {
             }) {
                 Image(systemName: "stop.fill")
             }
+            .accessibilityIdentifier("stopButton")
             
             Button(action: {
                 viewModel.resetTimer()
@@ -283,6 +282,7 @@ private extension PomodoroView {
             }) {
                 Image(systemName: "arrow.circlepath")
             }
+            .accessibilityIdentifier("resetButton")
             
             Button(action: {
                 viewModel.skipSession()
@@ -290,6 +290,7 @@ private extension PomodoroView {
             }) {
                 Image(systemName: "forward.end.fill")
             }
+            .accessibilityIdentifier("skipButton")
         }
     }
 }

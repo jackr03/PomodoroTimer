@@ -141,6 +141,15 @@ final class PomodoroViewModel {
         }
     }
     
+    // MARK: - Extended session functions
+    func startExtendedSession() {
+        sessionManager.startSession()
+    }
+    
+    func stopExtendedSession() {
+        sessionManager.stopSession()
+    }
+    
     // MARK: - Notification functions
     func checkPermissions() {
         Task {
@@ -174,14 +183,5 @@ final class PomodoroViewModel {
         
         cachedFormattedRemainingTime = String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
         cachedProgress = CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
-    }
-    
-    // MARK: - Extended session functions
-    private func startExtendedSession() {
-        sessionManager.startSession()
-    }
-    
-    private func stopExtendedSession() {
-        sessionManager.stopSession()
     }
 }
