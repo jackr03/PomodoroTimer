@@ -8,6 +8,7 @@
 import XCTest
 @testable import PomodoroTimer
 
+@MainActor
 final class StatisticsViewModelTests: XCTestCase {
 
     var sut: StatisticsViewModel!
