@@ -5,125 +5,128 @@
 //  Created by Jack Rong on 18/11/2024.
 //
 
-import XCTest
+import Testing
+import Foundation
 @testable import PomodoroTimer
 
-@MainActor
-final class StatisticsViewModelTests: XCTestCase {
+final class StatisticsViewModelTests {
 
     var sut: StatisticsViewModel!
     var mockRecordRepository: MockRecordRepository!
     
-    override func setUp() {
-        super.setUp()
-    }
+    init() {}
 
-    override func tearDown() {
+    deinit {
         sut = nil
         mockRecordRepository = nil
-        
-        super.tearDown()
     }
         
-    func testFetchAllRecords_returnsAllRecords() {
+    @Test
+    func fetchAllRecords_returnsCorrectRecords() async {
         let records = [
             Record(date: createDate(year: 2024, month: 1, day: 1)),
             Record(date: createDate(year: 2024, month: 1, day: 2))
         ]
         
-        setUpWithMockRecords(records)
+        await setUpWithMockRecords(records)
         
         sut.fetchAllRecords()
         
-        XCTAssertEqual(2, sut.records.count)
+        #expect(sut.records.count == 2, "Should return exactly 2 records")
     }
         
-    func testAddNewRecord_addsNewRecord() {
-        setUpWithNoRecords()
+    @Test
+    func addNewRecord_createsNewRecord() async {
+        await setUpWithNoRecords()
         
         let recordToday = sut.addNewRecord()
         
-        XCTAssertEqual(1, sut.records.count)
-        XCTAssertEqual(Calendar.current.startOfToday, recordToday.date)
-        XCTAssertEqual(0, recordToday.sessionsCompleted)
+        #expect(sut.records.count == 1, "Should create a new record")
     }
         
-    func testDeleteAllRecord_deletesAllRecords() {
+    @Test
+    func deleteAllRecord_removeAllRecords() async {
         let records = [
             Record(date: createDate(year: 2024, month: 1, day: 1)),
             Record(date: createDate(year: 2024, month: 1, day: 2))
         ]
 
-        setUpWithMockRecords(records)
+        await setUpWithMockRecords(records)
         
         sut.deleteAllRecords()
         
-        XCTAssertEqual(0, sut.records.count)
+        #expect(sut.records.count == 0, "Should delete all records")
     }
     
-    func testNoRecords_returnZeroOrEmptyValues() {
-        setUpWithNoRecords()
+    @Test
+    func fetchRecords_whenNoRecords_returnZeroOrEmptyValues() async {
+        await setUpWithNoRecords()
         
-        XCTAssertTrue(sut.recordsThisWeek.isEmpty)
-        XCTAssertTrue(sut.recordsThisMonth.isEmpty)
-        XCTAssertEqual(0, sut.totalSessions)
-        XCTAssertEqual(0, sut.currentStreak)
-        XCTAssertEqual(0, sut.longestStreak)
+        #expect(sut.recordsThisWeek.isEmpty, "Should return no records for this week")
+        #expect(sut.recordsThisMonth.isEmpty, "Should return no records for this month")
+        #expect(sut.totalSessions == 0, "Should return 0 for total sessions")
+        #expect(sut.currentStreak == 0, "Should return 0 for current streak")
+        #expect(sut.longestStreak == 0, "Should return 0 for longest streak")
     }
     
-    func testRecordToday_returnsCorrectValue() {
+    @Test
+    func recordToday_returnsTodaysRecord() async {
         let recordYesterday = Record(date: Calendar.current.date(byAdding: .day, value: -1, to: Date.now)!, sessionsCompleted: 0, dailyTarget: 8)
         let recordToday = Record(date: Date.now, sessionsCompleted: 0, dailyTarget: 8)
         
-        setUpWithMockRecords([recordYesterday, recordToday])
+        await setUpWithMockRecords([recordYesterday, recordToday])
         
-        XCTAssertEqual(recordToday, sut.recordToday)
+        #expect(sut.recordToday == recordToday, "Should return today's record")
     }
     
-    func testRecordToday_createsNewRecordWhenNoRecordToday() {
-        setUpWithNoRecords()
+    @Test
+    func recordToday_whenNoRecordExists_createsNewRecord() async {
+        await setUpWithNoRecords()
         
-        let recordToday = sut.recordToday
-        
-        XCTAssertEqual(Calendar.current.startOfToday, recordToday.date)
-        XCTAssertEqual(0, recordToday.sessionsCompleted)
+        #expect(sut.recordToday != nil, "Should create a new record")
+        #expect(sut.recordToday.date == Calendar.current.startOfToday, "New record's date should be set to today")
+        #expect(sut.recordToday.sessionsCompleted == 0, "New record should have 0 sessions completed")
     }
     
-    func testRecordsForWeek_returnsCorrectValue() {
+    @Test
+    func recordsForWeek_returnsExpectedRecords() async {
         let testDate = createDate(year: 2024, month: 1, day: 5)
         let recordInWeek1 = Record(date: createDate(year: 2024, month: 1, day: 1));
         let recordInWeek2 = Record(date: createDate(year: 2024, month: 1, day: 2));
         let recordNotInWeek = Record(date: createDate(year: 2024, month: 1, day: 31));
         
-        setUpWithMockRecords([recordInWeek1, recordInWeek2, recordNotInWeek])
+        await setUpWithMockRecords([recordInWeek1, recordInWeek2, recordNotInWeek])
         
-        XCTAssertEqual([recordInWeek1, recordInWeek2], sut.recordsForWeek(date: testDate))
+        #expect(sut.recordsForWeek(date: testDate) == [recordInWeek1, recordInWeek2], "Records for week should contain correct records")
     }
     
-    func testRecordsForMonth_returnsCorrectValue() {
+    @Test
+    func recordsForMonth_returnsExpectedRecords() async {
         let testDate = createDate(year: 2024, month: 1, day: 1)
         let recordInMonth1 = Record(date: createDate(year: 2024, month: 1, day: 1));
         let recordInMonth2 = Record(date: createDate(year: 2024, month: 1, day: 2));
         let recordNotInMonth = Record(date: createDate(year: 2024, month: 2, day: 1));
         
-        setUpWithMockRecords([recordInMonth1, recordInMonth2, recordNotInMonth])
+        await setUpWithMockRecords([recordInMonth1, recordInMonth2, recordNotInMonth])
         
-        XCTAssertEqual([recordInMonth1, recordInMonth2], sut.recordsForMonth(date: testDate))
+        #expect(sut.recordsForMonth(date: testDate) == [recordInMonth1, recordInMonth2], "Records for month should contain correct records")
     }
 
-    func testTotalSessions_returnsCorrectValue() {
+    @Test
+    func totalSessions_returnsCorrectTotalCount() async {
         let records = [
             Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 5, dailyTarget: 8),
             Record(date: createDate(year: 2024, month: 4, day: 3), sessionsCompleted: 4, dailyTarget: 8),
             Record(date: createDate(year: 2024, month: 11, day: 9), sessionsCompleted: 7, dailyTarget: 8)
         ]
         
-        setUpWithMockRecords(records)
+        await setUpWithMockRecords(records)
         
-        XCTAssertEqual(16, sut.totalSessions)
+        #expect(sut.totalSessions == 16, "Total sessions should be exactly 16")
     }
     
-    func testStreak_returnsCorrectValue() {
+    @Test
+    func streak_forGivenDate_returnsCorrectValue() async {
         let records = [
             Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 8, dailyTarget: 8),
             Record(date: createDate(year: 2024, month: 1, day: 2), sessionsCompleted: 8, dailyTarget: 8),
@@ -132,27 +135,29 @@ final class StatisticsViewModelTests: XCTestCase {
             Record(date: createDate(year: 2024, month: 1, day: 7), sessionsCompleted: 8, dailyTarget: 8)
         ]
         
-        setUpWithMockRecords(records)
+        await setUpWithMockRecords(records)
         
         let mockCurrentDate = createDate(year: 2024, month: 1, day: 7)
         
-        XCTAssertEqual(3, sut.streak(for: mockCurrentDate))
+        #expect(sut.streak(for: mockCurrentDate) == 3, "Streak for today should be exactly 3")
     }
     
-    func testStreak_spansMonthsAndYears() {
+    @Test
+    func streak_spansAcrossMonthsAndYears() async {
         let records = [
             Record(date: createDate(year: 2023, month: 12, day: 31), sessionsCompleted: 8, dailyTarget: 8),
             Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 8, dailyTarget: 8)
         ]
         
-        setUpWithMockRecords(records)
+        await setUpWithMockRecords(records)
         
         let mockCurrentDate = createDate(year: 2024, month: 1, day: 1)
 
-        XCTAssertEqual(2, sut.streak(for: mockCurrentDate))
+        #expect(sut.streak(for: mockCurrentDate) == 2, "Streak should span across months and years")
     }
     
-    func testLongestStreak_returnsCorrectValue() {
+    @Test
+    func longestStreak_returnsCurrentLongestStreak() async {
         let records = [
             Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 8, dailyTarget: 8),
             Record(date: createDate(year: 2024, month: 1, day: 2), sessionsCompleted: 8, dailyTarget: 8),
@@ -161,24 +166,24 @@ final class StatisticsViewModelTests: XCTestCase {
             Record(date: createDate(year: 2024, month: 1, day: 31), sessionsCompleted: 8, dailyTarget: 8)
         ]
         
-        setUpWithMockRecords(records)
+        await setUpWithMockRecords(records)
         
-        XCTAssertEqual(3, sut.longestStreak)
+        #expect(sut.longestStreak == 3, "Longest streak should be exactly 3")
     }
 
 }
 
 // MARK: - Helper methods
-extension StatisticsViewModelTests {
+private extension StatisticsViewModelTests {
     
-    func setUpWithNoRecords() {
+    func setUpWithNoRecords() async {
         mockRecordRepository = MockRecordRepository(mockRecords: [])
-        sut = StatisticsViewModel(repository: mockRecordRepository)
+        await sut = StatisticsViewModel(repository: mockRecordRepository)
     }
     
-    func setUpWithMockRecords(_ records: [Record]) {
+    func setUpWithMockRecords(_ records: [Record]) async {
         mockRecordRepository = MockRecordRepository(mockRecords: records)
-        sut = StatisticsViewModel(repository: mockRecordRepository)
+        await sut = StatisticsViewModel(repository: mockRecordRepository)
     }
     
 }

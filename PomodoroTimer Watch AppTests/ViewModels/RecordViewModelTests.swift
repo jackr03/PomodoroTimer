@@ -5,34 +5,28 @@
 //  Created by Jack Rong on 21/11/2024.
 //
 
-import XCTest
+import Testing
 @testable import PomodoroTimer
 
-final class RecordViewModelTests: XCTestCase {
+final class RecordViewModelTests {
     
     var sut: RecordViewModel!
     var mockRecordRepository: MockRecordRepository!
     
-    @MainActor
-    override func setUp() {
-        super.setUp()
-        
+    init() async {
         let record = Record()
         mockRecordRepository = MockRecordRepository(mockRecords: [record])
-        sut = RecordViewModel(record: record, repository: mockRecordRepository)
+        sut = await RecordViewModel(record: record, repository: mockRecordRepository)
     }
     
-    override func tearDown() {
+    deinit {
         sut = nil
         mockRecordRepository = nil
-        
-        super.tearDown()
     }
  
-    func testDeleteRecord_deletesRecordCorrectly() {
+    @Test
+    func deleteRecord_deletesRecordCorrectly() {
         sut.deleteRecord()
-        
-        XCTAssertEqual(0, mockRecordRepository.mockRecords.count)
+        #expect(mockRecordRepository.mockRecords.count == 0)
     }
-    
 }
