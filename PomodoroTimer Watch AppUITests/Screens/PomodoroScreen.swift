@@ -1,4 +1,3 @@
-
 //
 //  PomodoroScreen.swift
 //  PomodoroTimer
@@ -18,9 +17,18 @@ class PomodoroScreen {
     var statisticsButton: XCUIElement { app.buttons["statisticsButton"].firstMatch }
     var settingsButton: XCUIElement { app.buttons["settingsButton"].firstMatch }
     var settingsButtonWithWarning: XCUIElement { app.buttons["settingsButtonWithWarning"].firstMatch }
-    var playButton: XCUIElement { app.buttons["playButton"] }
-    var pauseButton: XCUIElement { app.buttons["pauseButton"] }
     var stopButton: XCUIElement { app.buttons["stopButton"] }
     var resetButton: XCUIElement { app.buttons["resetButton"] }
     var skipButton: XCUIElement { app.buttons["skipButton"] }
+    
+    var actionButton: XCUIElement { app.buttons["actionButton"] }
+    
+    var currentSession: XCUIElement { app.staticTexts["currentSession"] }
+    var sessionProgress: XCUIElement { app.staticTexts["sessionProgress"] }
+    var remainingTime: XCUIElement { app.staticTexts["remainingTime"] }
+    var playButton: XCUIElement { actionButton.images["playButton"] }
+    var pauseButton: XCUIElement { actionButton.images["pauseButton"] }
+    
+    var timesUpMessage: XCUIElement { app.staticTexts["timesUpMessage"] }
+    var completeSessionButton: XCUIElement { actionButton.images["completeSessionButton"] }
 }

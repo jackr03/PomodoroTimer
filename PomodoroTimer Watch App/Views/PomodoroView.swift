@@ -149,10 +149,12 @@ private extension PomodoroView {
                         .font(.caption.bold())
                         .foregroundStyle(Color.secondary)
                         .minimumScaleFactor(0.5)
+                        .accessibilityIdentifier("currentSession")
                     
                     Text("\(viewModel.currentSessionsDone)/\(viewModel.maxSessions)")
                         .font(.caption)
                         .foregroundStyle(Color.secondary)
+                        .accessibilityIdentifier("sessionProgress")
                 }
                 .padding(.top, 12)
             } else {
@@ -163,6 +165,7 @@ private extension PomodoroView {
             Text(time)
                 .font(.title.bold())
                 .foregroundStyle(Color.primary)
+                .accessibilityIdentifier("remainingTime")
             
             Image(systemName: viewModel.isTimerTicking ? "pause.fill" : "play.fill")
                 .foregroundStyle(Color.primary)
@@ -180,10 +183,12 @@ private extension PomodoroView {
             Text("TIME'S UP!")
                 .font(.title3.bold())
                 .foregroundStyle(.black)
+                .accessibilityIdentifier("timesUpMessage")
             
             Image(systemName: "checkmark")
                 .foregroundStyle(.green)
                 .padding(.top, 18)
+                .accessibilityIdentifier("completeSessionButton")
         }
     }
     
@@ -237,6 +242,7 @@ private extension PomodoroView {
                 .clipShape(Circle())
                 .buttonStyle(.borderless)
                 .handGestureShortcut(.primaryAction)
+                .accessibilityIdentifier("actionButton")
             }
             .frame(maxWidth: maxWidth, maxHeight: maxHeight)
             .position(x: centerX,
