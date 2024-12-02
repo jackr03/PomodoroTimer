@@ -45,19 +45,22 @@ struct SettingsView: View {
                              selection: $workDuration,
                              range: 1...60,
                              unit: "minute",
-                             tagModifier: { $0 * 60 })
+                             tagModifier: { $0 * 60 },
+                             accessibilityIdentifier: "workDurationPicker")
                 
                 numberPicker(label: "Short break",
                              selection: $shortBreakDuration,
                              range: 1...60,
                              unit: "minute",
-                             tagModifier: { $0 * 60 })
+                             tagModifier: { $0 * 60 },
+                             accessibilityIdentifier: "shortBreakDurationPicker")
                 
                 numberPicker(label: "Long break",
                              selection: $longBreakDuration,
                              range: 1...60,
                              unit: "minute",
-                             tagModifier: { $0 * 60 })
+                             tagModifier: { $0 * 60 },
+                             accessibilityIdentifier: "longBreakDurationPicker")
             }
             
             Section {
@@ -65,12 +68,15 @@ struct SettingsView: View {
                              selection: $dailyTarget,
                              range: 1...24,
                              unit: "session",
-                             onChange: { newValue in viewModel.updateRecordDailyTarget(to: newValue) }
+                             onChange: { newValue in viewModel.updateRecordDailyTarget(to: newValue) },
+                             accessibilityIdentifier: "dailyTargetPicker"
                 )
             }
             
             Section {
-                togglePicker(label: "Auto-continue", isOn: $autoContinue)
+                toggleSwitch(label: "Auto-continue",
+                             isOn: $autoContinue,
+                             accessibilityIdentifier: "autoContinueSwitch")
             }
              
             if !viewModel.settingsAreAllDefault {
@@ -154,11 +160,12 @@ private extension SettingsView {
     
     // TODO: Make picker open up on current selection
     func numberPicker(label: String,
-                        selection: Binding<Int>,
-                        range: ClosedRange<Int>,
-                        unit: String,
-                        tagModifier: @escaping (Int) -> Int = { $0 },
-                        onChange: ((Int) -> Void)? = nil
+                      selection: Binding<Int>,
+                      range: ClosedRange<Int>,
+                      unit: String,
+                      tagModifier: @escaping (Int) -> Int = { $0 },
+                      onChange: ((Int) -> Void)? = nil,
+                      accessibilityIdentifier: String
     ) -> some View {
         Picker(selection: selection) {
             ForEach(range, id: \.self) {
@@ -172,23 +179,36 @@ private extension SettingsView {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
+        .accessibilityIdentifier(accessibilityIdentifier)
         .onChange(of: selection.wrappedValue) { _, newValue in
             onChange?(newValue)
             viewModel.syncSettings()
         }
     }
     
-    func togglePicker(label: String,
+    func toggleSwitch(label: String,
                       isOn: Binding<Bool>,
-                      onChange: ((Bool) -> Void)? = nil
+                      onChange: ((Bool) -> Void)? = nil,
+                      accessibilityIdentifier: String
     ) -> some View {
         Toggle(label, isOn: isOn)
             .font(.caption)
             .foregroundStyle(.secondary)
+            .accessibilityIdentifier(accessibilityIdentifier)
             .onChange(of: isOn.wrappedValue) { _, newValue in
                 onChange?(newValue)
                 viewModel.syncSettings()
             }
+    }
+}
+
+extension AppStorage {
+    init(wrappedValue: Value, _ key: IntSetting, store: UserDefaults? = nil) where Value == Int {
+        self.init(wrappedValue: wrappedValue, key.rawValue, store: store)
+    }
+    
+    init(wrappedValue: Value, _ key: BoolSetting, store: UserDefaults? = nil) where Value == Bool {
+        self.init(wrappedValue: wrappedValue, key.rawValue, store: store)
     }
 }
 

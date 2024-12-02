@@ -9,27 +9,36 @@ import XCTest
 
 final class SettingsViewTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    private var app: XCUIApplication!
+    private var sut: SettingsScreen!
+
+    override func setUp() {
+        super.setUp()
+        continueAfterFailure = false
+        app = XCUIApplication()
+        app.launch()
+        sut = SettingsScreen(app: app)
+        
+        // Wait for settings screen to be visible first
+        app.buttons["settingsButton"].firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 3),
+                      "Settings screen should be visible within 3 seconds")
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    override func tearDown() {
+        app = nil
+        sut = nil
+        super.tearDown()
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testSettingsForm_rendersProperly() {
+        XCTAssertTrue(sut.workDurationPicker.exists, "Work duration picker should render properly")
+        XCTAssertTrue(sut.shortBreakDurationPicker.exists, "Short break duration picker should render properly")
+        XCTAssertTrue(sut.longBreakDurationPicker.exists, "Long break duration picker should render properly")
+        
+        app.swipeUp()
+        
+        XCTAssertTrue(sut.dailyTargetPicker.exists, "Daily target picker should render properly")
+        XCTAssertTrue(sut.autoContinueSwitch.exists, "Auto-continue switch should render properly")
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }
