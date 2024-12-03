@@ -6,16 +6,76 @@
 	objectVersion = 70;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		153801332CFB59F50070B320 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15D5B5032C88F789004B29E8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15D5B50E2C88F789004B29E8;
+			remoteInfo = PomodoroTimer;
+		};
+		15400CF42CEB550400C9FFE7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15D5B5032C88F789004B29E8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15D5B50E2C88F789004B29E8;
+			remoteInfo = PomodoroTimer;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		1582628D2C9DEC7900D18B5C /* PomodoroTimer-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PomodoroTimer-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
-		15D5B50F2C88F789004B29E8 /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PomodoroTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		151E2C2D2CFF1367003EA93B /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PomodoroTimer.app; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer.app"; sourceTree = "<absolute>"; };
+		151E2C2E2CFF137D003EA93B /* PomodoroTimer Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PomodoroTimer Watch AppTests.xctest"; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer.app/PlugIns/PomodoroTimer Watch AppTests.xctest"; sourceTree = "<absolute>"; };
+		151E2C2F2CFF13B3003EA93B /* PomodoroTimer Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PomodoroTimer Watch AppUITests.xctest"; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer Watch AppUITests-Runner.app/PlugIns/PomodoroTimer Watch AppUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1538018F2CFB89F80070B320 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PomodoroTimerAppUITests.swift,
+				Screens/PomodoroScreen.swift,
+				Screens/SettingsScreen.swift,
+				Views/PomodoroViewTests.swift,
+				Views/SettingsViewTests.swift,
+			);
+			target = 15400CEF2CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */;
+		};
+		153801912CFB89FC0070B320 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PomodoroTimerAppUITests.swift,
+				Screens/PomodoroScreen.swift,
+				Screens/SettingsScreen.swift,
+				UITestHelpers.swift,
+				Views/PomodoroViewTests.swift,
+				Views/SettingsViewTests.swift,
+			);
+			target = 1538012C2CFB59F50070B320 /* PomodoroTimer Watch AppUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		1538011F2CFB53E80070B320 /* PomodoroTimer Watch AppUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (1538018F2CFB89F80070B320 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 153801912CFB89FC0070B320 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "PomodoroTimer Watch AppUITests"; sourceTree = "<group>"; };
+		15400CF12CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "PomodoroTimer Watch AppTests"; sourceTree = "<group>"; };
 		1564A8CC2CDD2C1100BAFDAB /* PomodoroTimer Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "PomodoroTimer Watch App"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1538012A2CFB59F50070B320 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15400CED2CEB550400C9FFE7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15D5B50C2C88F789004B29E8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,23 +89,59 @@
 		15D5B5022C88F789004B29E8 = {
 			isa = PBXGroup;
 			children = (
-				1582628D2C9DEC7900D18B5C /* PomodoroTimer-Watch-App-Info.plist */,
 				1564A8CC2CDD2C1100BAFDAB /* PomodoroTimer Watch App */,
-				15D5B50A2C88F789004B29E8 /* Products */,
+				15400CF12CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */,
+				1538011F2CFB53E80070B320 /* PomodoroTimer Watch AppUITests */,
 			);
-			sourceTree = "<group>";
-		};
-		15D5B50A2C88F789004B29E8 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				15D5B50F2C88F789004B29E8 /* PomodoroTimer.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1538012C2CFB59F50070B320 /* PomodoroTimer Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 153801352CFB59F50070B320 /* Build configuration list for PBXNativeTarget "PomodoroTimer Watch AppUITests" */;
+			buildPhases = (
+				153801292CFB59F50070B320 /* Sources */,
+				1538012A2CFB59F50070B320 /* Frameworks */,
+				1538012B2CFB59F50070B320 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				153801342CFB59F50070B320 /* PBXTargetDependency */,
+			);
+			name = "PomodoroTimer Watch AppUITests";
+			packageProductDependencies = (
+			);
+			productName = "PomodoroTimer Watch AppUITests";
+			productReference = 151E2C2F2CFF13B3003EA93B /* PomodoroTimer Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		15400CEF2CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 15400CF82CEB550400C9FFE7 /* Build configuration list for PBXNativeTarget "PomodoroTimer Watch AppTests" */;
+			buildPhases = (
+				15400CEC2CEB550400C9FFE7 /* Sources */,
+				15400CED2CEB550400C9FFE7 /* Frameworks */,
+				15400CEE2CEB550400C9FFE7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				15400CF52CEB550400C9FFE7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1538011F2CFB53E80070B320 /* PomodoroTimer Watch AppUITests */,
+				15400CF12CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */,
+			);
+			name = "PomodoroTimer Watch AppTests";
+			packageProductDependencies = (
+			);
+			productName = "PomodoroTimer Watch AppTests";
+			productReference = 151E2C2E2CFF137D003EA93B /* PomodoroTimer Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		15D5B50E2C88F789004B29E8 /* PomodoroTimer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 15D5B51F2C88F78B004B29E8 /* Build configuration list for PBXNativeTarget "PomodoroTimer" */;
@@ -63,7 +159,7 @@
 			);
 			name = PomodoroTimer;
 			productName = "PomodoroTimer Watch App";
-			productReference = 15D5B50F2C88F789004B29E8 /* PomodoroTimer.app */;
+			productReference = 151E2C2D2CFF1367003EA93B /* PomodoroTimer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -73,9 +169,17 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					1538012C2CFB59F50070B320 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 15D5B50E2C88F789004B29E8;
+					};
+					15400CEF2CEB550400C9FFE7 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 15D5B50E2C88F789004B29E8;
+					};
 					15D5B50E2C88F789004B29E8 = {
 						CreatedOnToolsVersion = 15.4;
 					};
@@ -90,16 +194,32 @@
 				Base,
 			);
 			mainGroup = 15D5B5022C88F789004B29E8;
-			productRefGroup = 15D5B50A2C88F789004B29E8 /* Products */;
+			productRefGroup = 15D5B5022C88F789004B29E8;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				15D5B50E2C88F789004B29E8 /* PomodoroTimer */,
+				15400CEF2CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */,
+				1538012C2CFB59F50070B320 /* PomodoroTimer Watch AppUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1538012B2CFB59F50070B320 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15400CEE2CEB550400C9FFE7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15D5B50D2C88F789004B29E8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -110,6 +230,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		153801292CFB59F50070B320 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		15400CEC2CEB550400C9FFE7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15D5B50B2C88F789004B29E8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -119,7 +253,100 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		153801342CFB59F50070B320 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15D5B50E2C88F789004B29E8 /* PomodoroTimer */;
+			targetProxy = 153801332CFB59F50070B320 /* PBXContainerItemProxy */;
+		};
+		15400CF52CEB550400C9FFE7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15D5B50E2C88F789004B29E8 /* PomodoroTimer */;
+			targetProxy = 15400CF42CEB550400C9FFE7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		153801362CFB59F50070B320 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JNCBRV4CXJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jackr.PomodoroTimer-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = PomodoroTimer;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		153801372CFB59F50070B320 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JNCBRV4CXJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jackr.PomodoroTimer-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = PomodoroTimer;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		15400CF62CEB550400C9FFE7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JNCBRV4CXJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jackr.PomodoroTimer-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PomodoroTimer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PomodoroTimer";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		15400CF72CEB550400C9FFE7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JNCBRV4CXJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jackr.PomodoroTimer-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PomodoroTimer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PomodoroTimer";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
 		15D5B51D2C88F78B004B29E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -256,7 +483,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = jackr.PomodoroTimer.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackr.PomodoroTimer.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -287,7 +514,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = jackr.PomodoroTimer.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackr.PomodoroTimer.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -302,6 +529,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		153801352CFB59F50070B320 /* Build configuration list for PBXNativeTarget "PomodoroTimer Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				153801362CFB59F50070B320 /* Debug */,
+				153801372CFB59F50070B320 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		15400CF82CEB550400C9FFE7 /* Build configuration list for PBXNativeTarget "PomodoroTimer Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15400CF62CEB550400C9FFE7 /* Debug */,
+				15400CF72CEB550400C9FFE7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		15D5B5062C88F789004B29E8 /* Build configuration list for PBXProject "PomodoroTimer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

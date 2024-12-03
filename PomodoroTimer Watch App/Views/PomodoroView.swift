@@ -1,5 +1,5 @@
 //
-//  PomoroView.swift
+//  PomodoroView.swift
 //  PomodoroTimer Watch App
 //
 //  Created by Jack Rong on 08/09/2024.
@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct PomodoroView: View {
-    // MARK: - Properties
-    @Bindable private var viewModel = PomodoroViewModel.shared
-    @Bindable private var coordinator = NavigationCoordinator.shared
     
+    // MARK: - Stored properties
+    @State private var viewModel: PomodoroViewModel
     private let haptics = HapticsManager()
     
+    @Environment(NavigationCoordinator.self) private var coordinator
     @Environment(\.scenePhase) private var scenePhase
     
     @State private var lastInactiveTime = Date.now
     @State private var isPulsing = false
     @State private var hapticTimer: Timer?
     @State private var shouldRestartTimer = false
+    
+    // MARK: - Inits
+    init(viewModel: PomodoroViewModel) {
+        self.viewModel = viewModel
+    }
     
     // MARK: - Computed properties
     var isScreenInactive: Bool { scenePhase == .inactive }
@@ -36,33 +41,30 @@ struct PomodoroView: View {
 
     // MARK: - Views
     var body: some View {
-        NavigationStack(path: $coordinator.path) {
-            VStack() {
-                circularProgressBar
-            }
-            .ignoresSafeArea()
-            .navigationDestination(for: NavigationDestination.self) { destination in
-                coordinator.destination(for: destination)
-            }
-            .toolbar {
-                if !isScreenInactive && !viewModel.isSessionFinished {
-                    toolbarItems()
-                }
-            }
-            .onAppear {
-                viewModel.checkPermissions()
-            }
-            .onChange(of: viewModel.isSessionFinished) { _, isFinished in
-                if isFinished {
-                    coordinator.popToRoot()
-                    playHaptics()
-                }
-            }
-            .onChange(of: scenePhase) { oldPhase, newPhase in
-                handlePhaseChange(oldPhase, newPhase)
+        @Bindable var coordinator = coordinator
+        
+        VStack() {
+            circularProgressBar
+        }
+        .ignoresSafeArea()
+        .background(viewModel.isSessionFinished ? .white : .clear)
+        .toolbar {
+            if !isScreenInactive && !viewModel.isSessionFinished {
+                toolbarItems()
             }
         }
-        .background(viewModel.isSessionFinished ? .white : .clear)
+        .onAppear {
+            viewModel.checkPermissions()
+        }
+        .onChange(of: viewModel.isSessionFinished) { _, isFinished in
+            if isFinished {
+                coordinator.popToRoot()
+                playHaptics()
+            }
+        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            handlePhaseChange(oldPhase, newPhase)
+        }
     }
     
     // MARK: - Private functions
@@ -92,7 +94,6 @@ struct PomodoroView: View {
             lastInactiveTime = Date.now
             viewModel.notifyUserWhenBreakOver()
         // Restart the extended session if the user comes back
-        // FIXME: Fix error logs with session not running (still works though)
         case (.background, .inactive) where viewModel.isWorkSession && shouldRestartTimer:
             viewModel.startTimer()
             shouldRestartTimer = false
@@ -139,51 +140,6 @@ struct PomodoroView: View {
 }
 
 private extension PomodoroView {
-    var activeSessionView: some View {
-        VStack {
-            if !isScreenInactive {
-                HStack {
-                    Text(viewModel.currentSession)
-                        .font(.caption.bold())
-                        .foregroundStyle(Color.secondary)
-                        .minimumScaleFactor(0.5)
-                    
-                    Text("\(viewModel.currentSessionsDone)/\(viewModel.maxSessions)")
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
-                }
-                .padding(.top, 12)
-            } else {
-                Spacer()
-                    .frame(height: 24)
-            }
-            
-            Text(time)
-                .font(.title.bold())
-                .foregroundStyle(Color.primary)
-            
-            Image(systemName: viewModel.isTimerTicking ? "pause.fill" : "play.fill")
-                .foregroundStyle(Color.primary)
-                .padding(.top, 6)
-        }
-    }
-    
-    var finishedSessionView: some View {
-        VStack {
-            Spacer()
-                .frame(height: 24)
-                .padding(.top, 12)
-            
-            Text("TIME'S UP!")
-                .font(.title3.bold())
-                .foregroundStyle(.black)
-            
-            Image(systemName: "checkmark")
-                .foregroundStyle(.green)
-                .padding(.top, 18)
-        }
-    }
-    
     var circularProgressBar: some View {
         GeometryReader { geometry in
             let maxWidth = geometry.size.width * 0.75
@@ -234,11 +190,63 @@ private extension PomodoroView {
                 .clipShape(Circle())
                 .buttonStyle(.borderless)
                 .handGestureShortcut(.primaryAction)
+                .accessibilityIdentifier("actionButton")
             }
             .frame(maxWidth: maxWidth, maxHeight: maxHeight)
             .position(x: centerX,
                       y: isCentered ? centerY : (centerY - geometry.size.height * 0.04))
             .animation(.easeInOut, value: isCentered)
+        }
+    }
+    
+    var activeSessionView: some View {
+        VStack {
+            if !isScreenInactive {
+                HStack {
+                    Text(viewModel.currentSession)
+                        .font(.caption.bold())
+                        .foregroundStyle(Color.secondary)
+                        .minimumScaleFactor(0.5)
+                        .accessibilityIdentifier("currentSession")
+                    
+                    Text("\(viewModel.currentSessionsDone)/\(viewModel.maxSessions)")
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
+                        .accessibilityIdentifier("sessionProgress")
+                }
+                .padding(.top, 12)
+            } else {
+                Spacer()
+                    .frame(height: 24)
+            }
+            
+            Text(time)
+                .font(.title.bold())
+                .foregroundStyle(Color.primary)
+                .accessibilityIdentifier("remainingTime")
+            
+            Image(systemName: viewModel.isTimerTicking ? "pause.fill" : "play.fill")
+                .foregroundStyle(Color.primary)
+                .padding(.top, 6)
+                .accessibilityIdentifier(viewModel.isTimerTicking ? "pauseButton" : "playButton")
+        }
+    }
+    
+    var finishedSessionView: some View {
+        VStack {
+            Spacer()
+                .frame(height: 24)
+                .padding(.top, 12)
+            
+            Text("TIME'S UP!")
+                .font(.title3.bold())
+                .foregroundStyle(.black)
+                .accessibilityIdentifier("timesUpMessage")
+            
+            Image(systemName: "checkmark")
+                .foregroundStyle(.green)
+                .padding(.top, 18)
+                .accessibilityIdentifier("completeSessionButton")
         }
     }
     
@@ -251,20 +259,17 @@ private extension PomodoroView {
                 Image(systemName: "chart.line.uptrend.xyaxis")
                     .foregroundStyle(.gray)
             }
+            .accessibilityIdentifier("statisticsButton")
         }
         
         ToolbarItem(placement: .topBarTrailing) {
             Button(action: {
                 coordinator.push(.settings)
             }) {
-                if viewModel.isPermissionGranted {
-                    Image(systemName: "gear")
-                        .foregroundStyle(.gray)
-                } else {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.red)
-                }
+                Image(systemName: viewModel.isPermissionGranted ? "gear" : "exclamationmark.triangle.fill")
+                    .foregroundStyle(viewModel.isPermissionGranted ? .gray : .red)
             }
+            .accessibilityIdentifier("settingsButton")
         }
         
         ToolbarItemGroup(placement: .bottomBar) {
@@ -274,6 +279,7 @@ private extension PomodoroView {
             }) {
                 Image(systemName: "stop.fill")
             }
+            .accessibilityIdentifier("stopButton")
             
             Button(action: {
                 viewModel.resetTimer()
@@ -281,6 +287,7 @@ private extension PomodoroView {
             }) {
                 Image(systemName: "arrow.circlepath")
             }
+            .accessibilityIdentifier("resetButton")
             
             Button(action: {
                 viewModel.skipSession()
@@ -288,10 +295,17 @@ private extension PomodoroView {
             }) {
                 Image(systemName: "forward.end.fill")
             }
+            .accessibilityIdentifier("skipButton")
         }
     }
 }
 
  #Preview {
-    PomodoroView()
+     let viewModel = PomodoroViewModel()
+     let coordinator = NavigationCoordinator()
+     
+     NavigationStack() {
+         PomodoroView(viewModel: viewModel)
+             .environment(coordinator)
+     }
 }

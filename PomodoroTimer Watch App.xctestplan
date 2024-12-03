@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "FE0E6528-2930-4FBB-A977-995F49FBE572",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PomodoroTimer.xcodeproj",
+        "identifier" : "15400CEF2CEB550400C9FFE7",
+        "name" : "PomodoroTimer Watch AppTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PomodoroTimer.xcodeproj",
+        "identifier" : "1538012C2CFB59F50070B320",
+        "name" : "PomodoroTimer Watch AppUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

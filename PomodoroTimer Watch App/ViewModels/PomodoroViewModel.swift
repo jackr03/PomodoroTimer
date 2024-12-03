@@ -11,24 +11,40 @@ import Observation
 
 @Observable
 final class PomodoroViewModel {
-    // MARK: - Properties
-    static let shared = PomodoroViewModel()
     
-    private let timer = PomodoroTimer.shared
-    private let repository = RecordRepository.shared
-    private let session = ExtendedRuntimeSessionManager.shared
+    // MARK: - Stored properties
+    private let timer: PomodoroTimer
+    private let repository: RecordRepositoryProtocol
+    private let sessionManager: ExtendedRuntimeSessionManager
+    
+    private let settingsManager = SettingsManager.shared
     private let notifier = NotificationsManager.shared
-    private let settings = SettingsManager.shared
     
     private(set) var cachedFormattedRemainingTime: String = ""
     private(set) var cachedProgress: CGFloat = 1.0
     
+    private var userDefaultsObserver: NSObjectProtocol?
     private var updateTimer: Timer?
-    private var hapticTimer: Timer?
     
-    // MARK: - Init
-    private init() {
+    // MARK: - Inits
+    @MainActor
+    init(timer: PomodoroTimer = PomodoroTimer(),
+         repository: RecordRepositoryProtocol? = nil,
+         sessionManager: ExtendedRuntimeSessionManager = ExtendedRuntimeSessionManager()
+    ) {
+        self.timer = timer
+        self.repository = repository ?? RecordRepository.shared
+        self.sessionManager = sessionManager
+        
         updateTimeAndProgress()
+        observeSettingChanges()
+    }
+    
+    // MARK: - Deinit
+    deinit {
+        if let userDefaultsObserver {
+            NotificationCenter.default.removeObserver(userDefaultsObserver)
+        }
     }
     
     // MARK: - Computed properties
@@ -40,7 +56,7 @@ final class PomodoroViewModel {
     }
     
     var progress: CGFloat {
-        CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
+        CGFloat(timer.remainingTime) / CGFloat(timer.currentSessionDuration)
     }
     
     var maxSessions: Int { timer.maxSessions }
@@ -48,6 +64,7 @@ final class PomodoroViewModel {
     var currentSessionsDone: Int { timer.currentSessionNumber }
     var isWorkSession: Bool { timer.isWorkSession }
     var isTimerTicking: Bool { timer.isTimerTicking }
+    var isSessionInProgress : Bool { timer.remainingTime != timer.currentSessionDuration }
     var isSessionFinished: Bool {
         get { return timer.isSessionFinished }
         set {
@@ -96,7 +113,7 @@ final class PomodoroViewModel {
         isSessionFinished = false
         stopExtendedSession()
         
-        if settings.get(.autoContinue) {
+        if settingsManager.get(.autoContinue) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.startTimer()
             }
@@ -136,11 +153,11 @@ final class PomodoroViewModel {
     
     // MARK: - Extended session functions
     func startExtendedSession() {
-        session.startSession()
+        sessionManager.startSession()
     }
     
     func stopExtendedSession() {
-        session.stopSession()
+        sessionManager.stopSession()
     }
     
     // MARK: - Notification functions
@@ -175,6 +192,21 @@ final class PomodoroViewModel {
         let remainingTimeInSeconds: Int = timer.remainingTime % 60
         
         cachedFormattedRemainingTime = String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
-        cachedProgress = CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
+        cachedProgress = CGFloat(timer.remainingTime) / CGFloat(timer.currentSessionDuration)
+    }
+    
+    private func observeSettingChanges() {
+        userDefaultsObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleSettingChanges()
+        }
+    }
+    
+    private func handleSettingChanges() {
+        guard !timer.isTimerTicking && !timer.isSessionInProgress else { return }
+        timer.resetTimer()
     }
 }

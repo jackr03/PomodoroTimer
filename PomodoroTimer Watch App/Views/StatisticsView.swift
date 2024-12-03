@@ -9,22 +9,31 @@ import SwiftUI
 import Charts
 
 struct StatisticsView: View {
-    // MARK: - Properties
-    private let viewModel = StatisticsViewModel.shared
+    
+    // MARK: - Stored properties
+    @State private var viewModel: StatisticsViewModel
     private let haptics = HapticsManager()
-    private let coordinator = NavigationCoordinator.shared
+    
+    @Environment(NavigationCoordinator.self) private var coordinator
     
     @State private var animateWeeklyPoints = false
     @State private var animateMonthlyPoints = false
     @State private var showingDeleteAllRecordsAlert = false
+    
+    // MARK: - Inits
+    init(viewModel: StatisticsViewModel) {
+        self.viewModel = viewModel
+    }
     
     // MARK: - Computed properties
     var recordToday: Record { viewModel.recordToday }
     var recordsThisWeek: [Record] { viewModel.recordsThisWeek }
     var recordsThisMonth: [Record] { viewModel.recordsThisMonth }
 
-    // MARK: - View
+    // MARK: - Body
     var body: some View {
+        @Bindable var coordinator = coordinator
+
         TabView {
             dailyStatistics
             weeklyStatistics
@@ -32,17 +41,6 @@ struct StatisticsView: View {
             allTimeStatistics
         }
         .tabViewStyle(.verticalPage)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    coordinator.pop()
-                }) {
-                    Image(systemName: "chevron.left")
-                }
-                .handGestureShortcut(.primaryAction)
-            }
-        }
         .onAppear() {
             viewModel.fetchAllRecords()
         }
@@ -54,7 +52,8 @@ struct StatisticsView: View {
 
 private extension StatisticsView {
     var dailyStatistics: some View {
-        RecordView(record: recordToday)
+        let recordViewModel = RecordViewModel(record: recordToday)
+        return RecordView(viewModel: recordViewModel)
     }
     
     // TODO: Clickable bars to go to the record screen
@@ -76,7 +75,7 @@ private extension StatisticsView {
                     }
                 }
             }
-            .chartXScale(domain: Calendar.current.currentWeekRange)
+            .chartXScale(domain: Calendar.current.weekRange())
             .chartYScale(domain: calculateYDomain(from: recordsThisWeek))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) {
@@ -120,7 +119,7 @@ private extension StatisticsView {
                     }
                 }
             }
-            .chartXScale(domain: Calendar.current.currentMonthRange)
+            .chartXScale(domain: Calendar.current.monthRange())
             .chartYScale(domain: calculateYDomain(from: recordsThisMonth))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .weekOfYear)) {
@@ -156,36 +155,7 @@ private extension StatisticsView {
                 .padding(.bottom, 10)
                     
                 ForEach(viewModel.records) { record in
-                    Button(action: {
-                        coordinator.push(.record(record: record))
-                    }) {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Text("\(record.formattedDateMedium)")
-                                        .font(.headline)
-                                        .foregroundStyle(.secondary)
-                                    
-                                    Spacer()
-                                    
-                                    Text("\(record.sessionsCompleted)/\(record.dailyTarget)")
-                                        .font(.body.bold())
-                                        .foregroundStyle(.primary)
-                                }
-                                
-                                ProgressView(value: Double(min(record.sessionsCompleted, record.dailyTarget)),
-                                             total: Double(record.dailyTarget))
-                                .progressViewStyle(LinearProgressViewStyle())
-                                .tint(record.isDailyTargetMet ? .green : .red)
-                            }
-                            .padding()
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(.gray.opacity(0.5), lineWidth: 1)
-                            )
-                        }
-                    }
-                    .buttonStyle(PlainButtonStyle())
+                    createRecordCard(for: record)
                 }
             }
             
@@ -240,6 +210,40 @@ private extension StatisticsView {
         }
     }
     
+    func createRecordCard(for record: Record) -> some View {
+        return Button(action: {
+            coordinator.push(.record(record: record))
+        }) {
+            HStack {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("\(record.formatDate(.medium))")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                        
+                        Spacer()
+                        
+                        Text("\(record.sessionsCompleted)/\(record.dailyTarget)")
+                            .font(.body.bold())
+                            .foregroundStyle(.primary)
+                    }
+                    
+                    ProgressView(value: Double(min(record.sessionsCompleted, record.dailyTarget)),
+                                 total: Double(record.dailyTarget))
+                    .progressViewStyle(LinearProgressViewStyle())
+                    .tint(record.isDailyTargetMet ? .green : .red)
+                }
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.gray.opacity(0.5), lineWidth: 1)
+                )
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+
+    }
+    
     func deleteAlert() -> Alert {
         Alert(
             title: Text("Delete all records?"),
@@ -262,16 +266,10 @@ private extension StatisticsView {
     }
 }
 
-extension AppStorage {
-    init(wrappedValue: Value, _ key: IntSetting, store: UserDefaults? = nil) where Value == Int {
-        self.init(wrappedValue: wrappedValue, key.rawValue, store: store)
-    }
-    
-    init(wrappedValue: Value, _ key: BoolSetting, store: UserDefaults? = nil) where Value == Bool {
-        self.init(wrappedValue: wrappedValue, key.rawValue, store: store)
-    }
-}
-
 #Preview {
-    StatisticsView()
+    let viewModel = StatisticsViewModel()
+    let coordinator = NavigationCoordinator()
+    
+    StatisticsView(viewModel: viewModel)
+        .environment(coordinator)
 }

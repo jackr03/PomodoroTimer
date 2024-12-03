@@ -8,22 +8,31 @@
 import SwiftUI
 
 struct SettingsView: View {
-    // MARK: - Properties
-    @Bindable private var viewModel = SettingsViewModel.shared
+    
+    // MARK: - Stored properties
+    @State private var viewModel: SettingsViewModel
     
     private let haptics = HapticsManager()
-    private let coordinator = NavigationCoordinator.shared
     
-    @AppStorage(.workDuration) private var workDuration: Int = SettingsManager.shared.getDefault(.workDuration)
-    @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int = SettingsManager.shared.getDefault(.shortBreakDuration)
-    @AppStorage(.longBreakDuration) private var longBreakDuration: Int = SettingsManager.shared.getDefault(.longBreakDuration)
-    @AppStorage(.dailyTarget) private var dailyTarget: Int = SettingsManager.shared.getDefault(.dailyTarget)
-    @AppStorage(.autoContinue) private var autoContinue: Bool = SettingsManager.shared.getDefault(.autoContinue)
+    @Environment(NavigationCoordinator.self) private var coordinator
+    
+    @AppStorage(.workDuration) private var workDuration: Int
+    @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int
+    @AppStorage(.longBreakDuration) private var longBreakDuration: Int
+    @AppStorage(.dailyTarget) private var dailyTarget: Int
+    @AppStorage(.autoContinue) private var autoContinue: Bool
     
     @State private var showingPermissionsAlert: Bool = false
     
-    // MARK: - Views
+    // MARK: - Inits
+    init(viewModel: SettingsViewModel) {
+        self.viewModel = viewModel
+    }
+    
+    // MARK: - Body
     var body: some View {
+        @Bindable var coordinator = coordinator
+        
         Form {
             if !viewModel.isPermissionGranted {
                 Section {
@@ -37,19 +46,22 @@ struct SettingsView: View {
                              selection: $workDuration,
                              range: 1...60,
                              unit: "minute",
-                             tagModifier: { $0 * 60 })
+                             tagModifier: { $0 * 60 },
+                             accessibilityIdentifier: "workDurationPicker")
                 
                 numberPicker(label: "Short break",
                              selection: $shortBreakDuration,
                              range: 1...60,
                              unit: "minute",
-                             tagModifier: { $0 * 60 })
+                             tagModifier: { $0 * 60 },
+                             accessibilityIdentifier: "shortBreakDurationPicker")
                 
                 numberPicker(label: "Long break",
                              selection: $longBreakDuration,
                              range: 1...60,
                              unit: "minute",
-                             tagModifier: { $0 * 60 })
+                             tagModifier: { $0 * 60 },
+                             accessibilityIdentifier: "longBreakDurationPicker")
             }
             
             Section {
@@ -57,12 +69,15 @@ struct SettingsView: View {
                              selection: $dailyTarget,
                              range: 1...24,
                              unit: "session",
-                             onChange: { newValue in viewModel.updateRecordDailyTarget(to: newValue) }
+                             onChange: { newValue in viewModel.updateRecordDailyTarget(to: newValue) },
+                             accessibilityIdentifier: "dailyTargetPicker"
                 )
             }
             
             Section {
-                togglePicker(label: "Auto-continue", isOn: $autoContinue)
+                toggleSwitch(label: "Auto-continue",
+                             isOn: $autoContinue,
+                             accessibilityIdentifier: "autoContinueSwitch")
             }
              
             if !viewModel.settingsAreAllDefault {
@@ -73,18 +88,6 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    viewModel.updateTimer()
-                    coordinator.pop()
-                }) {
-                    Image(systemName: "chevron.left")
-                }
-                .handGestureShortcut(.primaryAction)
-            }
-        }
         .onAppear() {
             viewModel.syncSettings()
         }
@@ -99,6 +102,7 @@ struct SettingsView: View {
 }
 
 private extension SettingsView {
+    // TODO: Test this
     var missingPermissionView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
@@ -124,32 +128,31 @@ private extension SettingsView {
     }
     
     var resetSettingsButton: some View {
-        HStack {
-            Button(action: {
-                viewModel.resetSettings()
-                viewModel.updateTimer()
-                haptics.playClick()
-                
-                coordinator.pop()
-            }) {
-                Image(systemName: "arrow.triangle.2.circlepath")
-                    .font(.caption)
-                Text("Reset to default")
-                    .font(.caption)
-            }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 12))
-            .tint(.red)
+        Button(action: {
+            viewModel.resetSettings()
+            haptics.playClick()
+            
+            coordinator.pop()
+        }) {
+            Image(systemName: "arrow.triangle.2.circlepath")
+                .font(.caption)
+            Text("Reset to default")
+                .font(.caption)
         }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.roundedRectangle(radius: 12))
+        .tint(.red)
+        .accessibilityIdentifier("resetSettingsButton")
     }
     
     // TODO: Make picker open up on current selection
     func numberPicker(label: String,
-                        selection: Binding<Int>,
-                        range: ClosedRange<Int>,
-                        unit: String,
-                        tagModifier: @escaping (Int) -> Int = { $0 },
-                        onChange: ((Int) -> Void)? = nil
+                      selection: Binding<Int>,
+                      range: ClosedRange<Int>,
+                      unit: String,
+                      tagModifier: @escaping (Int) -> Int = { $0 },
+                      onChange: ((Int) -> Void)? = nil,
+                      accessibilityIdentifier: String
     ) -> some View {
         Picker(selection: selection) {
             ForEach(range, id: \.self) {
@@ -163,19 +166,22 @@ private extension SettingsView {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
+        .accessibilityIdentifier(accessibilityIdentifier)
         .onChange(of: selection.wrappedValue) { _, newValue in
             onChange?(newValue)
             viewModel.syncSettings()
         }
     }
     
-    func togglePicker(label: String,
+    func toggleSwitch(label: String,
                       isOn: Binding<Bool>,
-                      onChange: ((Bool) -> Void)? = nil
+                      onChange: ((Bool) -> Void)? = nil,
+                      accessibilityIdentifier: String
     ) -> some View {
         Toggle(label, isOn: isOn)
             .font(.caption)
             .foregroundStyle(.secondary)
+            .accessibilityIdentifier(accessibilityIdentifier)
             .onChange(of: isOn.wrappedValue) { _, newValue in
                 onChange?(newValue)
                 viewModel.syncSettings()
@@ -183,6 +189,24 @@ private extension SettingsView {
     }
 }
 
+extension AppStorage {
+    init(_ key: IntSetting) where Value == Int {
+        self.init(wrappedValue: SettingsManager.shared.getDefault(key),
+                  key.rawValue,
+                  store: SettingsManager.shared.userDefaults)
+    }
+    
+    init(_ key: BoolSetting) where Value == Bool {
+        self.init(wrappedValue: SettingsManager.shared.getDefault(key),
+                  key.rawValue,
+                  store: SettingsManager.shared.userDefaults)
+    }
+}
+
 #Preview {
-    SettingsView()
+    let viewModel = SettingsViewModel()
+    let coordinator = NavigationCoordinator()
+    
+    SettingsView(viewModel: viewModel)
+        .environment(coordinator)
 }

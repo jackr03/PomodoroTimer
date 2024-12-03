@@ -6,21 +6,24 @@
 //
 
 import Foundation
-import WatchKit
 import Observation
 
 @Observable
 final class StatisticsViewModel {
-    // MARK: - Properties
-    static let shared = StatisticsViewModel()
     
-    private let repository = RecordRepository.shared
+    // MARK: - Stored properties
+    private let repository: RecordRepositoryProtocol
     
     private(set) var records: [Record] = []
     
-    // MARK: - Init
-    private init() {}
-    
+    // MARK: - Inits
+    @MainActor
+    init(repository: RecordRepositoryProtocol? = nil) {
+        self.repository = repository ?? RecordRepository.shared
+        
+        fetchAllRecords()
+    }
+        
     // MARK: - Computed properties
     var recordToday: Record {
         records.filter { record in
@@ -30,19 +33,11 @@ final class StatisticsViewModel {
     }
     
     var recordsThisWeek: [Record] {
-        let weekRange = Calendar.current.currentWeekRange
-        
-        return records.filter { record in
-            record.date >= weekRange.lowerBound && record.date < weekRange.upperBound
-        }
+        recordsForWeek(date: Date.now)
     }
     
     var recordsThisMonth: [Record] {
-        let monthRange = Calendar.current.currentMonthRange
-        
-        return records.filter { record in
-            record.date >= monthRange.lowerBound && record.date < monthRange.upperBound
-        }
+        recordsForMonth(date: Date.now)
     }
     
     var totalSessions: Int {
@@ -52,40 +47,29 @@ final class StatisticsViewModel {
     }
     
     var currentStreak: Int {
-        var currentStreak = 0
-        var currentDate = Calendar.current.startOfToday
-        
-        for record in records {
-            guard Calendar.current.isDate(record.date, inSameDayAs: currentDate), record.isDailyTargetMet else {
-                break
-            }
-            
-            currentStreak += 1
-            currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
-        }
-        
-        return currentStreak
+        streak(for: Date.now)
     }
     
     var longestStreak: Int {
         var currentStreak = 0
         var longestStreak = 0
-        var currentDate = Calendar.current.startOfToday
-        
-        for record in records {
-            if Calendar.current.isDate(record.date, inSameDayAs: currentDate) && record.isDailyTargetMet {
+       
+        for i in 0..<records.count {
+            let currentRecord = records[i]
+            
+            // Check if current record is the first one or the day after the previous
+            let isConsecutive = i == 0 || Calendar.current.isDate(records[i - 1].date,
+                                                    inSameDayAs: Calendar.current.date(byAdding: .day, value: -1, to: currentRecord.date)!)
+            
+            if isConsecutive && currentRecord.isDailyTargetMet {
                 currentStreak += 1
             } else {
                 longestStreak = max(currentStreak, longestStreak)
-                currentStreak = 0
+                currentStreak = currentRecord.isDailyTargetMet ? 1 : 0
             }
-            
-            currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
         }
         
-        longestStreak = max(currentStreak, longestStreak)
-        
-        return longestStreak
+        return max(currentStreak, longestStreak)
     }
     
     // MARK: - Functions
@@ -107,6 +91,38 @@ final class StatisticsViewModel {
         performFunctionAndFetchRecords {
             repository.deleteAllRecords()
         }
+    }
+    
+    func recordsForWeek(date: Date) -> [Record] {
+        let weekRange = Calendar.current.weekRange(for: date)
+        
+        return records.filter { record in
+            record.date >= weekRange.lowerBound && record.date < weekRange.upperBound
+        }
+    }
+    
+    func recordsForMonth(date: Date) -> [Record] {
+        let monthRange = Calendar.current.monthRange(for: date)
+        
+        return records.filter { record in
+            record.date >= monthRange.lowerBound && record.date < monthRange.upperBound
+        }
+    }
+    
+    func streak(for date: Date) -> Int {
+        var currentStreak = 0
+        var currentDate = Calendar.current.startOfDay(for: date)
+        
+        while let record = records.first(where: { $0.date == currentDate }) {
+            if record.isDailyTargetMet {
+                currentStreak += 1
+                currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+            } else {
+                break
+            }
+        }
+        
+        return currentStreak
     }
     
     // MARK: - Private functions

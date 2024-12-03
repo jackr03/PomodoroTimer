@@ -9,6 +9,7 @@ import Foundation
 import WatchKit
 
 struct HapticsManager {
+    
     private let device = WKInterfaceDevice.current()
     
     func playSuccess() {
