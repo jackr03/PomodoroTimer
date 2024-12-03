@@ -15,8 +15,8 @@ final class PomodoroViewModel {
     // MARK: - Stored properties
     private let timer: PomodoroTimer
     private let repository: RecordRepositoryProtocol
-    private let sessionManager: ExtendedRuntimeSessionManager
     
+    private let sessionManager = ExtendedRuntimeSessionManager()
     private let settingsManager = SettingsManager.shared
     private let notifier = NotificationsManager.shared
     
@@ -29,12 +29,10 @@ final class PomodoroViewModel {
     // MARK: - Inits
     @MainActor
     init(timer: PomodoroTimer = PomodoroTimer(),
-         repository: RecordRepositoryProtocol? = nil,
-         sessionManager: ExtendedRuntimeSessionManager = ExtendedRuntimeSessionManager()
+         repository: RecordRepositoryProtocol? = nil
     ) {
         self.timer = timer
         self.repository = repository ?? RecordRepository.shared
-        self.sessionManager = sessionManager
         
         updateTimeAndProgress()
         observeSettingChanges()

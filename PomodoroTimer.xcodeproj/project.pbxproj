@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		151E2C6A2CFF7BA5003EA93B /* PomodoroTimer Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PomodoroTimer Watch AppTests.xctest"; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer.app/PlugIns/PomodoroTimer Watch AppTests.xctest"; sourceTree = "<absolute>"; };
-		151E2C6B2CFF7BA5003EA93B /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PomodoroTimer.app; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer.app"; sourceTree = "<absolute>"; };
-		151E2C6C2CFF7BA5003EA93B /* PomodoroTimer Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PomodoroTimer Watch AppUITests.xctest"; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer Watch AppUITests-Runner.app/PlugIns/PomodoroTimer Watch AppUITests.xctest"; sourceTree = "<absolute>"; };
+		151E2DB22CFF7C25003EA93B /* PomodoroTimer Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PomodoroTimer Watch AppTests.xctest"; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer.app/PlugIns/PomodoroTimer Watch AppTests.xctest"; sourceTree = "<absolute>"; };
+		151E2DB32CFF7C25003EA93B /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PomodoroTimer.app; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer.app"; sourceTree = "<absolute>"; };
+		151E2DB42CFF7C25003EA93B /* PomodoroTimer Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PomodoroTimer Watch AppUITests.xctest"; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer Watch AppUITests-Runner.app/PlugIns/PomodoroTimer Watch AppUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -115,7 +115,7 @@
 			packageProductDependencies = (
 			);
 			productName = "PomodoroTimer Watch AppUITests";
-			productReference = 151E2C6C2CFF7BA5003EA93B /* PomodoroTimer Watch AppUITests.xctest */;
+			productReference = 151E2DB42CFF7C25003EA93B /* PomodoroTimer Watch AppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		15400CEF2CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */ = {
@@ -139,7 +139,7 @@
 			packageProductDependencies = (
 			);
 			productName = "PomodoroTimer Watch AppTests";
-			productReference = 151E2C6A2CFF7BA5003EA93B /* PomodoroTimer Watch AppTests.xctest */;
+			productReference = 151E2DB22CFF7C25003EA93B /* PomodoroTimer Watch AppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		15D5B50E2C88F789004B29E8 /* PomodoroTimer */ = {
@@ -159,7 +159,7 @@
 			);
 			name = PomodoroTimer;
 			productName = "PomodoroTimer Watch App";
-			productReference = 151E2C6B2CFF7BA5003EA93B /* PomodoroTimer.app */;
+			productReference = 151E2DB32CFF7C25003EA93B /* PomodoroTimer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

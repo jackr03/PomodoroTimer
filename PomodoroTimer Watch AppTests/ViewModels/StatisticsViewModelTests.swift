@@ -5,8 +5,8 @@
 //  Created by Jack Rong on 18/11/2024.
 //
 
-import Testing
 import Foundation
+import Testing
 @testable import PomodoroTimer
 
 final class StatisticsViewModelTests {
@@ -90,10 +90,11 @@ final class StatisticsViewModelTests {
     }
     
     @Test
-    func recordToday_whenNoRecordExists_createsNewRecord() async {
+    func recordToday_whenNoRecordExists_returnsAPlaceholderRecord() async {
         await setUpWithNoRecords()
         
-        #expect(sut.recordToday != nil, "Should create a new record")
+        #expect(sut.recordToday != nil, "Should return a placeholder record")
+        #expect(sut.records.count == 0, "Should not store placeholder record into database")
         #expect(sut.recordToday.date == Calendar.current.startOfToday, "New record's date should be set to today")
         #expect(sut.recordToday.sessionsCompleted == 0, "New record should have 0 sessions completed")
     }
