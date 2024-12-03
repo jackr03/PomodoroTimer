@@ -54,9 +54,7 @@ class PomodoroTimer {
     // MARK: - Functions
     func startTimer() {
         guard timer == nil else { return }
-        
-        isSessionInProgress = true
-        
+                
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
             self?.countdown()
         }
@@ -93,7 +91,9 @@ class PomodoroTimer {
     private func countdown() {
         if remainingTime > 0 {
             remainingTime -= 1
+            isSessionInProgress = false
         } else {
+            isSessionInProgress = false
             isSessionFinished = true
             nextSession()
         }
@@ -112,8 +112,7 @@ class PomodoroTimer {
             
             currentSession = .work
         }
-        
+
         remainingTime = currentSessionDuration
-        isSessionInProgress = false
     }
 }

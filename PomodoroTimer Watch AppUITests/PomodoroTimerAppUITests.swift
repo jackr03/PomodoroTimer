@@ -89,7 +89,7 @@ final class PomodoroTimerAppUITests: XCTestCase {
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "24:59", "Timer should only have just started counting down")
     }
  
-    func testChangingSetting_resetsTimerIfNotRunning() {
+    func testChangingDurationSetting_resetsTimerIfNotAlreadyInProgress() {
         launchApp()
         
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "25:00", "Starting time should be 25:00")
@@ -103,7 +103,26 @@ final class PomodoroTimerAppUITests: XCTestCase {
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "03:00", "Time should be reset to 3:00")
     }
     
-    func testChangingSetting_doesNotResetTimerIfRunning() {
+    func testChangingDurationSetting_resetsTimerIfNoTimeElapsed() {
+        launchApp()
+        
+        XCTAssertTrue(pomodoroScreen.remainingTime.label == "25:00", "Starting time should be 25:00")
+        
+        // Click play twice
+        pomodoroScreen.playButton.tap()
+        pomodoroScreen.pauseButton.tap()
+        XCTAssertTrue(pomodoroScreen.remainingTime.label == "25:00", "Time should still be 25:00")
+        
+        pomodoroScreen.settingsButton.waitAndTap()
+        settingsScreen.workDurationPicker.waitAndTap()
+        app.buttons["3 minutes"].waitAndTap()
+        XCTAssertTrue(settingsScreen.workDurationPicker.label == "Work, 3 minutes", "Work duration should be set to 3 minutes")
+        
+        settingsScreen.backButton.waitAndTap()
+        XCTAssertTrue(pomodoroScreen.remainingTime.label == "03:00", "Time should be reset to 3:00")
+    }
+    
+    func testChangingDurationSetting_doesNotResetTimerIfInProgress() {
         launchApp()
         
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "25:00", "Starting time should be 25:00")
