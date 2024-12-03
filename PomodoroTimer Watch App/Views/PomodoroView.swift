@@ -94,7 +94,6 @@ struct PomodoroView: View {
             lastInactiveTime = Date.now
             viewModel.notifyUserWhenBreakOver()
         // Restart the extended session if the user comes back
-        // FIXME: Fix error logs with session not running (still works though)
         case (.background, .inactive) where viewModel.isWorkSession && shouldRestartTimer:
             viewModel.startTimer()
             shouldRestartTimer = false
@@ -141,57 +140,6 @@ struct PomodoroView: View {
 }
 
 private extension PomodoroView {
-    var activeSessionView: some View {
-        VStack {
-            if !isScreenInactive {
-                HStack {
-                    Text(viewModel.currentSession)
-                        .font(.caption.bold())
-                        .foregroundStyle(Color.secondary)
-                        .minimumScaleFactor(0.5)
-                        .accessibilityIdentifier("currentSession")
-                    
-                    Text("\(viewModel.currentSessionsDone)/\(viewModel.maxSessions)")
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
-                        .accessibilityIdentifier("sessionProgress")
-                }
-                .padding(.top, 12)
-            } else {
-                Spacer()
-                    .frame(height: 24)
-            }
-            
-            Text(time)
-                .font(.title.bold())
-                .foregroundStyle(Color.primary)
-                .accessibilityIdentifier("remainingTime")
-            
-            Image(systemName: viewModel.isTimerTicking ? "pause.fill" : "play.fill")
-                .foregroundStyle(Color.primary)
-                .padding(.top, 6)
-                .accessibilityIdentifier(viewModel.isTimerTicking ? "pauseButton" : "playButton")
-        }
-    }
-    
-    var finishedSessionView: some View {
-        VStack {
-            Spacer()
-                .frame(height: 24)
-                .padding(.top, 12)
-            
-            Text("TIME'S UP!")
-                .font(.title3.bold())
-                .foregroundStyle(.black)
-                .accessibilityIdentifier("timesUpMessage")
-            
-            Image(systemName: "checkmark")
-                .foregroundStyle(.green)
-                .padding(.top, 18)
-                .accessibilityIdentifier("completeSessionButton")
-        }
-    }
-    
     var circularProgressBar: some View {
         GeometryReader { geometry in
             let maxWidth = geometry.size.width * 0.75
@@ -251,6 +199,57 @@ private extension PomodoroView {
         }
     }
     
+    var activeSessionView: some View {
+        VStack {
+            if !isScreenInactive {
+                HStack {
+                    Text(viewModel.currentSession)
+                        .font(.caption.bold())
+                        .foregroundStyle(Color.secondary)
+                        .minimumScaleFactor(0.5)
+                        .accessibilityIdentifier("currentSession")
+                    
+                    Text("\(viewModel.currentSessionsDone)/\(viewModel.maxSessions)")
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
+                        .accessibilityIdentifier("sessionProgress")
+                }
+                .padding(.top, 12)
+            } else {
+                Spacer()
+                    .frame(height: 24)
+            }
+            
+            Text(time)
+                .font(.title.bold())
+                .foregroundStyle(Color.primary)
+                .accessibilityIdentifier("remainingTime")
+            
+            Image(systemName: viewModel.isTimerTicking ? "pause.fill" : "play.fill")
+                .foregroundStyle(Color.primary)
+                .padding(.top, 6)
+                .accessibilityIdentifier(viewModel.isTimerTicking ? "pauseButton" : "playButton")
+        }
+    }
+    
+    var finishedSessionView: some View {
+        VStack {
+            Spacer()
+                .frame(height: 24)
+                .padding(.top, 12)
+            
+            Text("TIME'S UP!")
+                .font(.title3.bold())
+                .foregroundStyle(.black)
+                .accessibilityIdentifier("timesUpMessage")
+            
+            Image(systemName: "checkmark")
+                .foregroundStyle(.green)
+                .padding(.top, 18)
+                .accessibilityIdentifier("completeSessionButton")
+        }
+    }
+    
     @ToolbarContentBuilder
     func toolbarItems() -> some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
@@ -269,8 +268,8 @@ private extension PomodoroView {
             }) {
                 Image(systemName: viewModel.isPermissionGranted ? "gear" : "exclamationmark.triangle.fill")
                     .foregroundStyle(viewModel.isPermissionGranted ? .gray : .red)
-                    .accessibilityIdentifier(viewModel.isPermissionGranted ? "settingsButton" : "settingsButtonWithWarning")
             }
+            .accessibilityIdentifier("settingsButton")
         }
         
         ToolbarItemGroup(placement: .bottomBar) {

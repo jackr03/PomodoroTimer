@@ -20,6 +20,16 @@ final class StatisticsViewModelTests {
         sut = nil
         mockRecordRepository = nil
     }
+    
+    private func setUpWithNoRecords() async {
+        mockRecordRepository = MockRecordRepository(mockRecords: [])
+        await sut = StatisticsViewModel(repository: mockRecordRepository)
+    }
+    
+    private func setUpWithMockRecords(_ records: [Record]) async {
+        mockRecordRepository = MockRecordRepository(mockRecords: records)
+        await sut = StatisticsViewModel(repository: mockRecordRepository)
+    }
         
     @Test
     func fetchAllRecords_returnsCorrectRecords() async {
@@ -39,9 +49,9 @@ final class StatisticsViewModelTests {
     func addNewRecord_createsNewRecord() async {
         await setUpWithNoRecords()
         
-        let recordToday = sut.addNewRecord()
+        let newRecord = sut.addNewRecord()
         
-        #expect(sut.records.count == 1, "Should create a new record")
+        #expect(sut.records == [newRecord], "Should create a new record")
     }
         
     @Test
@@ -170,20 +180,4 @@ final class StatisticsViewModelTests {
         
         #expect(sut.longestStreak == 3, "Longest streak should be exactly 3")
     }
-
-}
-
-// MARK: - Helper methods
-private extension StatisticsViewModelTests {
-    
-    func setUpWithNoRecords() async {
-        mockRecordRepository = MockRecordRepository(mockRecords: [])
-        await sut = StatisticsViewModel(repository: mockRecordRepository)
-    }
-    
-    func setUpWithMockRecords(_ records: [Record]) async {
-        mockRecordRepository = MockRecordRepository(mockRecords: records)
-        await sut = StatisticsViewModel(repository: mockRecordRepository)
-    }
-    
 }

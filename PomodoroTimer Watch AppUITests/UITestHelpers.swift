@@ -8,8 +8,8 @@
 import XCTest
 
 extension XCUIElement {
-    func waitAndTap() {
-        XCTAssertTrue(waitForExistence(timeout: 3))
+    func waitAndTap(timeout: TimeInterval = 3) {
+        XCTAssertTrue(waitForExistence(timeout: timeout), "Could not find element")
         tap()
     }
 }

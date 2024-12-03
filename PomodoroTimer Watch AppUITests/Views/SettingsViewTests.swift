@@ -16,13 +16,6 @@ final class SettingsViewTests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launch()
-        sut = SettingsScreen(app: app)
-        
-        // Wait for settings screen to be visible first
-        app.buttons["settingsButton"].firstMatch.tap()
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 3),
-                      "Settings screen should be visible within 3 seconds")
     }
 
     override func tearDown() {
@@ -30,15 +23,36 @@ final class SettingsViewTests: XCTestCase {
         sut = nil
         super.tearDown()
     }
-
+    
+    private func launchApp(with arguments: [String] = []) {
+        app.launchArguments += arguments
+        
+        app.launch()
+        sut = SettingsScreen(app: app)
+        app.buttons["settingsButton"].firstMatch.waitAndTap()
+        XCTAssertTrue(sut.navigationBar.waitForExistence(timeout: 3),
+                      "Settings screen should be visible within 3 seconds")
+    }
+    
     func testSettingsForm_rendersProperly() {
+        launchApp()
+        
         XCTAssertTrue(sut.workDurationPicker.exists, "Work duration picker should render properly")
         XCTAssertTrue(sut.shortBreakDurationPicker.exists, "Short break duration picker should render properly")
         XCTAssertTrue(sut.longBreakDurationPicker.exists, "Long break duration picker should render properly")
         
         app.swipeUp()
-        
         XCTAssertTrue(sut.dailyTargetPicker.exists, "Daily target picker should render properly")
         XCTAssertTrue(sut.autoContinueSwitch.exists, "Auto-continue switch should render properly")
+    }
+    
+    func testResetSettingsButton_rendersIfSettingsNotDefault() {
+        launchApp()
+        
+        app.swipeUp()
+        XCTAssertFalse(sut.resetSettingsButton.exists, "Reset settings button should not render if settings are all default")
+
+        sut.autoContinueSwitch.waitAndTap()
+        XCTAssertTrue(sut.resetSettingsButton.exists, "Reset settings button should render after a setting is changed")
     }
 }

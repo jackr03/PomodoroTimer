@@ -7,7 +7,7 @@
 
 import XCTest
 
-class PomodoroScreen {
+final class PomodoroScreen {
     private let app: XCUIApplication
     
     init(app: XCUIApplication) {
