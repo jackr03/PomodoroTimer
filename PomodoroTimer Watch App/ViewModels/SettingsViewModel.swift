@@ -13,12 +13,10 @@ import Observation
 final class SettingsViewModel {
     
     // MARK: - Stored properties
-    // FIXME: Either pass in PomodoroTimer or figure out a way to send notifications
-//    private let timer = PomodoroTimer.shared
     private let repository: RecordRepositoryProtocol
     
+    private let settingsManager = SettingsManager.shared
     private let notifier = NotificationsManager.shared
-    private let settings = SettingsManager.shared
     
     public var settingsAreAllDefault = true
     
@@ -33,12 +31,12 @@ final class SettingsViewModel {
     
     // MARK: - Functions
     func syncSettings() {
-        settingsAreAllDefault = settings.checkIfAllDefault()
+        settingsAreAllDefault = settingsManager.checkIfAllDefault()
     }
     
     func resetSettings() {
-        settings.resetAll()
-        updateRecordDailyTarget(to: settings.get(.dailyTarget))
+        settingsManager.resetAll()
+        updateRecordDailyTarget(to: settingsManager.get(.dailyTarget))
         syncSettings()
     }
     
@@ -46,11 +44,5 @@ final class SettingsViewModel {
         if let record = repository.readRecord(byDate: Date.now) {
             record.dailyTarget = value
         }
-    }
-    
-    func updateTimer() {
-//        guard !timer.isTimerTicking && !timer.isSessionInProgress else { return }
-//        
-//        timer.resetTimer()
     }
 }
