@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// TODO: Remove the custom back buttons in the views
 struct CoordinatorView: View {
     
     // MARK: - Stored properties
@@ -15,7 +14,7 @@ struct CoordinatorView: View {
     private let pomodoroViewModel: PomodoroViewModel
     
     // MARK: - Inits
-    init(coordinator: NavigationCoordinator) {
+    init(coordinator: NavigationCoordinator = NavigationCoordinator()) {
         self.coordinator = coordinator
         self.pomodoroViewModel = PomodoroViewModel()
     }

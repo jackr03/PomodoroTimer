@@ -8,17 +8,30 @@
 import Foundation
 
 final class SettingsManager {
-    // MARK: - Properties
-    static let shared = SettingsManager()
+    
+    // MARK: - Singleton instance
+    public static let shared = SettingsManager()
+    
+    // MARK: - Stored properties
+    private static let mockSuiteName = "com.jackr03.PomodoroTimer.mockUserDefaults"
 
     private let settings: [any Setting] = IntSetting.allCases + BoolSetting.allCases
-        
+    
+    public let userDefaults: UserDefaults
+    
     // MARK: - Inits
-    private init() {}
+    private init() {
+        #if DEBUG
+        self.userDefaults = UserDefaults(suiteName: SettingsManager.mockSuiteName)!
+        self.userDefaults.removePersistentDomain(forName: SettingsManager.mockSuiteName)
+        #else
+        self.userDefaults = .standard
+        #endif
+    }
     
     // MARK: - Functions
     func get(_ setting: IntSetting) -> Int {
-        return setting.currentValue
+        return setting.currentValue(using: userDefaults)
     }
     
     func getDefault(_ setting: IntSetting) -> Int {
@@ -26,7 +39,7 @@ final class SettingsManager {
     }
     
     func get(_ setting: BoolSetting) -> Bool {
-        return setting.currentValue
+        return setting.currentValue(using: userDefaults)
     }
     
     func getDefault(_ setting: BoolSetting) -> Bool {
@@ -34,12 +47,14 @@ final class SettingsManager {
     }
     
     func checkIfAllDefault() -> Bool {
-        return settings.allSatisfy(\.isDefault)
+        return settings.allSatisfy { setting in
+            setting.isDefault(using: userDefaults)
+        }
     }
         
     func resetAll() {
         settings.forEach { setting in
-            setting.reset()
+            setting.reset(using: userDefaults)
         }
     }
 }

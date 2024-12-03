@@ -10,11 +10,8 @@ import WatchKit
 
 extension Calendar {
     
-    // MARK: - Computed properties
     var startOfToday: Date { Calendar.current.startOfDay(for: Date.now) }
     
-    // MARK: - Functions
-    // TODO: Throw an error instead of returning a default week range
     func weekRange(for date: Date = Date.now) -> ClosedRange<Date> {
         if let weekRange = self.dateInterval(of: .weekOfYear, for: date) {
             return weekRange.start...weekRange.end

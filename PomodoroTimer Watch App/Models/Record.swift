@@ -30,10 +30,6 @@ class Record {
         self.dailyTarget = dailyTarget
     }
     
-    convenience init(date: Date) {
-        self.init(date: date, sessionsCompleted: 0, dailyTarget: SettingsManager.shared.get(.dailyTarget))
-    }
-    
     // MARK: - Computed properties
     var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
     

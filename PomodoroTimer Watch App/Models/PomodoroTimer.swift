@@ -47,6 +47,7 @@ class PomodoroTimer {
     }
     
     // MARK: - Computed properties
+    var currentSessionDuration: Int { currentSession.duration }
     var isWorkSession: Bool { currentSession == .work }
     var isTimerTicking: Bool { timer != nil }
     
@@ -69,7 +70,7 @@ class PomodoroTimer {
     }
     
     func resetTimer() {
-        remainingTime = currentSession.duration
+        remainingTime = currentSessionDuration
     }
     
     func deductTime(by seconds: Int) {
@@ -83,7 +84,7 @@ class PomodoroTimer {
     func endCycle() {
         currentSession = .work
         currentSessionNumber = 0
-        remainingTime = currentSession.duration
+        remainingTime = currentSessionDuration
         isSessionInProgress = false
         pauseTimer()
     }
@@ -112,7 +113,7 @@ class PomodoroTimer {
             currentSession = .work
         }
         
-        remainingTime = currentSession.duration
+        remainingTime = currentSessionDuration
         isSessionInProgress = false
     }
 }

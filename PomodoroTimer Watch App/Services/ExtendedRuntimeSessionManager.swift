@@ -34,13 +34,9 @@ final class ExtendedRuntimeSessionManager: NSObject, WKExtendedRuntimeSessionDel
     }
     
     // MARK: - Delegate functions
-    func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
-        print("Session started")
-    }
+    func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {}
     
-    func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
-        print("Session expiring")
-    }
+    func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {}
     
     func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession, didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason, error: (any Error)?) {
         print("Session invalidated with reason: \(reason.rawValue), error: \(error?.localizedDescription ?? "No error")")

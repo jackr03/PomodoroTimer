@@ -11,15 +11,16 @@ struct SettingsView: View {
     
     // MARK: - Stored properties
     @State private var viewModel: SettingsViewModel
+    
     private let haptics = HapticsManager()
     
     @Environment(NavigationCoordinator.self) private var coordinator
     
-    @AppStorage(.workDuration) private var workDuration: Int = SettingsManager.shared.getDefault(.workDuration)
-    @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int = SettingsManager.shared.getDefault(.shortBreakDuration)
-    @AppStorage(.longBreakDuration) private var longBreakDuration: Int = SettingsManager.shared.getDefault(.longBreakDuration)
-    @AppStorage(.dailyTarget) private var dailyTarget: Int = SettingsManager.shared.getDefault(.dailyTarget)
-    @AppStorage(.autoContinue) private var autoContinue: Bool = SettingsManager.shared.getDefault(.autoContinue)
+    @AppStorage(.workDuration) private var workDuration: Int
+    @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int
+    @AppStorage(.longBreakDuration) private var longBreakDuration: Int
+    @AppStorage(.dailyTarget) private var dailyTarget: Int
+    @AppStorage(.autoContinue) private var autoContinue: Bool
     
     @State private var showingPermissionsAlert: Bool = false
     
@@ -87,19 +88,6 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
-        .navigationBarBackButtonHidden(true)
-        // TODO: Handle updating timer differently
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    viewModel.updateTimer()
-                    coordinator.pop()
-                }) {
-                    Image(systemName: "chevron.left")
-                }
-                .handGestureShortcut(.primaryAction)
-            }
-        }
         .onAppear() {
             viewModel.syncSettings()
         }
@@ -114,6 +102,7 @@ struct SettingsView: View {
 }
 
 private extension SettingsView {
+    // TODO: Test this
     var missingPermissionView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
@@ -139,23 +128,21 @@ private extension SettingsView {
     }
     
     var resetSettingsButton: some View {
-        HStack {
-            Button(action: {
-                viewModel.resetSettings()
-                viewModel.updateTimer()
-                haptics.playClick()
-                
-                coordinator.pop()
-            }) {
-                Image(systemName: "arrow.triangle.2.circlepath")
-                    .font(.caption)
-                Text("Reset to default")
-                    .font(.caption)
-            }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 12))
-            .tint(.red)
+        Button(action: {
+            viewModel.resetSettings()
+            haptics.playClick()
+            
+            coordinator.pop()
+        }) {
+            Image(systemName: "arrow.triangle.2.circlepath")
+                .font(.caption)
+            Text("Reset to default")
+                .font(.caption)
         }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.roundedRectangle(radius: 12))
+        .tint(.red)
+        .accessibilityIdentifier("resetSettingsButton")
     }
     
     // TODO: Make picker open up on current selection
@@ -203,12 +190,16 @@ private extension SettingsView {
 }
 
 extension AppStorage {
-    init(wrappedValue: Value, _ key: IntSetting, store: UserDefaults? = nil) where Value == Int {
-        self.init(wrappedValue: wrappedValue, key.rawValue, store: store)
+    init(_ key: IntSetting) where Value == Int {
+        self.init(wrappedValue: SettingsManager.shared.getDefault(key),
+                  key.rawValue,
+                  store: SettingsManager.shared.userDefaults)
     }
     
-    init(wrappedValue: Value, _ key: BoolSetting, store: UserDefaults? = nil) where Value == Bool {
-        self.init(wrappedValue: wrappedValue, key.rawValue, store: store)
+    init(_ key: BoolSetting) where Value == Bool {
+        self.init(wrappedValue: SettingsManager.shared.getDefault(key),
+                  key.rawValue,
+                  store: SettingsManager.shared.userDefaults)
     }
 }
 

@@ -7,38 +7,39 @@
 
 import Foundation
 
-protocol Setting: CaseIterable where T: Equatable {
+// TODO: - Combine everything into one type of method and cast
+protocol Setting: RawRepresentable, CaseIterable where RawValue == String, T: Equatable {
     associatedtype T
     
-    var rawValue: String { get }
-    var currentValue: T { get }
-    var defaultValue: T { get}
-    var isDefault: Bool { get }
-    func reset()
+    var defaultValue: T { get }
+    func currentValue(using userDefaults: UserDefaults) -> T
+    func isDefault(using userDefaults: UserDefaults) -> Bool
+    func isStored(using userDefaults: UserDefaults) -> Bool
+    func reset(using userDefaults: UserDefaults)
 }
 
 extension Setting {
-    // MARK: - Computed properties
-    var isDefault: Bool { currentValue == defaultValue }
+    func isDefault(using userDefaults: UserDefaults) -> Bool {
+        return currentValue(using: userDefaults) == defaultValue
+    }
     
-    // MARK: - Functions
-    func reset() {
-        UserDefaults.standard.set(defaultValue, forKey: rawValue)
+    func isStored(using userDefaults: UserDefaults) -> Bool {
+        if userDefaults.object(forKey: rawValue) != nil {
+            return true
+        } else {
+            userDefaults.set(defaultValue, forKey: rawValue)
+            return false
+        }
+    }
+    
+    func reset(using userDefaults: UserDefaults) {
+        userDefaults.set(defaultValue, forKey: rawValue)
     }
 }
 
 enum IntSetting: String, Setting {
-    // MARK: - Cases
-    case workDuration
-    case shortBreakDuration
-    case longBreakDuration
-    case dailyTarget
     
-    // MARK: - Computed properties
-    var currentValue: Int {
-        let storedValue = UserDefaults.standard.integer(forKey: rawValue)
-        return storedValue == 0 ? defaultValue: storedValue
-    }
+    case workDuration, shortBreakDuration, longBreakDuration, dailyTarget
     
     var defaultValue: Int {
         switch self {
@@ -48,18 +49,23 @@ enum IntSetting: String, Setting {
         case .dailyTarget: return 8
         }
     }
+    
+    func currentValue(using userDefaults: UserDefaults) -> Int {
+        return isStored(using: userDefaults) ? userDefaults.integer(forKey: rawValue) : defaultValue
+    }
 }
 
 enum BoolSetting: String, Setting {
-    // MARK: - Cases
+
     case autoContinue
-    
-    // MARK: - Computed properties
-    var currentValue: Bool { UserDefaults.standard.bool(forKey: rawValue) }
     
     var defaultValue: Bool {
         switch self {
         case .autoContinue: return true
         }
+    }
+    
+    func currentValue(using userDefaults: UserDefaults) -> Bool {
+        return isStored(using: userDefaults) ? userDefaults.bool(forKey: rawValue) : defaultValue
     }
 }
