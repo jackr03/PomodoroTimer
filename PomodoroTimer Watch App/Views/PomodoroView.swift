@@ -1,6 +1,6 @@
 //
 //  PomodoroView.swift
-//  PomodoroTimer Watch App
+//  PomodoroTimer
 //
 //  Created by Jack Rong on 08/09/2024.
 //
@@ -47,28 +47,27 @@ struct PomodoroView: View {
             circularProgressBar
         }
         .ignoresSafeArea()
-        .background(viewModel.isSessionFinished ? .white : .clear)
+        .background(isSessionFinished ? .white : .clear)
         .toolbar {
-            if !isScreenInactive && !viewModel.isSessionFinished {
+            if !isScreenInactive && !isSessionFinished {
                 toolbarItems()
             }
         }
-        .onAppear {
-            viewModel.checkPermissions()
-        }
-        .onChange(of: viewModel.isSessionFinished) { _, isFinished in
+        .onChange(of: isSessionFinished) { _, isFinished in
             if isFinished {
                 coordinator.popToRoot()
                 playHaptics()
             }
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
-            handlePhaseChange(oldPhase, newPhase)
+            Task {
+                await handlePhaseChange(oldPhase, newPhase)
+            }
         }
     }
     
     // MARK: - Private functions
-    private func handlePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase) {
+    private func handlePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase) async {
         // Slow down updates if screen is inactive
         switch (oldPhase, newPhase) {
         case (.inactive, .active):
@@ -81,12 +80,12 @@ struct PomodoroView: View {
             break
         }
         
-        guard viewModel.isTimerTicking || shouldRestartTimer else { return }
+        guard viewModel.isTimerActive || shouldRestartTimer else { return }
         
         switch (oldPhase, newPhase) {
         // If user has left in the middle of a work session, pause timer and send a notification
         case (.inactive, .background) where viewModel.isWorkSession:
-            viewModel.pauseTimer()
+            viewModel.pauseSession()
             viewModel.notifyUserToResume()
             shouldRestartTimer = true
         // Record time when user closed app and queue a notification to remind them when break ends
@@ -95,7 +94,7 @@ struct PomodoroView: View {
             viewModel.notifyUserWhenBreakOver()
         // Restart the extended session if the user comes back
         case (.background, .inactive) where viewModel.isWorkSession && shouldRestartTimer:
-            viewModel.startTimer()
+            viewModel.startSession()
             shouldRestartTimer = false
         // Deduct time from the break session and restart the session if there is still time remaining
         // Cancel notification regardless
@@ -109,17 +108,17 @@ struct PomodoroView: View {
         }
     }
     
-    private func buttonAction() {
+    private func buttonAction() async {
         if isSessionFinished {
             stopHaptics()
-            viewModel.prepareForNextSession()
+            await viewModel.completeSession()
             haptics.playClick()
         } else {
-            if viewModel.isTimerTicking {
-                viewModel.pauseTimer()
+            if viewModel.isTimerActive {
+                viewModel.pauseSession()
                 haptics.playClick()
             } else {
-                viewModel.startTimer()
+                viewModel.startSession()
                 haptics.playStart()
             }
         }
@@ -178,7 +177,9 @@ private extension PomodoroView {
                 }
                 
                 Button(action: {
-                    buttonAction()
+                    Task {
+                        await buttonAction()
+                    }
                 }) {
                     if isSessionFinished {
                         finishedSessionView
@@ -209,7 +210,7 @@ private extension PomodoroView {
                         .minimumScaleFactor(0.5)
                         .accessibilityIdentifier("currentSession")
                     
-                    Text("\(viewModel.currentSessionsDone)/\(viewModel.maxSessions)")
+                    Text(viewModel.sessionProgress)
                         .font(.caption)
                         .foregroundStyle(Color.secondary)
                         .accessibilityIdentifier("sessionProgress")
@@ -225,10 +226,10 @@ private extension PomodoroView {
                 .foregroundStyle(Color.primary)
                 .accessibilityIdentifier("remainingTime")
             
-            Image(systemName: viewModel.isTimerTicking ? "pause.fill" : "play.fill")
+            Image(systemName: viewModel.isTimerActive ? "pause.fill" : "play.fill")
                 .foregroundStyle(Color.primary)
                 .padding(.top, 6)
-                .accessibilityIdentifier(viewModel.isTimerTicking ? "pauseButton" : "playButton")
+                .accessibilityIdentifier(viewModel.isTimerActive ? "pauseButton" : "playButton")
         }
     }
     
@@ -274,7 +275,7 @@ private extension PomodoroView {
         
         ToolbarItemGroup(placement: .bottomBar) {
             Button(action: {
-                viewModel.endCycle()
+                viewModel.endPomodoroCycle()
                 haptics.playClick()
             }) {
                 Image(systemName: "stop.fill")
@@ -282,7 +283,7 @@ private extension PomodoroView {
             .accessibilityIdentifier("stopButton")
             
             Button(action: {
-                viewModel.resetTimer()
+                viewModel.resetSession()
                 haptics.playClick()
             }) {
                 Image(systemName: "arrow.circlepath")

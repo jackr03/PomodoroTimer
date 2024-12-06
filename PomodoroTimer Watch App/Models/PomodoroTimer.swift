@@ -1,6 +1,6 @@
 //
 //  PomodoroTimer.swift
-//  PomodoroTimer Watch App
+//  PomodoroTimer
 //
 //  Created by Jack Rong on 08/09/2024.
 //
@@ -8,51 +8,74 @@
 import Foundation
 import Observation
 
+// TODO: Maybe move this out of the file
+/**
+ Represents the possible types of sessions in a Pomodoro cycle.
+ 
+ - work: A work session.
+ - shortBreak: A short break after completing a work session.
+ - longBreak: A longer break after completing a series of work sessions.
+ */
+enum SessionType: String {
+    case work = "WORK"
+    case shortBreak = "BREAK"
+    case longBreak = "L. BREAK"
+
+    var duration: Int {
+        switch self {
+        case .work: return SettingsManager.shared.get(.workDuration)
+        case .shortBreak: return SettingsManager.shared.get(.shortBreakDuration)
+        case .longBreak: return SettingsManager.shared.get(.longBreakDuration)
+        }
+    }
+}
+
+protocol PomodoroTimerProtocol {
+    var maxSessions: Int { get }
+    var currentSession: SessionType { get }
+    var currentSessionNumber: Int { get}
+    var remainingTime: Int { get }
+    var hasSessionStarted: Bool { get }
+    var isSessionFinished: Bool { get }
+    var isTimerActive: Bool { get }
+    
+    func startSession()
+    func pauseSession()
+    func resetSession()
+    func advanceToNextSession()
+    func reset()
+    func deductTime(by seconds: Int) -> Int
+}
+
 @Observable
-class PomodoroTimer {
+class PomodoroTimer: PomodoroTimerProtocol {
     
     // MARK: - Stored properties
+    let maxSessions = 4
+    
     private(set) var currentSession: SessionType
     private(set) var currentSessionNumber: Int
-    private(set) var maxSessions: Int
-    private(set) var isSessionInProgress: Bool
     private(set) var remainingTime: Int
+    private(set) var hasSessionStarted = false
+    private(set) var isSessionFinished = false
     
     private var timer: Timer?
-
-    public var isSessionFinished = false
     
     // MARK: - Init
-    init() {
-        self.currentSession = .work
-        self.currentSessionNumber = 0
-        self.maxSessions = 4
-        self.isSessionInProgress = false
-        self.remainingTime = SessionType.work.duration
-    }
-    
-    // MARK: - SessionType Enum
-    enum SessionType: String {
-        case work = "WORK"
-        case shortBreak = "BREAK"
-        case longBreak = "L. BREAK"
-
-        var duration: Int {
-            switch self {
-            case .work: return SettingsManager.shared.get(.workDuration)
-            case .shortBreak: return SettingsManager.shared.get(.shortBreakDuration)
-            case .longBreak: return SettingsManager.shared.get(.longBreakDuration)
-            }
-        }
+    init(
+        currentSession: SessionType = .work,
+        currentSessionNumber: Int = 0
+    ) {
+        self.currentSession = currentSession
+        self.currentSessionNumber = currentSessionNumber
+        self.remainingTime = currentSession.duration
     }
     
     // MARK: - Computed properties
-    var currentSessionDuration: Int { currentSession.duration }
-    var isWorkSession: Bool { currentSession == .work }
-    var isTimerTicking: Bool { timer != nil }
+    var isTimerActive: Bool { timer != nil }
     
     // MARK: - Functions
-    func startTimer() {
+    func startSession() {
         guard timer == nil else { return }
                 
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
@@ -60,59 +83,67 @@ class PomodoroTimer {
         }
     }
     
-    func pauseTimer() {
+    func pauseSession() {
         if let timer = timer {
             timer.invalidate()
             self.timer = nil
         }
     }
     
-    func resetTimer() {
-        remainingTime = currentSessionDuration
+    func resetSession() {
+        remainingTime = currentSession.duration
     }
     
-    func deductTime(by seconds: Int) {
-        remainingTime -= seconds
+    /**
+     Advances to the next session by pausing the current session before transitioning to the appropriate session
+     based on the current session type and resetting the time.
+     
+     - If coming from a work session, increment the number of sessions done before transitioning to either a short break
+     or long break, depending on how many session have been completed so far.
+     - If coming from a short break, transition to a work session.
+     - If coming from a long break, reset the session count before transitioning to a work session.
+     */
+    func advanceToNextSession() {
+        hasSessionStarted = false
+        isSessionFinished = false
+        
+        switch(currentSession) {
+        case .work:
+            currentSessionNumber += 1
+            currentSession = currentSessionNumber == maxSessions ? .longBreak : .shortBreak
+        case .shortBreak:
+            currentSession = .work
+        case .longBreak:
+            currentSessionNumber = 0
+            currentSession = .work
+        }
+
+        resetSession()
     }
     
-    func skipSession() {
-        nextSession()
-    }
-    
-    func endCycle() {
+    func reset() {
         currentSession = .work
         currentSessionNumber = 0
-        remainingTime = currentSessionDuration
-        isSessionInProgress = false
-        pauseTimer()
+        remainingTime = currentSession.duration
+        hasSessionStarted = false
+        isSessionFinished = false
+        
+        pauseSession()
+    }
+    
+    func deductTime(by seconds: Int) -> Int {
+        remainingTime -= seconds
+        return remainingTime
     }
     
     // MARK: - Private functions
     private func countdown() {
         if remainingTime > 0 {
             remainingTime -= 1
-            isSessionInProgress = false
+            hasSessionStarted = true
         } else {
-            isSessionInProgress = false
+            pauseSession()
             isSessionFinished = true
-            nextSession()
         }
-    }
-    
-    private func nextSession() {
-        pauseTimer()
-        
-        if isWorkSession {
-            currentSessionNumber += 1
-            currentSession = currentSessionNumber == maxSessions ? .longBreak : .shortBreak
-        } else {
-            if currentSessionNumber == maxSessions {
-                currentSessionNumber = 0
-            }
-            
-            currentSession = .work
-        }
-
-        remainingTime = currentSessionDuration
     }
 }

@@ -1,26 +1,24 @@
 //
 //  PomodoroViewModel.swift
-//  PomodoroTimer Watch App
+//  PomodoroTimer
 //
 //  Created by Jack Rong on 08/09/2024.
 //
 
 import Foundation
-import WatchKit
 import Observation
 
 @Observable
 final class PomodoroViewModel {
     
     // MARK: - Stored properties
-    private let timer: PomodoroTimer
+    private let timer: PomodoroTimerProtocol
     private let repository: RecordRepositoryProtocol
-    
     private let sessionManager = ExtendedRuntimeSessionManager()
     private let settingsManager = SettingsManager.shared
-    private let notifier = NotificationsManager.shared
+    private let notificationsManager = NotificationsManager()
     
-    private(set) var cachedFormattedRemainingTime: String = ""
+    private(set) var cachedFormattedRemainingTime: String = "--:--"
     private(set) var cachedProgress: CGFloat = 1.0
     
     private var userDefaultsObserver: NSObjectProtocol?
@@ -28,13 +26,14 @@ final class PomodoroViewModel {
     
     // MARK: - Inits
     @MainActor
-    init(timer: PomodoroTimer = PomodoroTimer(),
-         repository: RecordRepositoryProtocol? = nil
+    init(
+        timer: PomodoroTimerProtocol = PomodoroTimer(),
+        repository: RecordRepositoryProtocol? = nil
     ) {
         self.timer = timer
         self.repository = repository ?? RecordRepository.shared
         
-        updateTimeAndProgress()
+        updateCachedTimeAndProgress()
         observeSettingChanges()
     }
     
@@ -54,75 +53,78 @@ final class PomodoroViewModel {
     }
     
     var progress: CGFloat {
-        CGFloat(timer.remainingTime) / CGFloat(timer.currentSessionDuration)
+        isSessionFinished ? 1.0 : CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
     }
     
-    var maxSessions: Int { timer.maxSessions }
     var currentSession: String { timer.currentSession.rawValue }
-    var currentSessionsDone: Int { timer.currentSessionNumber }
-    var isWorkSession: Bool { timer.isWorkSession }
-    var isTimerTicking: Bool { timer.isTimerTicking }
-    var isSessionInProgress : Bool { timer.remainingTime != timer.currentSessionDuration }
-    var isSessionFinished: Bool {
-        get { return timer.isSessionFinished }
-        set {
-            // Increment count when !isWorkSession, as this means we have just transitioned from a work session
-            if isSessionFinished && !timer.isWorkSession {
-                incrementSessionsCompleted()
-            }
-            
-            timer.isSessionFinished = newValue
-        }
+    var sessionProgress: String {
+        String(format: "%d/%d", timer.currentSessionNumber, timer.maxSessions)
     }
-    // Return true if not determined so that the warning is only shown when explicitly denied
-    var isPermissionGranted: Bool { notifier.permissionsGranted ?? true }
+    
+    var isWorkSession: Bool { timer.currentSession == .work }
+    var isTimerActive: Bool { timer.isTimerActive }
+    var hasSessionStarted: Bool { timer.hasSessionStarted }
+    var isSessionFinished: Bool { timer.isSessionFinished }
+    
+    /**
+     True if nil (i.e. not determined) so that the warning is only shown when explicitly denied.
+     */
+    var isPermissionGranted: Bool { notificationsManager.permissionsGranted ?? true }
     
     // MARK: - Timer functions
-    func startTimer() {
-        timer.startTimer()
-        
-        if notifier.permissionsGranted == nil {
-            notifier.requestPermissions()
+    func startSession() {
+        if notificationsManager.permissionsGranted == nil {
+            notificationsManager.requestPermissions()
         }
         
+        timer.startSession()
         startExtendedSession()
     }
         
-    func pauseTimer(untilReopened: Bool = false) {
-        timer.pauseTimer()
+    func pauseSession() {
+        timer.pauseSession()
         stopExtendedSession()
     }
     
-    func endCycle() {
-        timer.endCycle()
-        stopExtendedSession()
-    }
-
-    func resetTimer() {
-        timer.resetTimer()
-    }
-    
-    func skipSession() {
-        timer.skipSession()
-        stopExtendedSession()
-    }
-    
-    func prepareForNextSession() {
-        isSessionFinished = false
+    /**
+     Increment the number of sessions completed if the new session is NOT a work session, as that means
+     we have just transitioned from one.
+     
+     - Note: If autoContinue is enabled in the settings, start a new session.
+     */
+    func completeSession() async {
+        timer.advanceToNextSession()
         stopExtendedSession()
         
+        if !isWorkSession {
+            incrementSessionsCompleted()
+        }
+        
         if settingsManager.get(.autoContinue) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.startTimer()
-            }
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            self.startSession()
         }
     }
     
+    func endPomodoroCycle() {
+        timer.reset()
+        stopExtendedSession()
+    }
+
+    func resetSession() {
+        timer.resetSession()
+    }
+    
+    func skipSession() {
+        self.pauseSession()
+        timer.advanceToNextSession()
+    }
+    
     func startCachingTimeAndProgress() {
-        updateTimeAndProgress()
+        updateCachedTimeAndProgress()
         
         updateTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
-            self.updateTimeAndProgress()
+            self.updateCachedTimeAndProgress()
         }
     }
     
@@ -131,12 +133,14 @@ final class PomodoroViewModel {
         updateTimer = nil
     }
     
+    /**
+     Checks session type and deducts time only if the current session is a break session.
+     
+     - Parameter seconds: The number of seconds to deduct from the remaining time.
+     - Returns: The updated remaining time in session. Remains unchanged if the current session is a work session.
+     */
     func deductBreakTime(by seconds: Int) -> Int {
-        guard !timer.isWorkSession else { return -1 }
-        
-        timer.deductTime(by: seconds)
-        
-        return timer.remainingTime
+        return isWorkSession ? timer.remainingTime : timer.deductTime(by: seconds)
     }
 
     func incrementSessionsCompleted() {
@@ -159,38 +163,33 @@ final class PomodoroViewModel {
     }
     
     // MARK: - Notification functions
-    func checkPermissions() {
-        Task {
-            await notifier.checkPermissions()
-        }
-    }
-    
     func notifyUserToResume() {
-        guard timer.isWorkSession else { return }
+        guard isPermissionGranted && isWorkSession else { return }
         
-        notifier.notifyUserToResume()
+        notificationsManager.notifyUserToResume()
     }
     
     func notifyUserWhenBreakOver() {
-        guard !timer.isWorkSession else { return }
+        guard isPermissionGranted && !isWorkSession else { return }
         
         let remainingTime = Double(timer.remainingTime)
         guard remainingTime > 0 else { return }
 
-        notifier.notifyUserWhenBreakOver(timeTilEnd: remainingTime)
+        notificationsManager.notifyUserWhenBreakOver(timeTilEnd: remainingTime)
     }
     
     func clearNotifications() {
-        notifier.clearNotifications()
+        guard isPermissionGranted else { return }
+        notificationsManager.clearNotifications()
     }
     
     // MARK: - Private functions
-    private func updateTimeAndProgress() {
+    private func updateCachedTimeAndProgress() {
         let remainingTimeInMinutes: Int = timer.remainingTime / 60
         let remainingTimeInSeconds: Int = timer.remainingTime % 60
         
         cachedFormattedRemainingTime = String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
-        cachedProgress = CGFloat(timer.remainingTime) / CGFloat(timer.currentSessionDuration)
+        cachedProgress = isSessionFinished ? 1.0 : CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
     }
     
     private func observeSettingChanges() {
@@ -204,7 +203,7 @@ final class PomodoroViewModel {
     }
     
     private func handleSettingChanges() {
-        guard !timer.isTimerTicking && !timer.isSessionInProgress else { return }
-        timer.resetTimer()
+        guard !timer.isTimerActive && !timer.hasSessionStarted else { return }
+        timer.resetSession()
     }
 }

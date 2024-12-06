@@ -9,26 +9,34 @@ import Foundation
 import UserNotifications
 
 final class NotificationsManager {
-    // MARK: - Properties
-    static let shared = NotificationsManager()
     
-    private let center = UNUserNotificationCenter.current()
+    // MARK: - Stored properties
+    private let center: UNUserNotificationCenter
     
-    private(set) var permissionsGranted: Bool? = nil
+    private(set) var permissionsGranted: Bool?
     
     // MARK: - Init
-    private init() {
+    init() {
+        self.center = UNUserNotificationCenter.current()
+        
+        Task {
+            await checkPermission()
+        }
+        
         setUpNotificationCategories()
     }
     
     // MARK: - Functions
-    func checkPermissions() async {
+    func checkPermission() async {
         let authorizationStatus = await center.notificationSettings().authorizationStatus
         
-        if authorizationStatus == .authorized {
+        switch authorizationStatus {
+        case .authorized:
             permissionsGranted = true
-        } else if authorizationStatus == .denied {
+        case .denied:
             permissionsGranted = false
+        default:
+            permissionsGranted = nil
         }
     }
     
@@ -39,15 +47,8 @@ final class NotificationsManager {
                 return
             }
             
-            if granted {
-                print("Permission granted")
-            } else {
-                print("Permissions denied")
-            }
-            
-            Task {
-                await self.checkPermissions()
-            }
+            print(granted ? "Permission granted" : "Permission denied")
+            self.permissionsGranted = granted
         }
     }
     
@@ -86,7 +87,13 @@ final class NotificationsManager {
         center.setNotificationCategories([pomodoroCategory])
     }
     
-    private func notify(title: String, body: String, sound: UNNotificationSound, timeInterval: Double, identifier: String) {
+    private func notify(
+        title: String,
+        body: String,
+        sound: UNNotificationSound,
+        timeInterval: Double,
+        identifier: String
+    ) {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body

@@ -1,6 +1,6 @@
 //
 //  SettingsViewModel.swift
-//  PomodoroTimer Watch App
+//  PomodoroTimer
 //
 //  Created by Jack Rong on 10/09/2024.
 //
@@ -16,9 +16,9 @@ final class SettingsViewModel {
     private let repository: RecordRepositoryProtocol
     
     private let settingsManager = SettingsManager.shared
-    private let notifier = NotificationsManager.shared
+    private let notificationsManager = NotificationsManager()
     
-    public var settingsAreAllDefault = true
+    var settingsAreAllDefault = true
     
     // MARK: - Inits
     @MainActor
@@ -27,7 +27,7 @@ final class SettingsViewModel {
     }
     
     // MARK: - Computed properties
-    var isPermissionGranted: Bool { notifier.permissionsGranted ?? true }
+    var isPermissionGranted: Bool { notificationsManager.permissionsGranted ?? true }
     
     // MARK: - Functions
     func syncSettings() {
