@@ -34,27 +34,26 @@ final class MockPomodoroTimer: PomodoroTimerProtocol {
     // MARK: - Functions
     func startSession() {
         isTimerActive = true
-        hasSessionStarted = true
-        isSessionFinished = true
     }
     
     func pauseSession() {
         isTimerActive = false
     }
     
+    // MARK: - No-op functions
     func resetSession() {
-        <#code#>
+        
     }
     
     func advanceToNextSession() {
-        <#code#>
+        
     }
     
     func reset() {
-        <#code#>
+        
     }
     
     func deductTime(by seconds: Int) -> Int {
-        <#code#>
+        return 0
     }
 }

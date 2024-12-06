@@ -32,8 +32,6 @@ final class PomodoroViewModelTests {
         #expect(sut.formattedRemainingTime == "25:00", "Should format remaining time correctly")
     }
     
-    
-    
     @Test
     func incrementSessionsCompleted_whenRecordExists_updatesExistingRecord() {
         let existingRecord = Record(date: Date.now,
