@@ -88,9 +88,6 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
-        .onAppear() {
-            viewModel.syncSettings()
-        }
         .alert(isPresented: $showingPermissionsAlert) {
             Alert(
                 title: Text("Enable notifications"),
@@ -169,7 +166,6 @@ private extension SettingsView {
         .accessibilityIdentifier(accessibilityIdentifier)
         .onChange(of: selection.wrappedValue) { _, newValue in
             onChange?(newValue)
-            viewModel.syncSettings()
         }
     }
     
@@ -184,7 +180,6 @@ private extension SettingsView {
             .accessibilityIdentifier(accessibilityIdentifier)
             .onChange(of: isOn.wrappedValue) { _, newValue in
                 onChange?(newValue)
-                viewModel.syncSettings()
             }
     }
 }

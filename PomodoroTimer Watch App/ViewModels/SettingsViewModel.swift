@@ -13,12 +13,9 @@ import Observation
 final class SettingsViewModel {
     
     // MARK: - Stored properties
-    private let repository: RecordRepositoryProtocol
-    
     private let settingsManager = SettingsManager.shared
+    private let repository: RecordRepositoryProtocol
     private let notificationsManager = NotificationsManager()
-    
-    var settingsAreAllDefault = true
     
     // MARK: - Inits
     @MainActor
@@ -27,17 +24,16 @@ final class SettingsViewModel {
     }
     
     // MARK: - Computed properties
+    var settingsAreAllDefault: Bool { settingsManager.checkIfAllDefault() }
     var isPermissionGranted: Bool { notificationsManager.permissionsGranted ?? true }
     
     // MARK: - Functions
-    func syncSettings() {
-        settingsAreAllDefault = settingsManager.checkIfAllDefault()
-    }
-    
+    /**
+     Resets all settings, updating the target for today's record if needed.
+     */
     func resetSettings() {
         settingsManager.resetAll()
         updateRecordDailyTarget(to: settingsManager.get(.dailyTarget))
-        syncSettings()
     }
     
     func updateRecordDailyTarget(to value: Int) {

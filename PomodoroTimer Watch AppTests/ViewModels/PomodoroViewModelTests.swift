@@ -12,11 +12,11 @@ import Testing
 final class PomodoroViewModelTests {
     
     var sut: PomodoroViewModel!
-    var timer: PomodoroTimer!
+    var timer: MockPomodoroTimer!
     var mockRecordRepository: MockRecordRepository!
     
     init() async {
-        timer = PomodoroTimer()
+        timer = MockPomodoroTimer()
         mockRecordRepository = MockRecordRepository(mockRecords: [])
         sut = await PomodoroViewModel(timer: timer, repository: mockRecordRepository)
     }
@@ -26,6 +26,13 @@ final class PomodoroViewModelTests {
         timer = nil
         mockRecordRepository = nil
     }
+    
+    @Test
+    func formattedRemainingTime_returnsCorrectStringRepresentation() {
+        #expect(sut.formattedRemainingTime == "25:00", "Should format remaining time correctly")
+    }
+    
+    
     
     @Test
     func incrementSessionsCompleted_whenRecordExists_updatesExistingRecord() {
