@@ -1,6 +1,6 @@
 //
 //  SettingsView.swift
-//  PomodoroTimer Watch App
+//  PomodoroTimer
 //
 //  Created by Jack Rong on 10/09/2024.
 //

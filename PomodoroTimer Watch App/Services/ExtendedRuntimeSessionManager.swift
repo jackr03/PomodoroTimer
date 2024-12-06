@@ -1,6 +1,6 @@
 //
 //  ExtendedRuntimeSessionManager.swift
-//  PomodoroTimer Watch App
+//  PomodoroTimer
 //
 //  Created by Jack Rong on 20/09/2024.
 //

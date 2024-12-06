@@ -20,7 +20,7 @@ final class RecordRepository: RecordRepositoryProtocol {
     
     // MARK: - Stored properties
     @MainActor
-    static public let shared = RecordRepository()
+    static let shared = RecordRepository()
     
     private let modelContainer: ModelContainer
     private let modelContext: ModelContext

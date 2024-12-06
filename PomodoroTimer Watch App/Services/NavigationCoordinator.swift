@@ -18,7 +18,7 @@ enum Route: Hashable {
 final class NavigationCoordinator {
     
     // MARK: - Stored properties
-    public var path: [Route] = []
+    var path: [Route] = []
     
     // MARK: - Functions
     func push(_ route: Route) {

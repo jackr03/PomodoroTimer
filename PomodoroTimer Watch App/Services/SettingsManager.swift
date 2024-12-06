@@ -10,14 +10,13 @@ import Foundation
 final class SettingsManager {
     
     // MARK: - Singleton instance
-    public static let shared = SettingsManager()
+    static let shared = SettingsManager()
     
     // MARK: - Stored properties
     private static let mockSuiteName = "com.jackr03.PomodoroTimer.mockUserDefaults"
 
-    private let settings: [any Setting] = IntSetting.allCases + BoolSetting.allCases
-    
-    public let userDefaults: UserDefaults
+    let settings: [any Setting] = IntSetting.allCases + BoolSetting.allCases
+    let userDefaults: UserDefaults
     
     // MARK: - Inits
     private init() {
