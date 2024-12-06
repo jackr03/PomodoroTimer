@@ -21,8 +21,8 @@ final class SettingsManager {
     // MARK: - Inits
     private init() {
         #if DEBUG
-        self.userDefaults = UserDefaults(suiteName: SettingsManager.mockSuiteName)!
-        self.userDefaults.removePersistentDomain(forName: SettingsManager.mockSuiteName)
+        self.userDefaults = UserDefaults(suiteName: Self.mockSuiteName)!
+        self.userDefaults.removePersistentDomain(forName: Self.mockSuiteName)
         #else
         self.userDefaults = .standard
         #endif

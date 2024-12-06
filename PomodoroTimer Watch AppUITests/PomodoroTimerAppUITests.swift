@@ -35,9 +35,7 @@ final class PomodoroTimerAppUITests: XCTestCase {
         settingsScreen = SettingsScreen(app:app)
     }
     
-    private func createCarousel() -> XCUIApplication {
-        return XCUIApplication(bundleIdentifier: "com.apple.Carousel")
-    }
+
     
     func testViewPops_backToRootWhenSessionCompletes() {
         launchApp(with: ["-workDuration", "3"])
@@ -50,41 +48,40 @@ final class PomodoroTimerAppUITests: XCTestCase {
     
     func testUserIsNotified_whenLeavingAnActiveWorkSession() {
         launchApp()
-        let carousel = createCarousel()
+        let carousel = Carousel()
         
         pomodoroScreen.playButton.waitAndTap()
         XCUIDevice.shared.press(.home)
-        XCTAssertTrue(carousel.otherElements["Stay focused!, Your pomodoro will be paused until you return to the app."].waitForExistence(timeout: 5), "Should show notification prompting user to return to app")
+        XCTAssertTrue(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should show notification prompting user to return to app")
     }
     
     func testUserIsNotNotified_whenLeavingABreakSession() {
         launchApp()
-        let carousel = createCarousel()
+        let carousel = Carousel()
         
         pomodoroScreen.skipButton.waitAndTap()
         pomodoroScreen.playButton.waitAndTap()
         XCUIDevice.shared.press(.home)
-        XCTAssertFalse(carousel.otherElements["Stay focused!, Your pomodoro will be paused until you return to the app."].waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
+        XCTAssertFalse(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
     }
     
     func testUserIsNotified_whenBreakIsOver() {
         launchApp(with: ["-shortBreakDuration", "3"])
-        let carousel = createCarousel()
+        let carousel = Carousel()
         
         pomodoroScreen.skipButton.waitAndTap()
         pomodoroScreen.playButton.waitAndTap()
         XCUIDevice.shared.press(.home)
-        XCTAssertTrue(carousel.otherElements["Break's over!, Time to get back to work."].waitForExistence(timeout: 10), "Should show notification letting user know session is over")
+        XCTAssertTrue(carousel.breakOverNotification.waitForExistence(timeout: 10), "Should show notification letting user know session is over")
     }
     
     func testTimerDoesNotGoDown_whenLeavingAnActiveWorkSession() {
         launchApp()
-        let carousel = createCarousel()
+        let carousel = Carousel()
         
         pomodoroScreen.playButton.waitAndTap()
         XCUIDevice.shared.press(.home)
-        
-        carousel.cells["Open app"].waitAndTap(timeout: 5)
+        carousel.openAppButton.waitAndTap(timeout: 5)
         XCTAssertTrue(pomodoroScreen.remainingTime.waitForExistence(timeout: 3))
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "24:59", "Timer should only have just started counting down")
     }
