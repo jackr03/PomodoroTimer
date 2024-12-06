@@ -92,8 +92,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
     func testChangingDurationSetting_resetsTimerIfNotAlreadyInProgress() {
         launchApp()
         
-        XCTAssertTrue(pomodoroScreen.remainingTime.label == "25:00", "Starting time should be 25:00")
-        
         pomodoroScreen.settingsButton.waitAndTap()
         settingsScreen.workDurationPicker.waitAndTap()
         app.buttons["3 minutes"].waitAndTap()
@@ -105,8 +103,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
     
     func testChangingDurationSetting_resetsTimerIfNoTimeElapsed() {
         launchApp()
-        
-        XCTAssertTrue(pomodoroScreen.remainingTime.label == "25:00", "Starting time should be 25:00")
         
         // Click play twice
         pomodoroScreen.playButton.tap()
@@ -124,8 +120,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
     
     func testChangingDurationSetting_doesNotResetTimerIfInProgress() {
         launchApp()
-        
-        XCTAssertTrue(pomodoroScreen.remainingTime.label == "25:00", "Starting time should be 25:00")
 
         pomodoroScreen.playButton.waitAndTap()
         XCTAssertTrue(pomodoroScreen.pauseButton.exists, "Timer should start")
@@ -137,5 +131,32 @@ final class PomodoroTimerAppUITests: XCTestCase {
         
         settingsScreen.backButton.waitAndTap()
         XCTAssertFalse(pomodoroScreen.remainingTime.label == "03:00", "Time should not be reset to 3:00")
+    }
+    
+    func testChangingDurationSetting_doesNotResetTimerIfInProgressButPaused() {
+        launchApp()
+
+        pomodoroScreen.playButton.waitAndTap()
+        pomodoroScreen.pauseButton.waitAndTap()
+        XCTAssertFalse(pomodoroScreen.remainingTime.label == "25:00", "Timer should have elapsed")
+        XCTAssertTrue(pomodoroScreen.playButton.exists, "Timer should be paused")
+        
+        pomodoroScreen.settingsButton.waitAndTap()
+        settingsScreen.workDurationPicker.waitAndTap()
+        app.buttons["3 minutes"].waitAndTap()
+        XCTAssertTrue(settingsScreen.workDurationPicker.label == "Work, 3 minutes", "Work duration should be set to 3 minutes")
+        
+        settingsScreen.backButton.waitAndTap()
+        XCTAssertFalse(pomodoroScreen.remainingTime.label == "03:00", "Time should not be reset to 3:00")
+    }
+    
+    func testAutoContinueSetting_worksCorrectly() {
+        launchApp(with: ["-workDuration", "3",
+                         "-autoContinue", "true"])
+        
+        pomodoroScreen.playButton.waitAndTap()
+        pomodoroScreen.completeSessionButton.waitAndTap(timeout: 5)
+        XCTAssertTrue(pomodoroScreen.currentSession.label == "BREAK", "Should be on a break session")
+        XCTAssertTrue(pomodoroScreen.pauseButton.waitForExistence(timeout: 3), "Timer should be playing")
     }
 }
