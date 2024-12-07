@@ -11,11 +11,11 @@ import Charts
 struct StatisticsView: View {
     
     // MARK: - Stored properties
-    @State private var viewModel: StatisticsViewModel
-    private let haptics = HapticsManager()
+    private let hapticsManager = HapticsManager()
     
     @Environment(NavigationCoordinator.self) private var coordinator
     
+    @State private var viewModel: StatisticsViewModel
     @State private var animateWeeklyPoints = false
     @State private var animateMonthlyPoints = false
     @State private var showingDeleteAllRecordsAlert = false
@@ -161,7 +161,7 @@ private extension StatisticsView {
             
             Button(action: {
                 showingDeleteAllRecordsAlert = true
-                haptics.playClick()
+                hapticsManager.playClick()
             }) {
                 Image(systemName: "trash")
                     .font(.footnote)
@@ -250,12 +250,12 @@ private extension StatisticsView {
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
                 viewModel.deleteAllRecords()
-                haptics.playSuccess()
+                hapticsManager.playSuccess()
                 
                 coordinator.pop()
             },
             secondaryButton: .cancel(Text("Cancel")) {
-                haptics.playClick()
+                hapticsManager.playClick()
             }
         )
     }

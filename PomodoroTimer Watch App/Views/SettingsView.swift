@@ -10,20 +10,19 @@ import SwiftUI
 struct SettingsView: View {
     
     // MARK: - Stored properties
-    @State private var viewModel: SettingsViewModel
-    
-    private let haptics = HapticsManager()
+    private let hapticsManager = HapticsManager()
     
     @Environment(NavigationCoordinator.self) private var coordinator
+    
+    @State private var viewModel: SettingsViewModel
+    @State private var showingPermissionsAlert: Bool = false
     
     @AppStorage(.workDuration) private var workDuration: Int
     @AppStorage(.shortBreakDuration) private var shortBreakDuration: Int
     @AppStorage(.longBreakDuration) private var longBreakDuration: Int
     @AppStorage(.dailyTarget) private var dailyTarget: Int
     @AppStorage(.autoContinue) private var autoContinue: Bool
-    
-    @State private var showingPermissionsAlert: Bool = false
-    
+
     // MARK: - Inits
     init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
@@ -99,7 +98,6 @@ struct SettingsView: View {
 }
 
 private extension SettingsView {
-    // TODO: Test this
     var missingPermissionView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
@@ -127,7 +125,7 @@ private extension SettingsView {
     var resetSettingsButton: some View {
         Button(action: {
             viewModel.resetSettings()
-            haptics.playClick()
+            hapticsManager.playClick()
             
             coordinator.pop()
         }) {

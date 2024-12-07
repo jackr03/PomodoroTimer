@@ -11,7 +11,7 @@ struct RecordView: View {
     
     // MARK: - Stored properties
     private let viewModel: RecordViewModel
-    private let haptics = HapticsManager()
+    private let hapticsManager = HapticsManager()
     
     @Environment(NavigationCoordinator.self) private var coordinator
     
@@ -55,7 +55,7 @@ struct RecordView: View {
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: {
                         showingDeleteRecordAlert = true
-                        haptics.playClick()
+                        hapticsManager.playClick()
                     }) {
                         Image(systemName: "trash")
                     }
@@ -85,12 +85,12 @@ struct RecordView: View {
             message: Text("This action cannot be undone."),
             primaryButton: .destructive(Text("Delete")) {
                 viewModel.deleteRecord()
-                haptics.playSuccess()
+                hapticsManager.playSuccess()
                 
                 coordinator.pop()
             },
             secondaryButton: .cancel(Text("Cancel")) {
-                haptics.playClick()
+                hapticsManager.playClick()
             }
         )
     }

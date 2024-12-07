@@ -10,12 +10,12 @@ import SwiftUI
 struct PomodoroView: View {
     
     // MARK: - Stored properties
-    @State private var viewModel: PomodoroViewModel
-    private let haptics = HapticsManager()
+    private let hapticsManager = HapticsManager()
     
     @Environment(NavigationCoordinator.self) private var coordinator
     @Environment(\.scenePhase) private var scenePhase
     
+    @State private var viewModel: PomodoroViewModel
     @State private var lastInactiveTime = Date.now
     @State private var isPulsing = false
     @State private var hapticTimer: Timer?
@@ -112,21 +112,23 @@ struct PomodoroView: View {
         if isSessionFinished {
             stopHaptics()
             await viewModel.completeSession()
-            haptics.playClick()
+            hapticsManager.playClick()
+            
+            return
+        }
+        
+        if viewModel.isTimerActive {
+            viewModel.pauseSession()
+            hapticsManager.playClick()
         } else {
-            if viewModel.isTimerActive {
-                viewModel.pauseSession()
-                haptics.playClick()
-            } else {
-                viewModel.startSession()
-                haptics.playStart()
-            }
+            viewModel.startSession()
+            hapticsManager.playStart()
         }
     }
     
     private func playHaptics() {
         hapticTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-            haptics.playStop()
+            hapticsManager.playStop()
         }
     }
 
@@ -276,7 +278,7 @@ private extension PomodoroView {
         ToolbarItemGroup(placement: .bottomBar) {
             Button(action: {
                 viewModel.endPomodoroCycle()
-                haptics.playClick()
+                hapticsManager.playClick()
             }) {
                 Image(systemName: "stop.fill")
             }
@@ -284,7 +286,7 @@ private extension PomodoroView {
             
             Button(action: {
                 viewModel.resetSession()
-                haptics.playClick()
+                hapticsManager.playClick()
             }) {
                 Image(systemName: "arrow.circlepath")
             }
@@ -292,7 +294,7 @@ private extension PomodoroView {
             
             Button(action: {
                 viewModel.skipSession()
-                haptics.playClick()
+                hapticsManager.playClick()
             }) {
                 Image(systemName: "forward.end.fill")
             }
