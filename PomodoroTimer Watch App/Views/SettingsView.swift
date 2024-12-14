@@ -141,15 +141,14 @@ private extension SettingsView {
     }
     
     func sectionDivider(title: String) -> some View {
-        Group {
+        VStack(alignment: .leading) {
             Text(title)
                 .font(.headline)
                 .foregroundStyle(.primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top)
-            
+                
             Divider()
         }
+        .padding()
     }
     
     func numberPicker(
@@ -183,14 +182,14 @@ private extension SettingsView {
             }
             .labelsHidden()
             .pickerStyle(.wheel)
-            .frame(width: 60, height: 40)
+            .frame(width: 40, height: 40)
             .accessibilityIdentifier(accessibilityIdentifier)
             .onChange(of: selection.wrappedValue) { _, newValue in
                 onChange?(newValue)
             }
         }
         .padding(
-            EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
+            EdgeInsets(top: 5, leading: 15, bottom: 5, trailing: 15)
         )
     }
     
@@ -215,7 +214,7 @@ private extension SettingsView {
                 }
         }
         .padding(
-            EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
+            EdgeInsets(top: 5, leading: 15, bottom: 5, trailing: 15)
         )
     }
 }
