@@ -25,7 +25,9 @@ final class StatisticsViewModel {
     }
         
     // MARK: - Computed properties
-    // Return a placeholder record if one was not found for today, but do not store it
+    /**
+     Returns today's record, or a placeholder record if one was not found
+     */
     var recordToday: Record {
         records.filter { record in
             record.date == Calendar.current.startOfToday

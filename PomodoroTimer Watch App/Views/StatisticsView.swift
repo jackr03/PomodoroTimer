@@ -151,62 +151,72 @@ private extension StatisticsView {
         ScrollView {
             LazyVStack {
                 summaryCard
-                .padding()
-                .padding(.bottom, 10)
                     
                 ForEach(viewModel.records) { record in
                     createRecordCard(for: record)
                 }
+                
+                deleteAllRecordsButton
             }
-            
-            Button(action: {
-                showingDeleteAllRecordsAlert = true
-                hapticsManager.playClick()
-            }) {
-                Image(systemName: "trash")
-                    .font(.footnote)
-                Text("Delete all records")
-                    .font(.footnote)
-            }
-            .padding()
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 12))
-            .tint(.red)
         }
         .navigationTitle("All time")
     }
     
     var summaryCard: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text("Summary")
-                    .font(.headline)
-                    .padding(.bottom, 5)
-                
-                HStack {
-                    Image(systemName: "checkmark.seal")
-                        .font(.subheadline)
-                        .foregroundStyle(.blue)
-                    Text("Total sessions: \(viewModel.totalSessions)")
-                        .font(.subheadline)
-                }
-                
-                HStack {
-                    Image(systemName: "flame")
-                        .font(.subheadline)
-                        .foregroundStyle(.orange)
-                    Text("Current streak: \(viewModel.currentStreak)")
-                        .font(.subheadline)
-                }
-                
-                HStack {
-                    Image(systemName: "flame")
-                        .font(.subheadline)
-                        .foregroundStyle(.red)
-                    Text("Longest streak: \(viewModel.longestStreak)")
-                        .font(.subheadline)
-                }
-            }
+        VStack(alignment: .leading) {
+            Text("Summary")
+                .font(.headline)
+            
+            Divider()
+            
+            summaryStatistic(imageName: "checkmark.applewatch",
+                             imageColour: .green,
+                             label: "Total sessions: \(viewModel.totalSessions)")
+            
+            summaryStatistic(imageName: "flame",
+                             imageColour: .orange,
+                             label: "Current streak: \(viewModel.currentStreak)")
+            
+            summaryStatistic(imageName: "flame",
+                             imageColour: .red,
+                             label: "Longest streak: \(viewModel.longestStreak)")
+            
+            summaryStatistic(imageName: "calendar",
+                             imageColour: .teal,
+                             label: "Total time spent: 162 hours and 3 minutes")
+        }
+        .padding()
+    }
+    
+    var deleteAllRecordsButton: some View {
+        Button(action: {
+            showingDeleteAllRecordsAlert = true
+            hapticsManager.playClick()
+        }) {
+            Image(systemName: "trash")
+                .font(.caption)
+            Text("Delete all records")
+                .font(.caption)
+        }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.roundedRectangle(radius: 12))
+        .tint(.red)
+        .padding()
+    }
+    
+    func summaryStatistic(
+        imageName: String,
+        imageColour: Color,
+        label: String
+    ) -> some View {
+        HStack(alignment: .top) {
+            Image(systemName: imageName)
+                .font(.subheadline)
+                .foregroundStyle(imageColour)
+                .frame(width: 20, height: 20)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
     
@@ -217,7 +227,7 @@ private extension StatisticsView {
             HStack {
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("\(record.formatDate(.medium))")
+                        Text("\(record.formattedDate(.medium))")
                             .font(.headline)
                             .foregroundStyle(.secondary)
                         
@@ -270,6 +280,8 @@ private extension StatisticsView {
     let viewModel = StatisticsViewModel()
     let coordinator = NavigationCoordinator()
     
-    StatisticsView(viewModel: viewModel)
-        .environment(coordinator)
+    NavigationStack() {
+        StatisticsView(viewModel: viewModel)
+            .environment(coordinator)
+    }
 }
