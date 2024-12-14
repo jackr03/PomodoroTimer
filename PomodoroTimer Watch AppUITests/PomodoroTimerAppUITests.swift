@@ -35,8 +35,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
         settingsScreen = SettingsScreen(app:app)
     }
     
-
-    
     func testViewPops_backToRootWhenSessionCompletes() {
         launchApp(with: ["-workDuration", "3"])
         

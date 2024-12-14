@@ -107,7 +107,7 @@ struct PomodoroView: View {
     private func buttonAction() async {
         if isSessionFinished {
             stopHaptics()
-            await viewModel.completeSession()
+            viewModel.completeSession()
             hapticsManager.playClick()
             
             return

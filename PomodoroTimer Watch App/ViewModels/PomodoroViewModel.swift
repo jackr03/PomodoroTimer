@@ -92,7 +92,7 @@ final class PomodoroViewModel {
      
      - Note: If autoContinue is enabled in the settings, start a new session.
      */
-    func completeSession() async {
+    func completeSession() {
         timer.advanceToNextSession()
         stopExtendedSession()
         
@@ -101,8 +101,9 @@ final class PomodoroViewModel {
         }
         
         if settingsManager.get(.autoContinue) {
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            self.startSession()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                self?.startSession()
+            }
         }
     }
     
