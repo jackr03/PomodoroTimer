@@ -7,7 +7,6 @@
 
 import Foundation
 
-// TODO: - Combine everything into one type of method and cast
 protocol Setting: RawRepresentable, CaseIterable where RawValue == String, T: Equatable {
     associatedtype T
     

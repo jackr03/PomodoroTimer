@@ -8,7 +8,6 @@
 import Foundation
 import Observation
 
-// TODO: Maybe move this out of the file
 /**
  Represents the possible types of sessions in a Pomodoro cycle.
  
