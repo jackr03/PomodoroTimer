@@ -34,7 +34,11 @@ class Record {
     var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
     
     // MARK: - Functions
-    func formatDate(_ dateStyle: DateFormatter.Style) -> String {
+    func incrementSessionsCompleted() {
+        sessionsCompleted += 1
+    }
+    
+    func formattedDate(_ dateStyle: DateFormatter.Style) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = dateStyle
         formatter.timeStyle = .none

@@ -146,10 +146,10 @@ final class PomodoroViewModel {
 
     func incrementSessionsCompleted() {
         if let record = repository.readRecord(byDate: Date.now) {
-            record.sessionsCompleted += 1
+            record.incrementSessionsCompleted()
         } else {
             let record = Record()
-            record.sessionsCompleted += 1
+            record.incrementSessionsCompleted()
             repository.createRecord(record)
         }
     }

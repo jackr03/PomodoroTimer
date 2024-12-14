@@ -31,8 +31,8 @@ final class RecordViewModel {
     var isDailyTargetMet: Bool { record.isDailyTargetMet }
     var isToday: Bool { record.date == Calendar.current.startOfToday }
     
-    var formattedDateShort: String { record.formatDate(.short) }
-    var formattedDateMedium: String { record.formatDate(.medium) }
+    var formattedDateShort: String { record.formattedDate(.short) }
+    var formattedDateMedium: String { record.formattedDate(.medium) }
     
     var statusMessage: String {
         if record.sessionsCompleted == 0 {
