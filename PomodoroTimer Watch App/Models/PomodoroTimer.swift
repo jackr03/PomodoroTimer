@@ -91,7 +91,8 @@ class PomodoroTimer: PomodoroTimerProtocol {
     }
     
     func resetSession() {
-        remainingTime = startingDuration
+        startingDuration = currentSession.duration
+        remainingTime = currentSession.duration
     }
     
     /**
