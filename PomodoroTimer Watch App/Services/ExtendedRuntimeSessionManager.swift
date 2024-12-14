@@ -25,12 +25,14 @@ final class ExtendedRuntimeSessionManager: NSObject, WKExtendedRuntimeSessionDel
         session = WKExtendedRuntimeSession()
         session?.delegate = self
         session?.start()
+        print("Session started")
     }
     
     func stopSession() {
         guard session?.state != .invalid else { return }
         
         session?.invalidate()
+        print("Session stopped")
     }
     
     // MARK: - Delegate functions
