@@ -144,7 +144,6 @@ private extension SettingsView {
         VStack(alignment: .leading) {
             Text(title)
                 .font(.headline)
-                .foregroundStyle(.primary)
                 
             Divider()
         }

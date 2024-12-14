@@ -156,6 +156,8 @@ private extension StatisticsView {
                     createRecordCard(for: record)
                 }
                 
+                Divider()
+                
                 deleteAllRecordsButton
             }
         }
@@ -216,7 +218,6 @@ private extension StatisticsView {
                 .frame(width: 20, height: 20)
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.secondary)
         }
     }
     

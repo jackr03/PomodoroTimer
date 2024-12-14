@@ -97,6 +97,7 @@ final class StatisticsViewModelTests {
         #expect(sut.records.count == 0, "Should not store placeholder record into database")
         #expect(sut.recordToday.date == Calendar.current.startOfToday, "New record's date should be set to today")
         #expect(sut.recordToday.sessionsCompleted == 0, "New record should have 0 sessions completed")
+        #expect(sut.recordToday.timeSpent == 0, "New record should have 0 time spent")
     }
     
     @Test
@@ -126,9 +127,9 @@ final class StatisticsViewModelTests {
     @Test
     func totalSessions_returnsCorrectTotalCount() async {
         let records = [
-            Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 5, dailyTarget: 8),
-            Record(date: createDate(year: 2024, month: 4, day: 3), sessionsCompleted: 4, dailyTarget: 8),
-            Record(date: createDate(year: 2024, month: 11, day: 9), sessionsCompleted: 7, dailyTarget: 8)
+            Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 5),
+            Record(date: createDate(year: 2024, month: 4, day: 3), sessionsCompleted: 4),
+            Record(date: createDate(year: 2024, month: 11, day: 9), sessionsCompleted: 7)
         ]
         
         await setUpWithMockRecords(records)

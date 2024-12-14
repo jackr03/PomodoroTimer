@@ -97,7 +97,7 @@ final class PomodoroViewModel {
         stopExtendedSession()
         
         if !isWorkSession {
-            incrementSessionsCompleted()
+            updateRecord(withTime: 0)
         }
         
         if settingsManager.get(.autoContinue) {
@@ -144,14 +144,18 @@ final class PomodoroViewModel {
         return isWorkSession ? timer.remainingTime : timer.deductTime(by: seconds)
     }
 
-    func incrementSessionsCompleted() {
-        if let record = repository.readRecord(byDate: Date.now) {
-            record.incrementSessionsCompleted()
+    func updateRecord(withTime time: Int) {
+        let record: Record
+        
+        if let existingRecord = repository.readRecord(byDate: Date.now) {
+            record = existingRecord
         } else {
-            let record = Record()
-            record.incrementSessionsCompleted()
+            record = Record()
             repository.createRecord(record)
         }
+        
+        record.incrementSessionsCompleted()
+        record.addTimeSpent(time)
     }
     
     // MARK: - Extended session functions

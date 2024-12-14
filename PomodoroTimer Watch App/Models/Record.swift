@@ -16,18 +16,21 @@ class Record {
     @Attribute(.unique) var date: Date
     var sessionsCompleted: Int
     var dailyTarget: Int
+    var timeSpent: Int
     
     // MARK: - Inits
     init(
         date: Date = Date.now,
         sessionsCompleted: Int = 0,
-        dailyTarget: Int = SettingsManager.shared.get(.dailyTarget)
+        dailyTarget: Int = SettingsManager.shared.get(.dailyTarget),
+        timeSpent: Int = 0
     ) {
         let normalisedDate = Calendar.current.startOfDay(for: date)
         
         self.date = normalisedDate
         self.sessionsCompleted = sessionsCompleted
         self.dailyTarget = dailyTarget
+        self.timeSpent = timeSpent
     }
     
     // MARK: - Computed properties
@@ -36,6 +39,10 @@ class Record {
     // MARK: - Functions
     func incrementSessionsCompleted() {
         sessionsCompleted += 1
+    }
+    
+    func addTimeSpent(_ time: Int) {
+        self.timeSpent += time
     }
     
     func formattedDate(_ dateStyle: DateFormatter.Style) -> String {
