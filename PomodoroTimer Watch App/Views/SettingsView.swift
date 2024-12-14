@@ -32,58 +32,52 @@ struct SettingsView: View {
     var body: some View {
         @Bindable var coordinator = coordinator
         
-        Form {
+        ScrollView {
             if !viewModel.isPermissionGranted {
-                Section {
-                    missingPermissionView
-                }
-                .listRowInsets(EdgeInsets())
+                missingPermissionView
             }
-            
-            Section {
-                numberPicker(label: "Work",
-                             selection: $workDuration,
-                             range: 1...60,
-                             unit: "minute",
-                             tagModifier: { $0 * 60 },
-                             accessibilityIdentifier: "workDurationPicker")
                 
-                numberPicker(label: "Short break",
-                             selection: $shortBreakDuration,
-                             range: 1...60,
-                             unit: "minute",
-                             tagModifier: { $0 * 60 },
-                             accessibilityIdentifier: "shortBreakDurationPicker")
+            sectionDivider(title: "Session Durations")
+
+            numberPicker(label: "Work",
+                         selection: $workDuration,
+                         range: 1...60,
+                         unit: "minute",
+                         tagModifier: { $0 * 60 },
+                         accessibilityIdentifier: "workDurationPicker")
                 
-                numberPicker(label: "Long break",
-                             selection: $longBreakDuration,
-                             range: 1...60,
-                             unit: "minute",
-                             tagModifier: { $0 * 60 },
-                             accessibilityIdentifier: "longBreakDurationPicker")
-            }
-            
-            Section {
-                numberPicker(label: "Daily target",
-                             selection: $dailyTarget,
-                             range: 1...24,
-                             unit: "session",
-                             onChange: { newValue in viewModel.updateRecordDailyTarget(to: newValue) },
-                             accessibilityIdentifier: "dailyTargetPicker"
-                )
-            }
-            
-            Section {
-                toggleSwitch(label: "Auto-continue",
+            numberPicker(label: "Break",
+                         selection: $shortBreakDuration,
+                         range: 1...60,
+                         unit: "minute",
+                         tagModifier: { $0 * 60 },
+                         accessibilityIdentifier: "shortBreakDurationPicker")
+                
+            numberPicker(label: "Long Break",
+                         selection: $longBreakDuration,
+                         range: 1...60,
+                         unit: "minute",
+                         tagModifier: { $0 * 60 },
+                         accessibilityIdentifier: "longBreakDurationPicker")
+                
+            sectionDivider(title: "Other")
+                
+            numberPicker(label: "Daily Target",
+                         selection: $dailyTarget,
+                         range: 1...24,
+                         unit: "session",
+                         onChange: { newValue in viewModel.updateRecordDailyTarget(to: newValue) },
+                         accessibilityIdentifier: "dailyTargetPicker"
+            )
+                
+            toggleSwitch(label: "Auto-continue",
                              isOn: $autoContinue,
                              accessibilityIdentifier: "autoContinueSwitch")
-            }
-             
+                
             if !viewModel.settingsAreAllDefault {
-                Section {
-                    resetSettingsButton
-                        .listRowBackground(Color.clear)
-                }
+                Divider()
+                
+                resetSettingsButton
             }
         }
         .navigationTitle("Settings")
@@ -137,48 +131,71 @@ private extension SettingsView {
         .buttonStyle(.borderedProminent)
         .buttonBorderShape(.roundedRectangle(radius: 12))
         .tint(.red)
+        .padding()
         .accessibilityIdentifier("resetSettingsButton")
     }
     
-    // TODO: Make picker open up on current selection
-    func numberPicker(label: String,
-                      selection: Binding<Int>,
-                      range: ClosedRange<Int>,
-                      unit: String,
-                      tagModifier: @escaping (Int) -> Int = { $0 },
-                      onChange: ((Int) -> Void)? = nil,
-                      accessibilityIdentifier: String
-    ) -> some View {
-        Picker(selection: selection) {
-            ForEach(range, id: \.self) {
-                Text("^[\($0) \(unit)](inflect: true)")
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                    .tag(tagModifier($0))
-            }
-        } label: {
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .accessibilityIdentifier(accessibilityIdentifier)
-        .onChange(of: selection.wrappedValue) { _, newValue in
-            onChange?(newValue)
+    func sectionDivider(title: String) -> some View {
+        Group {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top)
+            
+            Divider()
         }
     }
     
-    func toggleSwitch(label: String,
-                      isOn: Binding<Bool>,
-                      onChange: ((Bool) -> Void)? = nil,
-                      accessibilityIdentifier: String
+    func numberPicker(
+        label: String,
+        selection: Binding<Int>,
+        range: ClosedRange<Int>,
+        unit: String,
+        tagModifier: @escaping (Int) -> Int = { $0 },
+        onChange: ((Int) -> Void)? = nil,
+        accessibilityIdentifier: String
+    ) -> some View {
+        HStack {
+            Text(label)
+                .font(.body)
+                .foregroundStyle(.secondary)
+            
+            Spacer()
+            
+            Picker(label, selection: selection) {
+                ForEach(range, id: \.self) {
+                    Text("\($0)")
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                        .tag(tagModifier($0))
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.wheel)
+            .frame(width: 60, height: 40)
+            .accessibilityIdentifier(accessibilityIdentifier)
+            .onChange(of: selection.wrappedValue) { _, newValue in
+                onChange?(newValue)
+            }
+        }
+        .padding()
+    }
+    
+    func toggleSwitch(
+        label: String,
+        isOn: Binding<Bool>,
+        onChange: ((Bool) -> Void)? = nil,
+        accessibilityIdentifier: String
     ) -> some View {
         Toggle(label, isOn: isOn)
-            .font(.caption)
+            .font(.body)
             .foregroundStyle(.secondary)
             .accessibilityIdentifier(accessibilityIdentifier)
             .onChange(of: isOn.wrappedValue) { _, newValue in
                 onChange?(newValue)
             }
+            .padding()
     }
 }
 
