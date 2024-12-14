@@ -75,6 +75,18 @@ final class StatisticsViewModel {
         return max(currentStreak, longestStreak)
     }
     
+    var totalTimeSpent: String {
+        let totalSeconds = records.reduce(0, { sum, record in
+            sum + record.timeSpent
+        })
+        
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        let seconds = totalSeconds % 60
+        
+        return "\(hours)h \(minutes)m \(seconds)s"
+    }
+    
     // MARK: - Functions
     func fetchAllRecords() {
         records = repository.readAllRecords()

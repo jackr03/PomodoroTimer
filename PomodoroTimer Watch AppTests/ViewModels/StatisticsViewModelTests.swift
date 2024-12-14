@@ -182,4 +182,17 @@ final class StatisticsViewModelTests {
         
         #expect(sut.longestStreak == 3, "Longest streak should be exactly 3")
     }
+    
+    @Test
+    func totalTimeSpent_returnsCorrectTimeSpent() async {
+        let records = [
+            Record(timeSpent: 3600),
+            Record(timeSpent: 60),
+            Record(timeSpent: 1),
+        ]
+        
+        await setUpWithMockRecords(records)
+        
+        #expect(sut.totalTimeSpent == "1h 1m 1s", "Total time should be \"1h 1m 1s\"")
+    }
 }

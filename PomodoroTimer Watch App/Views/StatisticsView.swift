@@ -185,7 +185,7 @@ private extension StatisticsView {
             
             summaryStatistic(imageName: "calendar",
                              imageColour: .teal,
-                             label: "Total time spent: 162 hours and 3 minutes")
+                             label: "Total time spent: \(viewModel.totalTimeSpent)")
         }
         .padding()
     }
