@@ -15,10 +15,10 @@ final class MockPomodoroTimer: PomodoroTimerProtocol {
 
     var currentSession: SessionType
     var currentSessionNumber: Int
+    var startingDuration: Int
     var remainingTime: Int
     
     var isTimerActive = false
-    var hasSessionStarted = false
     var isSessionFinished = false
     
     // MARK: - Inits
@@ -28,6 +28,7 @@ final class MockPomodoroTimer: PomodoroTimerProtocol {
     ) {
         self.currentSession = currentSession
         self.currentSessionNumber = currentSessionNumber
+        self.startingDuration = currentSession.duration
         self.remainingTime = currentSession.duration
     }
     

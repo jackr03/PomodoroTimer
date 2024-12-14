@@ -53,7 +53,7 @@ final class PomodoroViewModel {
     }
     
     var progress: CGFloat {
-        isSessionFinished ? 1.0 : CGFloat(timer.remainingTime) / CGFloat(timer.currentSession.duration)
+        isSessionFinished ? 1.0 : CGFloat(timer.remainingTime) / CGFloat(timer.startingDuration)
     }
     
     var currentSession: String { timer.currentSession.rawValue }
@@ -61,9 +61,11 @@ final class PomodoroViewModel {
         String(format: "%d/%d", timer.currentSessionNumber, timer.maxSessions)
     }
     
+    var elapsedTime: Int { timer.startingDuration - timer.remainingTime }
+    
     var isWorkSession: Bool { timer.currentSession == .work }
     var isTimerActive: Bool { timer.isTimerActive }
-    var hasSessionStarted: Bool { timer.hasSessionStarted }
+    var hasSessionStarted: Bool { timer.remainingTime != timer.startingDuration }
     var isSessionFinished: Bool { timer.isSessionFinished }
     
     /**
@@ -87,18 +89,14 @@ final class PomodoroViewModel {
     }
     
     /**
-     Increment the number of sessions completed if the new session is NOT a work session, as that means
-     we have just transitioned from one.
+     Update record and advance to next session.
      
-     - Note: If autoContinue is enabled in the settings, start a new session.
+     - Note: If auto-continue is enabled in the settings, also start a new session.
      */
     func completeSession() {
+        updateRecord(incrementSessions: true, withTime: elapsedTime)
         timer.advanceToNextSession()
         stopExtendedSession()
-        
-        if !isWorkSession {
-            updateRecord(withTime: 0)
-        }
         
         if settingsManager.get(.autoContinue) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
@@ -117,7 +115,7 @@ final class PomodoroViewModel {
     }
     
     func skipSession() {
-        self.pauseSession()
+        pauseSession()
         timer.advanceToNextSession()
     }
     
@@ -144,7 +142,16 @@ final class PomodoroViewModel {
         return isWorkSession ? timer.remainingTime : timer.deductTime(by: seconds)
     }
 
-    func updateRecord(withTime time: Int) {
+    /**
+     Update record statistics if the current session is a work session.
+     
+     - Parameter incrementSessions: Whether to increment sessions or not
+     - Parameter withTime: How much time to add to the Record
+     */
+    func updateRecord(incrementSessions: Bool = false,
+                      withTime time: Int) {
+        guard isWorkSession else { return }
+        
         let record: Record
         
         if let existingRecord = repository.readRecord(byDate: Date.now) {
@@ -154,7 +161,10 @@ final class PomodoroViewModel {
             repository.createRecord(record)
         }
         
-        record.incrementSessionsCompleted()
+        if incrementSessions {
+            record.incrementSessionsCompleted()
+        }
+        
         record.addTimeSpent(time)
     }
     
@@ -208,7 +218,7 @@ final class PomodoroViewModel {
     }
     
     private func handleSettingChanges() {
-        guard !timer.isTimerActive && !timer.hasSessionStarted else { return }
+        guard !isTimerActive && !hasSessionStarted else { return }
         timer.resetSession()
     }
 }

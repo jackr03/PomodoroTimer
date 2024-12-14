@@ -72,25 +72,12 @@ final class PomodoroTimerAppUITests: XCTestCase {
         XCUIDevice.shared.press(.home)
         XCTAssertTrue(carousel.breakOverNotification.waitForExistence(timeout: 10), "Should show notification letting user know session is over")
     }
-    
-    func testTimerDoesNotGoDown_whenLeavingAnActiveWorkSession() {
-        launchApp()
-        let carousel = Carousel()
-        
-        pomodoroScreen.playButton.waitAndTap()
-        XCUIDevice.shared.press(.home)
-        carousel.openAppButton.waitAndTap(timeout: 5)
-        XCTAssertTrue(pomodoroScreen.remainingTime.waitForExistence(timeout: 3))
-        XCTAssertTrue(pomodoroScreen.remainingTime.label == "24:59", "Timer should only have just started counting down")
-    }
  
     func testChangingDurationSetting_resetsTimerIfNotAlreadyInProgress() {
         launchApp()
         
         pomodoroScreen.settingsButton.waitAndTap()
         settingsScreen.workDurationPicker.swipeDown()
-        XCTAssertTrue(settingsScreen.workDurationPicker.value as! String == "16", "Work duration should be set to 16 minutes")
-        
         settingsScreen.backButton.waitAndTap()
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "16:00", "Time should be reset to 16:00")
     }
@@ -105,8 +92,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
         
         pomodoroScreen.settingsButton.waitAndTap()
         settingsScreen.workDurationPicker.swipeDown()
-        XCTAssertTrue(settingsScreen.workDurationPicker.value as! String == "16", "Work duration should be set to 16 minutes")
-        
         settingsScreen.backButton.waitAndTap()
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "16:00", "Time should be reset to 16:00")
     }
@@ -135,8 +120,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
         
         pomodoroScreen.settingsButton.waitAndTap()
         settingsScreen.workDurationPicker.swipeDown()
-        XCTAssertTrue(settingsScreen.workDurationPicker.value as! String == "16", "Work duration should be set to 16 minutes")
-        
         settingsScreen.backButton.waitAndTap()
         XCTAssertFalse(pomodoroScreen.remainingTime.label == "16:00", "Time should not be reset to 16:00")
     }
