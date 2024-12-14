@@ -156,8 +156,6 @@ private extension StatisticsView {
                     createRecordCard(for: record)
                 }
                 
-                Divider()
-                
                 deleteAllRecordsButton
             }
         }
@@ -252,7 +250,6 @@ private extension StatisticsView {
             }
         }
         .buttonStyle(PlainButtonStyle())
-
     }
     
     func deleteAlert() -> Alert {
