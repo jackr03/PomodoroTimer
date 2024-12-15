@@ -46,8 +46,12 @@ final class PomodoroViewModel {
     
     // MARK: - Computed properties
     var formattedRemainingTime: String {
-        let remainingTimeInMinutes: Int = timer.remainingTime / 60
-        let remainingTimeInSeconds: Int = timer.remainingTime % 60
+        if timer.remainingTime <= 0 {
+            return "00:00"
+        }
+        
+        let remainingTimeInMinutes = timer.remainingTime / 60
+        let remainingTimeInSeconds = timer.remainingTime % 60
         
         return String(format: "%02d:%02d", remainingTimeInMinutes, remainingTimeInSeconds)
     }

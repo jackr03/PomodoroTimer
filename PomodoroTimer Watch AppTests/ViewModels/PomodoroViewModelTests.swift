@@ -33,6 +33,12 @@ final class PomodoroViewModelTests {
     }
     
     @Test
+    func formattedRemainingTime_returnsCorrectStringRepresentationWhenTimeIsNegative() {
+        timer.remainingTime = -999
+        #expect(sut.formattedRemainingTime == "00:00", "Should format remaining time to 00:00 when negative")
+    }
+    
+    @Test
     func incrementSessionsCompleted_whenRecordExists_updatesExistingRecord() {
         let existingRecord = Record(date: Date.now,
                                     sessionsCompleted: 5,
