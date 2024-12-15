@@ -5,7 +5,7 @@
 ![screenshot1](https://github.com/user-attachments/assets/f0316f3e-0d77-4106-8c68-8f2ac802b9e9)
 ![screenshot2](https://github.com/user-attachments/assets/0f6ff631-169a-4fba-bf4d-00aef90718c8)
 
-A simple, minimalistic Pomodoro app developed for WatchOS using Swift and SwiftUI following the MVVM architecture.
+A simple, minimalistic Pomodoro app built for WatchOS using Swift and SwiftUI following the MVVM architecture. Developed using test-driven development (TDD), with unit and UI tests implemented using the XCTest and Swift Testing framework respectively to ensure reliability and stability.
 
 ## Features
 
