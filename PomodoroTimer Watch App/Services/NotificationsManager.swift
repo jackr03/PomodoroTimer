@@ -63,7 +63,7 @@ final class NotificationsManager {
     func notifyUserWhenBreakOver(timeTilEnd time: Double) {
         notify(title: "Break's over!",
                body: "Time to get back to work.",
-               sound: .default,
+               sound: .defaultCritical,
                timeInterval: time,
                identifier: "breakOverNotification")
     }

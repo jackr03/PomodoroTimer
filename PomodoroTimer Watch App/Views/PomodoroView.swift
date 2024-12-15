@@ -59,14 +59,12 @@ struct PomodoroView: View {
             }
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
-            Task {
-                await handlePhaseChange(oldPhase, newPhase)
-            }
+            handlePhaseChange(oldPhase, newPhase)
         }
     }
     
     // MARK: - Private functions
-    private func handlePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase) async {
+    private func handlePhaseChange(_ oldPhase: ScenePhase, _ newPhase: ScenePhase) {
         // Slow down updates if screen is inactive
         switch (oldPhase, newPhase) {
         case (.inactive, .active):
@@ -83,7 +81,7 @@ struct PomodoroView: View {
         
         switch (oldPhase, newPhase) {
         // If user has left in the middle of a work session, pause timer and send a notification
-        case (.inactive, .background) where viewModel.isWorkSession:
+        case (.inactive, .background) where viewModel.isTimerActive && viewModel.hasSessionStarted:
             viewModel.pauseSession()
             viewModel.notifyUserToResume()
         // Record time when user closed app and queue a notification to remind them when break ends

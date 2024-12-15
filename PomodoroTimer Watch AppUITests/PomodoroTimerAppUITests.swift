@@ -49,8 +49,22 @@ final class PomodoroTimerAppUITests: XCTestCase {
         let carousel = Carousel()
         
         pomodoroScreen.playButton.waitAndTap()
-        XCUIDevice.shared.press(.home)
+        waitForConditionThenExecute({
+            self.pomodoroScreen.remainingTime.label == "24:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
         XCTAssertTrue(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should show notification prompting user to return to app")
+    }
+    
+    func testUserIsNotNotified_whenLeavingAPausedWorkSession() {
+        launchApp()
+        let carousel = Carousel()
+        
+        pomodoroScreen.playButton.waitAndTap()
+        pomodoroScreen.pauseButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCTAssertFalse(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
     }
     
     func testUserIsNotNotified_whenLeavingABreakSession() {
@@ -71,6 +85,20 @@ final class PomodoroTimerAppUITests: XCTestCase {
         pomodoroScreen.playButton.waitAndTap()
         XCUIDevice.shared.press(.home)
         XCTAssertTrue(carousel.breakOverNotification.waitForExistence(timeout: 10), "Should show notification letting user know session is over")
+    }
+    
+    func testTimerDoesNotGoDown_whenLeavingAnActiveWorkSession() {
+        launchApp()
+        let carousel = Carousel()
+
+        pomodoroScreen.playButton.waitAndTap()
+        waitForConditionThenExecute({
+            self.pomodoroScreen.remainingTime.label == "24:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
+        carousel.openAppButton.waitAndTap(timeout: 5)
+        XCTAssertTrue(pomodoroScreen.remainingTime.label == "24:59", "Timer should not have continued counting down")
     }
  
     func testChangingDurationSetting_resetsTimerIfNotAlreadyInProgress() {
