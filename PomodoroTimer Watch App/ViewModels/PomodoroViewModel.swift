@@ -65,8 +65,8 @@ final class PomodoroViewModel {
         String(format: "%d/%d", timer.currentSessionNumber, timer.maxSessions)
     }
     
+    // TODO: For use with skip, reset and stop
     var elapsedTime: Int { timer.startingDuration - timer.remainingTime }
-    
     var isWorkSession: Bool { timer.currentSession == .work }
     var isTimerActive: Bool { timer.isTimerActive }
     var hasSessionStarted: Bool { timer.remainingTime != timer.startingDuration }
@@ -93,12 +93,12 @@ final class PomodoroViewModel {
     }
     
     /**
-     Update record and advance to next session.
+     Update record statistics and advance to next session.
      
      - Note: If auto-continue is enabled in the settings, also start a new session.
      */
     func completeSession() {
-        updateRecord(incrementSessions: true, withTime: elapsedTime)
+        updateRecord(incrementSessions: true, withTime: timer.startingDuration)
         timer.advanceToNextSession()
         stopExtendedSession()
         
@@ -110,15 +110,18 @@ final class PomodoroViewModel {
     }
     
     func endPomodoroCycle() {
+        updateRecord(withTime: elapsedTime)
         timer.reset()
         stopExtendedSession()
     }
 
     func resetSession() {
+        updateRecord(withTime: elapsedTime)
         timer.resetSession()
     }
     
     func skipSession() {
+        updateRecord(withTime: elapsedTime)
         pauseSession()
         timer.advanceToNextSession()
     }

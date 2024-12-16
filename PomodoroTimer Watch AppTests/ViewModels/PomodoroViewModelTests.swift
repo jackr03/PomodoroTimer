@@ -39,7 +39,7 @@ final class PomodoroViewModelTests {
     }
     
     @Test
-    func incrementSessionsCompleted_whenRecordExists_updatesExistingRecord() {
+    func updateRecord_whenRecordExists_updatesExistingRecord() {
         let existingRecord = Record(date: Date.now,
                                     sessionsCompleted: 5,
                                     dailyTarget: 8,
@@ -55,7 +55,7 @@ final class PomodoroViewModelTests {
     }
     
     @Test
-    func incrementSessionsCompleted_whenRecordDoesNotExist_createsNewRecord() {
+    func updateRecord_whenRecordDoesNotExist_createsNewRecord() {
         sut.updateRecord(incrementSessions: true, withTime: 900)
         
         let recordToday = mockRecordRepository.readRecord(byDate: Date.now)!

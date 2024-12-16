@@ -52,7 +52,7 @@ struct StatisticsView: View {
 
 private extension StatisticsView {
     var dailyStatistics: some View {
-        let recordViewModel = RecordViewModel(record: recordToday)
+        let recordViewModel = RecordViewModel(record: recordToday, isOpenedFromAllTimeStatistics: false)
         return RecordView(viewModel: recordViewModel)
     }
     

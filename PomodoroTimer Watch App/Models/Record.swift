@@ -36,6 +36,14 @@ class Record {
     // MARK: - Computed properties
     var isDailyTargetMet: Bool { sessionsCompleted >= dailyTarget }
     
+    var formattedTimeSpent: String {
+        let hours = timeSpent / 3600
+        let minutes = (timeSpent % 3600) / 60
+        let seconds = timeSpent % 60
+        
+        return "\(hours)h \(minutes)m \(seconds)s"
+    }
+    
     // MARK: - Functions
     func incrementSessionsCompleted() {
         sessionsCompleted += 1
