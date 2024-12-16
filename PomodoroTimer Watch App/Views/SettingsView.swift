@@ -44,6 +44,7 @@ struct SettingsView: View {
                          range: 1...60,
                          unit: "minute",
                          tagModifier: { $0 * 60 },
+                         imageName: "book",
                          accessibilityIdentifier: "workDurationPicker")
                 
             numberPicker(label: "Break",
@@ -51,6 +52,7 @@ struct SettingsView: View {
                          range: 1...60,
                          unit: "minute",
                          tagModifier: { $0 * 60 },
+                         imageName: "hourglass",
                          accessibilityIdentifier: "shortBreakDurationPicker")
                 
             numberPicker(label: "Long Break",
@@ -58,6 +60,7 @@ struct SettingsView: View {
                          range: 1...60,
                          unit: "minute",
                          tagModifier: { $0 * 60 },
+                         imageName: "hourglass.bottomhalf.filled",
                          accessibilityIdentifier: "longBreakDurationPicker")
                 
             sectionDivider(title: "Other")
@@ -67,12 +70,14 @@ struct SettingsView: View {
                          range: 1...24,
                          unit: "session",
                          onChange: { newValue in viewModel.updateRecordDailyTarget(to: newValue) },
+                         imageName: "target",
                          accessibilityIdentifier: "dailyTargetPicker"
             )
                 
             toggleSwitch(label: "Auto-continue",
-                             isOn: $autoContinue,
-                             accessibilityIdentifier: "autoContinueSwitch")
+                         isOn: $autoContinue,
+                         imageName: "repeat",
+                         accessibilityIdentifier: "autoContinueSwitch")
                 
             if !viewModel.settingsAreAllDefault {
                 Divider()
@@ -136,15 +141,13 @@ private extension SettingsView {
     }
     
     func sectionDivider(title: String) -> some View {
-        Group {
+        VStack(alignment: .leading) {
             Text(title)
                 .font(.headline)
-                .foregroundStyle(.primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top)
-            
+                
             Divider()
         }
+        .padding()
     }
     
     func numberPicker(
@@ -154,9 +157,14 @@ private extension SettingsView {
         unit: String,
         tagModifier: @escaping (Int) -> Int = { $0 },
         onChange: ((Int) -> Void)? = nil,
+        imageName: String,
         accessibilityIdentifier: String
     ) -> some View {
         HStack {
+            Image(systemName: imageName)
+                .foregroundStyle(.primary)
+                .frame(width: 20, height: 20)
+            
             Text(label)
                 .font(.body)
                 .foregroundStyle(.secondary)
@@ -173,29 +181,40 @@ private extension SettingsView {
             }
             .labelsHidden()
             .pickerStyle(.wheel)
-            .frame(width: 60, height: 40)
+            .frame(width: 40, height: 40)
             .accessibilityIdentifier(accessibilityIdentifier)
             .onChange(of: selection.wrappedValue) { _, newValue in
                 onChange?(newValue)
             }
         }
-        .padding()
+        .padding(
+            EdgeInsets(top: 5, leading: 15, bottom: 5, trailing: 15)
+        )
     }
     
     func toggleSwitch(
         label: String,
         isOn: Binding<Bool>,
         onChange: ((Bool) -> Void)? = nil,
+        imageName: String,
         accessibilityIdentifier: String
     ) -> some View {
-        Toggle(label, isOn: isOn)
-            .font(.body)
-            .foregroundStyle(.secondary)
-            .accessibilityIdentifier(accessibilityIdentifier)
-            .onChange(of: isOn.wrappedValue) { _, newValue in
-                onChange?(newValue)
-            }
-            .padding()
+        HStack {
+            Image(systemName: imageName)
+                .foregroundStyle(.primary)
+                .frame(width: 20, height: 20)
+            
+            Toggle(label, isOn: isOn)
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier(accessibilityIdentifier)
+                .onChange(of: isOn.wrappedValue) { _, newValue in
+                    onChange?(newValue)
+                }
+        }
+        .padding(
+            EdgeInsets(top: 5, leading: 15, bottom: 5, trailing: 15)
+        )
     }
 }
 

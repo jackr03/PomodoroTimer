@@ -29,12 +29,12 @@ final class SettingsViewTests: XCTestCase {
         
         app.launch()
         sut = SettingsScreen(app: app)
-        app.buttons["settingsButton"].firstMatch.waitAndTap()
-        XCTAssertTrue(sut.navigationBar.waitForExistence(timeout: 3),
+        PomodoroScreen(app: app).settingsButton.waitAndTap()
+        XCTAssertTrue(sut.navigationBarTitle.waitForExistence(timeout: 3),
                       "Settings screen should be visible within 3 seconds")
     }
     
-    func testSettingsForm_rendersProperly() {
+    func testView_rendersProperly() {
         launchApp()
         
         XCTAssertTrue(sut.workDurationPicker.exists, "Work duration picker should render properly")

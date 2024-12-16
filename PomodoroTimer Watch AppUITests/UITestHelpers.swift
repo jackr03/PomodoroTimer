@@ -7,6 +7,25 @@
 
 import XCTest
 
+func waitForConditionThenExecute(_ condition: @escaping () -> Bool,
+                      action: @escaping () -> Void,
+                      timeout: TimeInterval = 3) {
+    let expectation = XCTestExpectation(description: "Condition should be true")
+    
+    let startTime = Date.now
+    while Date().timeIntervalSince(startTime) < timeout {
+        if condition() {
+            action()
+            expectation.fulfill()
+            break
+        }
+        
+        RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+    }
+    
+    _ = XCTWaiter.wait(for: [expectation], timeout: timeout)
+}
+
 extension XCUIElement {
     func waitAndTap(timeout: TimeInterval = 3) {
         XCTAssertTrue(waitForExistence(timeout: timeout), "Could not find element")

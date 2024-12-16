@@ -25,7 +25,9 @@ final class StatisticsViewModel {
     }
         
     // MARK: - Computed properties
-    // Return a placeholder record if one was not found for today, but do not store it
+    /**
+     Returns today's record, or a placeholder record if one was not found
+     */
     var recordToday: Record {
         records.filter { record in
             record.date == Calendar.current.startOfToday
@@ -71,6 +73,18 @@ final class StatisticsViewModel {
         }
         
         return max(currentStreak, longestStreak)
+    }
+    
+    var totalTimeSpent: String {
+        let totalSeconds = records.reduce(0, { sum, record in
+            sum + record.timeSpent
+        })
+        
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        let seconds = totalSeconds % 60
+        
+        return "\(hours)h \(minutes)m \(seconds)s"
     }
     
     // MARK: - Functions

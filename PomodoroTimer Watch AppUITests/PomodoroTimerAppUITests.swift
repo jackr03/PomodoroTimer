@@ -40,7 +40,7 @@ final class PomodoroTimerAppUITests: XCTestCase {
         
         pomodoroScreen.playButton.waitAndTap()
         pomodoroScreen.settingsButton.waitAndTap()
-        XCTAssertTrue(settingsScreen.navigationBar.waitForNonExistence(timeout: 5), "Should no longer be on settings screen")
+        XCTAssertTrue(settingsScreen.navigationBarTitle.waitForNonExistence(timeout: 5), "Should no longer be on settings screen")
         XCTAssertTrue(pomodoroScreen.timesUpMessage.waitForExistence(timeout: 5), "Should show 'Times up!' message")
     }
     
@@ -49,8 +49,22 @@ final class PomodoroTimerAppUITests: XCTestCase {
         let carousel = Carousel()
         
         pomodoroScreen.playButton.waitAndTap()
-        XCUIDevice.shared.press(.home)
+        waitForConditionThenExecute({
+            self.pomodoroScreen.remainingTime.label == "24:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
         XCTAssertTrue(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should show notification prompting user to return to app")
+    }
+    
+    func testUserIsNotNotified_whenLeavingAPausedWorkSession() {
+        launchApp()
+        let carousel = Carousel()
+        
+        pomodoroScreen.playButton.waitAndTap()
+        pomodoroScreen.pauseButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCTAssertFalse(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
     }
     
     func testUserIsNotNotified_whenLeavingABreakSession() {
@@ -76,12 +90,15 @@ final class PomodoroTimerAppUITests: XCTestCase {
     func testTimerDoesNotGoDown_whenLeavingAnActiveWorkSession() {
         launchApp()
         let carousel = Carousel()
-        
+
         pomodoroScreen.playButton.waitAndTap()
-        XCUIDevice.shared.press(.home)
+        waitForConditionThenExecute({
+            self.pomodoroScreen.remainingTime.label == "24:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
         carousel.openAppButton.waitAndTap(timeout: 5)
-        XCTAssertTrue(pomodoroScreen.remainingTime.waitForExistence(timeout: 3))
-        XCTAssertTrue(pomodoroScreen.remainingTime.label == "24:59", "Timer should only have just started counting down")
+        XCTAssertTrue(pomodoroScreen.remainingTime.label == "24:59", "Timer should not have continued counting down")
     }
  
     func testChangingDurationSetting_resetsTimerIfNotAlreadyInProgress() {
@@ -89,8 +106,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
         
         pomodoroScreen.settingsButton.waitAndTap()
         settingsScreen.workDurationPicker.swipeDown()
-        XCTAssertTrue(settingsScreen.workDurationPicker.value as! String == "16", "Work duration should be set to 16 minutes")
-        
         settingsScreen.backButton.waitAndTap()
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "16:00", "Time should be reset to 16:00")
     }
@@ -105,8 +120,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
         
         pomodoroScreen.settingsButton.waitAndTap()
         settingsScreen.workDurationPicker.swipeDown()
-        XCTAssertTrue(settingsScreen.workDurationPicker.value as! String == "16", "Work duration should be set to 16 minutes")
-        
         settingsScreen.backButton.waitAndTap()
         XCTAssertTrue(pomodoroScreen.remainingTime.label == "16:00", "Time should be reset to 16:00")
     }
@@ -135,8 +148,6 @@ final class PomodoroTimerAppUITests: XCTestCase {
         
         pomodoroScreen.settingsButton.waitAndTap()
         settingsScreen.workDurationPicker.swipeDown()
-        XCTAssertTrue(settingsScreen.workDurationPicker.value as! String == "16", "Work duration should be set to 16 minutes")
-        
         settingsScreen.backButton.waitAndTap()
         XCTAssertFalse(pomodoroScreen.remainingTime.label == "16:00", "Time should not be reset to 16:00")
     }

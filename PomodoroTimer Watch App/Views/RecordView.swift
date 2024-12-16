@@ -33,25 +33,35 @@ struct RecordView: View {
             .progressViewStyle(LinearProgressViewStyle())
             .tint(viewModel.isDailyTargetMet ? .green : .red)
             .rotationEffect(.degrees(-90))
+            .accessibilityIdentifier("dailyProgressBar")
                 
             VStack {
                 Text("\(viewModel.sessionsCompleted)/\(viewModel.dailyTarget) sessions")
                     .font(.headline)
                     .foregroundStyle(.primary)
                     .multilineTextAlignment(.center)
-                    .padding()
+                    .accessibilityIdentifier("dailySessionsCompleted")
                 
-                if viewModel.isToday {
+                Text("\(viewModel.formattedTimeSpent)")
+                    .font(.footnote)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 4)
+                    .accessibilityIdentifier("dailyTimeSpent")
+                
+                // Don't display status message if opened from all time statistics
+                if !viewModel.isOpenedFromAllTimeStatistics {
                     Text(viewModel.statusMessage)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("dailyStatusMessage")
                 }
             }
         }
         .navigationTitle(viewModel.isToday ? "Today" : viewModel.formattedDateMedium)
         .toolbar {
-            if !viewModel.isToday {
+            if viewModel.isOpenedFromAllTimeStatistics {
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: {
                         showingDeleteRecordAlert = true
@@ -97,7 +107,10 @@ struct RecordView: View {
 }
 
 #Preview {
-    let record = Record(date: Date.now, sessionsCompleted: 5, dailyTarget: 12)
+    let record = Record(date: Date.now,
+                        sessionsCompleted: 5,
+                        dailyTarget: 12,
+                        timeSpent: 4754)
     let viewModel = RecordViewModel(record: record)
     let coordinator = NavigationCoordinator()
     

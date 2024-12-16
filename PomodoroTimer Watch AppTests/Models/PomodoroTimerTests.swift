@@ -33,39 +33,20 @@ final class PomodoroTimerTests {
         #expect(!sut.isTimerActive, "Should pause timer when called")
     }
     
-    @Test
-    func advanceToNextSession_fromWorkSession_transitionsToShortBreakWhenSessionsCompleteLessThanMax() {
-        sut = PomodoroTimer(currentSession: .work, currentSessionNumber: 0)
+    @Test(arguments: [
+        (PomodoroTimer(currentSession: .work, currentSessionNumber: 0), SessionType.shortBreak, 1, SessionType.shortBreak.duration),
+        (PomodoroTimer(currentSession: .work, currentSessionNumber: 3), SessionType.longBreak, 4, SessionType.longBreak.duration),
+        (PomodoroTimer(currentSession: .shortBreak, currentSessionNumber: 1), SessionType.work, 1, SessionType.work.duration),
+        (PomodoroTimer(currentSession: .longBreak, currentSessionNumber: 4), SessionType.work, 0, SessionType.work.duration),
+    ])
+    func advanceToNextSession_transitionsCorrectly(sut: PomodoroTimer,
+                              expectedCurrentSession: SessionType,
+                              expectedCurrentSessionNumber: Int,
+                              expectedRemainingTime: Int
+                             ) {
         sut.advanceToNextSession()
-        #expect(sut.currentSession == .shortBreak, "Should transition to a short break")
-        #expect(sut.remainingTime == SessionType.shortBreak.duration, "Should reset time to shortBreak duration")
-        #expect(sut.currentSessionNumber == 1, "Should increment current session number")
-    }
-    
-    @Test
-    func advanceToNextSession_fromWorkSession_transitionsToLongBreakWhenSessionsCompleteIsMax() {
-        sut = PomodoroTimer(currentSession: .work, currentSessionNumber: 3)
-        sut.advanceToNextSession()
-        #expect(sut.currentSession == .longBreak, "Should transition to a long break")
-        #expect(sut.remainingTime == SessionType.longBreak.duration, "Should reset time to longBreak duration")
-        #expect(sut.currentSessionNumber == 4, "Should increment current session number")
-    }
-    
-    @Test
-    func advanceToNextSession_fromShortBreak_transitionsToWorkSession() {
-        sut = PomodoroTimer(currentSession: .shortBreak, currentSessionNumber: 1)
-        sut.advanceToNextSession()
-        #expect(sut.currentSession == .work, "Should transition to a work session")
-        #expect(sut.remainingTime == SessionType.work.duration, "Should reset time to work duration")
-        #expect(sut.currentSessionNumber == 1, "Should not increment current session number")
-    }
-    
-    @Test
-    func advanceToNextSession_fromLongBreak_transitionsToWorkSessionAndResetsSessionCount() {
-        sut = PomodoroTimer(currentSession: .longBreak, currentSessionNumber: 4)
-        sut.advanceToNextSession()
-        #expect(sut.currentSession == .work, "Should transition to a work session")
-        #expect(sut.remainingTime == SessionType.work.duration, "Should reset time to work duration")
-        #expect(sut.currentSessionNumber == 0, "Should reset session count")
+        #expect(sut.currentSession == expectedCurrentSession, "Should transition to expected session type")
+        #expect(sut.currentSessionNumber == expectedCurrentSessionNumber, "Should transition to correct session number")
+        #expect(sut.remainingTime == expectedRemainingTime, "Should reset time correctly")
     }
 }

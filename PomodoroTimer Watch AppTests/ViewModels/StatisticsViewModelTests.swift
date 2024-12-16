@@ -21,14 +21,9 @@ final class StatisticsViewModelTests {
         mockRecordRepository = nil
     }
     
-    private func setUpWithNoRecords() async {
-        mockRecordRepository = MockRecordRepository(mockRecords: [])
-        await sut = StatisticsViewModel(repository: mockRecordRepository)
-    }
-    
-    private func setUpWithMockRecords(_ records: [Record]) async {
+    private func setUp(_ records: [Record] = []) async {
         mockRecordRepository = MockRecordRepository(mockRecords: records)
-        await sut = StatisticsViewModel(repository: mockRecordRepository)
+        sut = await StatisticsViewModel(repository: mockRecordRepository)
     }
         
     @Test
@@ -38,7 +33,7 @@ final class StatisticsViewModelTests {
             Record(date: createDate(year: 2024, month: 1, day: 2))
         ]
         
-        await setUpWithMockRecords(records)
+        await setUp(records)
         
         sut.fetchAllRecords()
         
@@ -47,7 +42,7 @@ final class StatisticsViewModelTests {
         
     @Test
     func addNewRecord_createsNewRecord() async {
-        await setUpWithNoRecords()
+        await setUp()
         
         let newRecord = sut.addNewRecord()
         
@@ -61,7 +56,7 @@ final class StatisticsViewModelTests {
             Record(date: createDate(year: 2024, month: 1, day: 2))
         ]
 
-        await setUpWithMockRecords(records)
+        await setUp(records)
         
         sut.deleteAllRecords()
         
@@ -70,7 +65,7 @@ final class StatisticsViewModelTests {
     
     @Test
     func fetchRecords_whenNoRecords_returnZeroOrEmptyValues() async {
-        await setUpWithNoRecords()
+        await setUp()
         
         #expect(sut.recordsThisWeek.isEmpty, "Should return no records for this week")
         #expect(sut.recordsThisMonth.isEmpty, "Should return no records for this month")
@@ -84,19 +79,20 @@ final class StatisticsViewModelTests {
         let recordYesterday = Record(date: Calendar.current.date(byAdding: .day, value: -1, to: Date.now)!, sessionsCompleted: 0, dailyTarget: 8)
         let recordToday = Record(date: Date.now, sessionsCompleted: 0, dailyTarget: 8)
         
-        await setUpWithMockRecords([recordYesterday, recordToday])
+        await setUp([recordYesterday, recordToday])
         
         #expect(sut.recordToday == recordToday, "Should return today's record")
     }
     
     @Test
     func recordToday_whenNoRecordExists_returnsAPlaceholderRecord() async {
-        await setUpWithNoRecords()
+        await setUp()
         
         #expect(sut.recordToday != nil, "Should return a placeholder record")
         #expect(sut.records.count == 0, "Should not store placeholder record into database")
         #expect(sut.recordToday.date == Calendar.current.startOfToday, "New record's date should be set to today")
         #expect(sut.recordToday.sessionsCompleted == 0, "New record should have 0 sessions completed")
+        #expect(sut.recordToday.timeSpent == 0, "New record should have 0 time spent")
     }
     
     @Test
@@ -106,7 +102,7 @@ final class StatisticsViewModelTests {
         let recordInWeek2 = Record(date: createDate(year: 2024, month: 1, day: 2));
         let recordNotInWeek = Record(date: createDate(year: 2024, month: 1, day: 31));
         
-        await setUpWithMockRecords([recordInWeek1, recordInWeek2, recordNotInWeek])
+        await setUp([recordInWeek1, recordInWeek2, recordNotInWeek])
         
         #expect(sut.recordsForWeek(date: testDate) == [recordInWeek1, recordInWeek2], "Records for week should contain correct records")
     }
@@ -118,7 +114,7 @@ final class StatisticsViewModelTests {
         let recordInMonth2 = Record(date: createDate(year: 2024, month: 1, day: 2));
         let recordNotInMonth = Record(date: createDate(year: 2024, month: 2, day: 1));
         
-        await setUpWithMockRecords([recordInMonth1, recordInMonth2, recordNotInMonth])
+        await setUp([recordInMonth1, recordInMonth2, recordNotInMonth])
         
         #expect(sut.recordsForMonth(date: testDate) == [recordInMonth1, recordInMonth2], "Records for month should contain correct records")
     }
@@ -126,12 +122,12 @@ final class StatisticsViewModelTests {
     @Test
     func totalSessions_returnsCorrectTotalCount() async {
         let records = [
-            Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 5, dailyTarget: 8),
-            Record(date: createDate(year: 2024, month: 4, day: 3), sessionsCompleted: 4, dailyTarget: 8),
-            Record(date: createDate(year: 2024, month: 11, day: 9), sessionsCompleted: 7, dailyTarget: 8)
+            Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 5),
+            Record(date: createDate(year: 2024, month: 4, day: 3), sessionsCompleted: 4),
+            Record(date: createDate(year: 2024, month: 11, day: 9), sessionsCompleted: 7)
         ]
         
-        await setUpWithMockRecords(records)
+        await setUp(records)
         
         #expect(sut.totalSessions == 16, "Total sessions should be exactly 16")
     }
@@ -146,7 +142,7 @@ final class StatisticsViewModelTests {
             Record(date: createDate(year: 2024, month: 1, day: 7), sessionsCompleted: 8, dailyTarget: 8)
         ]
         
-        await setUpWithMockRecords(records)
+        await setUp(records)
         
         let mockCurrentDate = createDate(year: 2024, month: 1, day: 7)
         
@@ -160,7 +156,7 @@ final class StatisticsViewModelTests {
             Record(date: createDate(year: 2024, month: 1, day: 1), sessionsCompleted: 8, dailyTarget: 8)
         ]
         
-        await setUpWithMockRecords(records)
+        await setUp(records)
         
         let mockCurrentDate = createDate(year: 2024, month: 1, day: 1)
 
@@ -177,8 +173,21 @@ final class StatisticsViewModelTests {
             Record(date: createDate(year: 2024, month: 1, day: 31), sessionsCompleted: 8, dailyTarget: 8)
         ]
         
-        await setUpWithMockRecords(records)
+        await setUp(records)
         
         #expect(sut.longestStreak == 3, "Longest streak should be exactly 3")
+    }
+    
+    @Test
+    func totalTimeSpent_returnsCorrectTimeSpent() async {
+        let records = [
+            Record(timeSpent: 3600),
+            Record(timeSpent: 60),
+            Record(timeSpent: 1),
+        ]
+        
+        await setUp(records)
+        
+        #expect(sut.totalTimeSpent == "1h 1m 1s", "Total time should be \"1h 1m 1s\"")
     }
 }

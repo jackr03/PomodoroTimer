@@ -32,9 +32,9 @@ enum SessionType: String {
 protocol PomodoroTimerProtocol {
     var maxSessions: Int { get }
     var currentSession: SessionType { get }
-    var currentSessionNumber: Int { get}
+    var currentSessionNumber: Int { get }
+    var startingDuration: Int { get }
     var remainingTime: Int { get }
-    var hasSessionStarted: Bool { get }
     var isSessionFinished: Bool { get }
     var isTimerActive: Bool { get }
     
@@ -54,8 +54,8 @@ class PomodoroTimer: PomodoroTimerProtocol {
     
     private(set) var currentSession: SessionType
     private(set) var currentSessionNumber: Int
+    private(set) var startingDuration: Int
     private(set) var remainingTime: Int
-    private(set) var hasSessionStarted = false
     private(set) var isSessionFinished = false
     
     private var timer: Timer?
@@ -67,6 +67,7 @@ class PomodoroTimer: PomodoroTimerProtocol {
     ) {
         self.currentSession = currentSession
         self.currentSessionNumber = currentSessionNumber
+        self.startingDuration = currentSession.duration
         self.remainingTime = currentSession.duration
     }
     
@@ -90,6 +91,7 @@ class PomodoroTimer: PomodoroTimerProtocol {
     }
     
     func resetSession() {
+        startingDuration = currentSession.duration
         remainingTime = currentSession.duration
     }
     
@@ -103,7 +105,6 @@ class PomodoroTimer: PomodoroTimerProtocol {
      - If coming from a long break, reset the session count before transitioning to a work session.
      */
     func advanceToNextSession() {
-        hasSessionStarted = false
         isSessionFinished = false
         
         switch(currentSession) {
@@ -123,8 +124,8 @@ class PomodoroTimer: PomodoroTimerProtocol {
     func reset() {
         currentSession = .work
         currentSessionNumber = 0
+        startingDuration = currentSession.duration
         remainingTime = currentSession.duration
-        hasSessionStarted = false
         isSessionFinished = false
         
         pauseSession()
@@ -139,7 +140,6 @@ class PomodoroTimer: PomodoroTimerProtocol {
     private func countdown() {
         if remainingTime > 0 {
             remainingTime -= 1
-            hasSessionStarted = true
         } else {
             pauseSession()
             isSessionFinished = true

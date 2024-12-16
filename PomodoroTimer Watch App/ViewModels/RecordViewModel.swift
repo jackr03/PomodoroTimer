@@ -13,14 +13,18 @@ final class RecordViewModel {
     private let record: Record
     private let repository: RecordRepositoryProtocol
     
+    let isOpenedFromAllTimeStatistics: Bool
+    
     // MARK: - Inits
     @MainActor
     init(
         record: Record,
-        repository: RecordRepositoryProtocol? = nil
+        repository: RecordRepositoryProtocol? = nil,
+        isOpenedFromAllTimeStatistics: Bool = true
     ) {
         self.record = record
         self.repository = repository ?? RecordRepository.shared
+        self.isOpenedFromAllTimeStatistics = isOpenedFromAllTimeStatistics
     }
     
     // MARK: - Computed properties
@@ -31,8 +35,9 @@ final class RecordViewModel {
     var isDailyTargetMet: Bool { record.isDailyTargetMet }
     var isToday: Bool { record.date == Calendar.current.startOfToday }
     
-    var formattedDateShort: String { record.formatDate(.short) }
-    var formattedDateMedium: String { record.formatDate(.medium) }
+    var formattedDateShort: String { record.formattedDate(.short) }
+    var formattedDateMedium: String { record.formattedDate(.medium) }
+    var formattedTimeSpent: String { record.formattedTimeSpent}
     
     var statusMessage: String {
         if record.sessionsCompleted == 0 {
