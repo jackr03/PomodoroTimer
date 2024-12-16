@@ -13,8 +13,8 @@ final class SettingsScreen {
     init(app: XCUIApplication) {
         self.app = app
     }
-        
-    var navigationBar: XCUIElement { app.navigationBars["Settings"] }
+    
+    var navigationBarTitle: XCUIElement { app.navigationBars.staticTexts["Settings"] }
     var backButton: XCUIElement { app.navigationBars.buttons["BackButton"].firstMatch }
     
     var workDurationPicker: XCUIElement { app.otherElements["workDurationPicker"] }

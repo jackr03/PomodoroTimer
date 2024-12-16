@@ -85,6 +85,7 @@ private extension StatisticsView {
             }
             .chartYAxis(.hidden)
             .padding(.vertical, 10)
+            .accessibilityIdentifier("weeklyChart")
             
             Spacer()
             
@@ -128,6 +129,7 @@ private extension StatisticsView {
                 }
             }
             .padding(.vertical, 10)
+            .accessibilityIdentifier("monthlyChart")
             
             Spacer()
             
@@ -150,7 +152,7 @@ private extension StatisticsView {
     var allTimeStatistics: some View {
         ScrollView {
             LazyVStack {
-                summaryCard
+                summaryStatistics
                     
                 ForEach(viewModel.records) { record in
                     createRecordCard(for: record)
@@ -162,7 +164,7 @@ private extension StatisticsView {
         .navigationTitle("All time")
     }
     
-    var summaryCard: some View {
+    var summaryStatistics: some View {
         VStack(alignment: .leading) {
             Text("Summary")
                 .font(.headline)
@@ -202,6 +204,7 @@ private extension StatisticsView {
         .buttonBorderShape(.roundedRectangle(radius: 12))
         .tint(.red)
         .padding()
+        .accessibilityIdentifier("deleteAllRecordsButton")
     }
     
     func summaryStatistic(

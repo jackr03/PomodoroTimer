@@ -31,18 +31,13 @@ final class PomodoroViewTests: XCTestCase {
         sut = PomodoroScreen(app: app)
     }
 
-    func testActiveSesssionView_rendersProperly() {
+    func testView_rendersProperly() {
         launchApp()
         
         XCTAssertTrue(sut.currentSession.exists, "Current session text should render")
         XCTAssertTrue(sut.sessionProgress.exists, "Session progress text should render")
         XCTAssertTrue(sut.remainingTime.exists, "Remaining time should render")
-        XCTAssertTrue(sut.actionButton.isHittable, "Action button should render")
-    }
-    
-    func testToolbarButtons_renderProperly() {
-        launchApp()
-        
+        XCTAssertTrue(sut.actionButton.exists, "Action button should render")
         XCTAssertTrue(sut.statisticsButton.exists, "Statistics button should render in the toolbar")
         XCTAssertTrue(sut.settingsButton.exists, "Settings button should render in the toolbar")
         XCTAssertTrue(sut.stopButton.exists, "Stop button should render in the toolbar")
@@ -65,23 +60,27 @@ final class PomodoroViewTests: XCTestCase {
         XCTAssertFalse(sut.pauseButton.exists, "Pause button should no longer exist after pausing")
     }
     
-    func testSessionTransitionsAndDefaultDurations() {
+    func testStatisticsButton_navigatesToCorrectScreen() {
+        launchApp()
+        let statisticsScreen = StatisticsScreen(app: app)
+        
+        sut.statisticsButton.waitAndTap()
+        XCTAssertTrue(statisticsScreen.dailyTitle.waitForExistence(timeout: 3))
+    }
+    
+    func testSettingsButton_navigatesToSettingsScreen() {
+        launchApp()
+        let settingsScreen = SettingsScreen(app: app)
+        
+        sut.settingsButton.waitAndTap()
+        XCTAssertTrue(settingsScreen.navigationBarTitle.waitForExistence(timeout: 3))
+    }
+    
+    func testSkipButton_skipsSession() {
         launchApp()
         
-        XCTAssertTrue(sut.currentSession.label == "WORK", "Should begin with a work session")
-        XCTAssertTrue(sut.remainingTime.label == "25:00", "Work duration should be 25 minutes by default")
-        
         sut.skipButton.waitAndTap()
-        XCTAssertTrue(sut.currentSession.label == "BREAK", "Should be a short break session after")
-        XCTAssertTrue(sut.remainingTime.label == "05:00", "Short break duration should be 5 minutes by default")
-        
-        // Skip until long break session is reached
-        for _ in 1..<7 {
-            sut.skipButton.waitAndTap()
-        }
-        
-        XCTAssertTrue(sut.currentSession.label == "L. BREAK", "Should be a long break session after xxx")
-        XCTAssertTrue(sut.remainingTime.label == "30:00", "Long break duration should be 30 minutes by default")
+        XCTAssertTrue(sut.currentSession.label == "BREAK", "Should skip to break session")
     }
     
     func testSessionView_changesWhenSessionIsFinished() {

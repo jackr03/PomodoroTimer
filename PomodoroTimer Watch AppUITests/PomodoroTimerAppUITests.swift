@@ -40,7 +40,7 @@ final class PomodoroTimerAppUITests: XCTestCase {
         
         pomodoroScreen.playButton.waitAndTap()
         pomodoroScreen.settingsButton.waitAndTap()
-        XCTAssertTrue(settingsScreen.navigationBar.waitForNonExistence(timeout: 5), "Should no longer be on settings screen")
+        XCTAssertTrue(settingsScreen.navigationBarTitle.waitForNonExistence(timeout: 5), "Should no longer be on settings screen")
         XCTAssertTrue(pomodoroScreen.timesUpMessage.waitForExistence(timeout: 5), "Should show 'Times up!' message")
     }
     

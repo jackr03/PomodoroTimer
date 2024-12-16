@@ -8,7 +8,6 @@
 import Foundation
 import SwiftData
 
-// TODO: Track total time done
 @Model
 class Record {
     

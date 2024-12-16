@@ -33,18 +33,21 @@ struct RecordView: View {
             .progressViewStyle(LinearProgressViewStyle())
             .tint(viewModel.isDailyTargetMet ? .green : .red)
             .rotationEffect(.degrees(-90))
+            .accessibilityIdentifier("dailyProgressBar")
                 
             VStack {
                 Text("\(viewModel.sessionsCompleted)/\(viewModel.dailyTarget) sessions")
                     .font(.headline)
                     .foregroundStyle(.primary)
                     .multilineTextAlignment(.center)
+                    .accessibilityIdentifier("dailySessionsCompleted")
                 
                 Text("\(viewModel.formattedTimeSpent)")
                     .font(.footnote)
                     .foregroundStyle(.tertiary)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 4)
+                    .accessibilityIdentifier("dailyTimeSpent")
                 
                 // Don't display status message if opened from all time statistics
                 if !viewModel.isOpenedFromAllTimeStatistics {
@@ -52,6 +55,7 @@ struct RecordView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("dailyStatusMessage")
                 }
             }
         }

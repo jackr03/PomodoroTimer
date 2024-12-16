@@ -65,7 +65,6 @@ final class PomodoroViewModel {
         String(format: "%d/%d", timer.currentSessionNumber, timer.maxSessions)
     }
     
-    // TODO: For use with skip, reset and stop
     var elapsedTime: Int { timer.startingDuration - timer.remainingTime }
     var isWorkSession: Bool { timer.currentSession == .work }
     var isTimerActive: Bool { timer.isTimerActive }
