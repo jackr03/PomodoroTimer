@@ -27,15 +27,17 @@ final class PomodoroViewModelTests {
         mockRecordRepository = nil
     }
     
-    @Test
-    func formattedRemainingTime_returnsCorrectStringRepresentation() {
-        #expect(sut.formattedRemainingTime == "25:00", "Should format remaining time correctly")
-    }
-    
-    @Test
-    func formattedRemainingTime_returnsCorrectStringRepresentationWhenTimeIsNegative() {
-        timer.remainingTime = -999
-        #expect(sut.formattedRemainingTime == "00:00", "Should format remaining time to 00:00 when negative")
+    @Test(arguments: [
+        (1500, "25:00"),
+        (0, "00:00"),
+        (-1, "00:00"),
+    ])
+    func formattedRemainingTime_returnsCorrectStringRepresentation(
+        remainingTime: Int,
+        expectedFormattedRemainingTime: String
+    ) {
+        timer.remainingTime = remainingTime
+        #expect(sut.formattedRemainingTime == expectedFormattedRemainingTime, "Should format remaining time correctly")
     }
     
     @Test
