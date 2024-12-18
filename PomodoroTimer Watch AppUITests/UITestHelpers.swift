@@ -7,23 +7,34 @@
 
 import XCTest
 
-func waitForConditionThenExecute(_ condition: @escaping () -> Bool,
-                      action: @escaping () -> Void,
-                      timeout: TimeInterval = 3) {
-    let expectation = XCTestExpectation(description: "Condition should be true")
-    
-    let startTime = Date.now
-    while Date().timeIntervalSince(startTime) < timeout {
-        if condition() {
-            action()
+extension XCTestCase {
+    func waitFor(seconds timeout: TimeInterval) {
+        let expectation = XCTestExpectation(description: "Wait \(timeout) seconds")
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
             expectation.fulfill()
-            break
         }
         
-        RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        wait(for: [expectation], timeout: timeout)
     }
-    
-    _ = XCTWaiter.wait(for: [expectation], timeout: timeout)
+
+    func waitForConditionThenExecute(_ condition: @escaping () -> Bool,
+                          action: @escaping () -> Void,
+                          timeout: TimeInterval = 3) {
+        let expectation = XCTestExpectation(description: "Condition should be true")
+        
+        let startTime = Date.now
+        while Date().timeIntervalSince(startTime) < timeout {
+            if condition() {
+                action()
+                expectation.fulfill()
+                break
+            }
+            
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        }
+        
+        _ = XCTWaiter.wait(for: [expectation], timeout: timeout)
+    }
 }
 
 extension XCUIElement {
