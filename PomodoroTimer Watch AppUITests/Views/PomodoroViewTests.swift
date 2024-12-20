@@ -148,6 +148,16 @@ final class PomodoroViewTests: XCTestCase {
         XCTAssertTrue(sut.remainingTime.label == "24:59", "Timer should not have continued counting down")
     }
     
+    func testTimerDoesNotAutoPlay_whenReopeningAPausedWorkSession() {
+        launchApp()
+        
+        sut.playButton.waitAndTap()
+        sut.pauseButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCUIApplication().activate()
+        XCTAssertTrue(sut.playButton.exists, "Timer should remain paused")
+    }
+    
     func testTimer_continuesCountingDown_whenLeavingBreakSession() {
         launchApp()
         

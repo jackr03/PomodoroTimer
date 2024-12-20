@@ -79,6 +79,7 @@ struct PomodoroView: View {
         
         guard viewModel.isTimerActive || viewModel.hasSessionStarted else { return }
         
+        // TODO: Clean this up
         switch (oldPhase, newPhase) {
         // If user has left in the middle of a work session, pause timer and send a notification
         case (.inactive, .background) where viewModel.isWorkSession && viewModel.isTimerActive && viewModel.hasSessionStarted:
@@ -89,7 +90,7 @@ struct PomodoroView: View {
             lastInactiveTime = Date.now
             viewModel.notifyUserWhenBreakOver()
         // Restart the extended session if the user comes back
-        case (.background, .inactive) where viewModel.isWorkSession && viewModel.hasSessionStarted:
+        case (.background, .inactive) where viewModel.isWorkSession && viewModel.isTimerActive && viewModel.hasSessionStarted:
             viewModel.startSession()
         // Deduct time from the break session and restart the session if there is still time remaining
         case (.background, .inactive) where !viewModel.isWorkSession:
