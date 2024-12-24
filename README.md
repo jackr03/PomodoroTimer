@@ -5,7 +5,7 @@
 ![screenshot1](https://github.com/user-attachments/assets/f0316f3e-0d77-4106-8c68-8f2ac802b9e9)
 ![screenshot2](https://github.com/user-attachments/assets/0f6ff631-169a-4fba-bf4d-00aef90718c8)
 
-A simple, minimalistic Pomodoro app built for WatchOS using Swift and SwiftUI following the MVVM architecture. Developed using test-driven development (TDD), with unit and UI tests implemented using the XCTest and Swift Testing framework respectively to ensure reliability and stability.
+A simple, minimalistic Pomodoro app built for WatchOS using Swift and SwiftUI following the MVVM architecture. Developed using test-driven development (TDD), with unit and UI tests implemented using the XCTest and Swift Testing frameworks respectively.
 
 ## Features
 
@@ -23,11 +23,11 @@ A simple, minimalistic Pomodoro app built for WatchOS using Swift and SwiftUI fo
 ## Screenshots
 
 ### Settings
-![screenshot3](https://github.com/user-attachments/assets/95263867-fc74-4386-be42-6a5e8dbf4b93)
-![screenshot4](https://github.com/user-attachments/assets/2626076e-155a-4ba2-854c-edb58e4d0827)
+![screenshot3](https://github.com/user-attachments/assets/8e9ca2ab-8b27-47d2-b3cd-c90f5aeadeb2)
+![screenshot4](https://github.com/user-attachments/assets/53c6f971-6ce4-4814-a613-ce36b31d404c)
 
 ### Statistics
-![screenshot5](https://github.com/user-attachments/assets/d9eb263c-f3e9-47ad-b84a-7ad812b43a30)
+![screenshot5](https://github.com/user-attachments/assets/fc6eb039-69ab-4419-b5c0-37bd4ce1a7e7)
 ![screenshot6](https://github.com/user-attachments/assets/24d3daaf-2381-492d-a6cc-2829c7d9ef42)
 ![screenshot7](https://github.com/user-attachments/assets/8fd3aef0-a4d7-4842-bf12-2a12a35e3391)
-![screenshot8](https://github.com/user-attachments/assets/2f3f3eb9-0d14-4d3a-ae60-c0674d6daa11)
+![screenshot8](https://github.com/user-attachments/assets/a66dd4dd-d38a-428b-acff-6d631bc08f97)
