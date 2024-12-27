@@ -86,7 +86,7 @@ struct PomodoroView: View {
             viewModel.pauseSession()
             viewModel.notifyUserToResume()
         // Record time when user closed app and queue a notification to remind them when break ends
-        case (.active, .inactive) where !viewModel.isWorkSession:
+        case (.active, .inactive) where !viewModel.isWorkSession && viewModel.isTimerActive:
             lastInactiveTime = Date.now
             viewModel.notifyUserWhenBreakOver()
         // Restart the extended session if the user comes back

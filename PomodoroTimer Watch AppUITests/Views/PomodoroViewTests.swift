@@ -91,7 +91,7 @@ final class PomodoroViewTests: XCTestCase {
         XCTAssertTrue(sut.completeSessionButton.waitForExistence(timeout: 5), "Should show complete session buton")
     }
     
-    func testUserIsNotified_whenLeavingAnActiveWorkSession() {
+    func testWorkNotification_isShownWhenLeavingActiveWorkSession() {
         launchApp()
         let carousel = Carousel()
         
@@ -104,7 +104,7 @@ final class PomodoroViewTests: XCTestCase {
         XCTAssertTrue(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should show notification prompting user to return to app")
     }
     
-    func testUserIsNotNotified_whenLeavingAPausedWorkSession() {
+    func testWorkNotification_isNotShownWhenLeavingPausedWorkSession() {
         launchApp()
         let carousel = Carousel()
         
@@ -114,7 +114,7 @@ final class PomodoroViewTests: XCTestCase {
         XCTAssertFalse(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
     }
     
-    func testUserIsNotNotified_whenLeavingABreakSession() {
+    func testWorkNotification_isNotShownWhenLeavingBreakSession() {
         launchApp()
         let carousel = Carousel()
         
@@ -124,7 +124,7 @@ final class PomodoroViewTests: XCTestCase {
         XCTAssertFalse(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
     }
     
-    func testUserIsNotified_whenBreakIsOver() {
+    func testBreakNotification_isShownWhenBreakEnds {
         launchApp(with: ["-shortBreakDuration", "3"])
         let carousel = Carousel()
         
@@ -132,6 +132,17 @@ final class PomodoroViewTests: XCTestCase {
         sut.playButton.waitAndTap()
         XCUIDevice.shared.press(.home)
         XCTAssertTrue(carousel.breakOverNotification.waitForExistence(timeout: 10), "Should show notification letting user know session is over")
+    }
+    
+    func testBreakOverNotification_isNotQueuedIfPaused() {
+        launchApp(with: ["-shortBreakDuration", "3"])
+        let carousel = Carousel()
+        
+        sut.skipButton.waitAndTap()
+        sut.playButton.waitAndTap()
+        sut.pauseButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCTAssertFalse(carousel.breakOverNotification.waitForExistence(timeout: 5), "Should not show notification letting user know session is over")
     }
     
     func testTimerDoesNotGoDown_whenLeavingAnActiveWorkSession() {
