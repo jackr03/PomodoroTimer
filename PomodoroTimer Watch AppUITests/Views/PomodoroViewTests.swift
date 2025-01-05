@@ -124,7 +124,7 @@ final class PomodoroViewTests: XCTestCase {
         XCTAssertFalse(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
     }
     
-    func testBreakNotification_isShownWhenBreakEnds {
+    func testBreakNotification_isShownWhenBreakEnds() {
         launchApp(with: ["-shortBreakDuration", "3"])
         let carousel = Carousel()
         
@@ -157,6 +157,21 @@ final class PomodoroViewTests: XCTestCase {
         }
         carousel.openAppButton.waitAndTap(timeout: 5)
         XCTAssertTrue(sut.remainingTime.label == "24:59", "Timer should not have continued counting down")
+    }
+    
+    func testTimerAutoPlays_whenReopeningAnActiveWorkSession() {
+        launchApp()
+        let carousel = Carousel()
+        
+        sut.playButton.waitAndTap()
+        waitForConditionThenExecute({
+            self.sut.remainingTime.label == "24:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
+        
+        carousel.openAppButton.waitAndTap(timeout: 5)
+        XCTAssertTrue(sut.pauseButton.exists, "Timer should continue playing")
     }
     
     func testTimerDoesNotAutoPlay_whenReopeningAPausedWorkSession() {
