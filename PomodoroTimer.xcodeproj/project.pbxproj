@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1565216E2D0DC01C00EE25FF /* PomodoroTimer Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PomodoroTimer Watch AppTests.xctest"; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer.app/PlugIns/PomodoroTimer Watch AppTests.xctest"; sourceTree = "<absolute>"; };
-		1565216F2D0DC01C00EE25FF /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PomodoroTimer.app; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer.app"; sourceTree = "<absolute>"; };
-		156521702D0DC01C00EE25FF /* PomodoroTimer Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "PomodoroTimer Watch AppUITests.xctest"; path = "/Users/jackr/Developer/PomodoroTimer/build/Debug-watchos/PomodoroTimer Watch AppUITests-Runner.app/PlugIns/PomodoroTimer Watch AppUITests.xctest"; sourceTree = "<absolute>"; };
+		15892C212D131C7B00B328E5 /* PomodoroTimer Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PomodoroTimer Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		15892C222D131C7B00B328E5 /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PomodoroTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		15892C232D131C7B00B328E5 /* PomodoroTimer Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PomodoroTimer Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,8 +36,11 @@
 				PomodoroTimerAppUITests.swift,
 				Screens/PomodoroScreen.swift,
 				Screens/SettingsScreen.swift,
+				Screens/StatisticsScreen.swift,
+				UITestHelpers.swift,
 				Views/PomodoroViewTests.swift,
 				Views/SettingsViewTests.swift,
+				Views/StatisticsViewTests.swift,
 			);
 			target = 15400CEF2CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */;
 		};
@@ -47,9 +50,11 @@
 				PomodoroTimerAppUITests.swift,
 				Screens/PomodoroScreen.swift,
 				Screens/SettingsScreen.swift,
+				Screens/StatisticsScreen.swift,
 				UITestHelpers.swift,
 				Views/PomodoroViewTests.swift,
 				Views/SettingsViewTests.swift,
+				Views/StatisticsViewTests.swift,
 			);
 			target = 1538012C2CFB59F50070B320 /* PomodoroTimer Watch AppUITests */;
 		};
@@ -92,6 +97,9 @@
 				1564A8CC2CDD2C1100BAFDAB /* PomodoroTimer Watch App */,
 				15400CF12CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */,
 				1538011F2CFB53E80070B320 /* PomodoroTimer Watch AppUITests */,
+				15892C212D131C7B00B328E5 /* PomodoroTimer Watch AppTests.xctest */,
+				15892C222D131C7B00B328E5 /* PomodoroTimer.app */,
+				15892C232D131C7B00B328E5 /* PomodoroTimer Watch AppUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -115,7 +123,7 @@
 			packageProductDependencies = (
 			);
 			productName = "PomodoroTimer Watch AppUITests";
-			productReference = 156521702D0DC01C00EE25FF /* PomodoroTimer Watch AppUITests.xctest */;
+			productReference = 15892C232D131C7B00B328E5 /* PomodoroTimer Watch AppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		15400CEF2CEB550400C9FFE7 /* PomodoroTimer Watch AppTests */ = {
@@ -139,7 +147,7 @@
 			packageProductDependencies = (
 			);
 			productName = "PomodoroTimer Watch AppTests";
-			productReference = 1565216E2D0DC01C00EE25FF /* PomodoroTimer Watch AppTests.xctest */;
+			productReference = 15892C212D131C7B00B328E5 /* PomodoroTimer Watch AppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		15D5B50E2C88F789004B29E8 /* PomodoroTimer */ = {
@@ -159,7 +167,7 @@
 			);
 			name = PomodoroTimer;
 			productName = "PomodoroTimer Watch App";
-			productReference = 1565216F2D0DC01C00EE25FF /* PomodoroTimer.app */;
+			productReference = 15892C222D131C7B00B328E5 /* PomodoroTimer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

@@ -90,4 +90,118 @@ final class PomodoroViewTests: XCTestCase {
         XCTAssertTrue(sut.timesUpMessage.waitForExistence(timeout: 5), "Should show 'Times up!' message")
         XCTAssertTrue(sut.completeSessionButton.waitForExistence(timeout: 5), "Should show complete session buton")
     }
+    
+    func testWorkNotification_isShownWhenLeavingActiveWorkSession() {
+        launchApp()
+        let carousel = Carousel()
+        
+        sut.playButton.waitAndTap()
+        waitForConditionThenExecute({
+            self.sut.remainingTime.label == "24:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
+        XCTAssertTrue(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should show notification prompting user to return to app")
+    }
+    
+    func testWorkNotification_isNotShownWhenLeavingPausedWorkSession() {
+        launchApp()
+        let carousel = Carousel()
+        
+        sut.playButton.waitAndTap()
+        sut.pauseButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCTAssertFalse(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
+    }
+    
+    func testWorkNotification_isNotShownWhenLeavingBreakSession() {
+        launchApp()
+        let carousel = Carousel()
+        
+        sut.skipButton.waitAndTap()
+        sut.playButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCTAssertFalse(carousel.resumeSessionNotification.waitForExistence(timeout: 5), "Should not show notification prompting user to return to app")
+    }
+    
+    func testBreakNotification_isShownWhenBreakEnds() {
+        launchApp(with: ["-shortBreakDuration", "3"])
+        let carousel = Carousel()
+        
+        sut.skipButton.waitAndTap()
+        sut.playButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCTAssertTrue(carousel.breakOverNotification.waitForExistence(timeout: 10), "Should show notification letting user know session is over")
+    }
+    
+    func testBreakOverNotification_isNotQueuedIfPaused() {
+        launchApp(with: ["-shortBreakDuration", "3"])
+        let carousel = Carousel()
+        
+        sut.skipButton.waitAndTap()
+        sut.playButton.waitAndTap()
+        sut.pauseButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCTAssertFalse(carousel.breakOverNotification.waitForExistence(timeout: 5), "Should not show notification letting user know session is over")
+    }
+    
+    func testTimerDoesNotGoDown_whenLeavingAnActiveWorkSession() {
+        launchApp()
+        let carousel = Carousel()
+
+        sut.playButton.waitAndTap()
+        waitForConditionThenExecute({
+            self.sut.remainingTime.label == "24:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
+        carousel.openAppButton.waitAndTap(timeout: 5)
+        XCTAssertTrue(sut.remainingTime.label == "24:59", "Timer should not have continued counting down")
+    }
+    
+    func testTimerAutoPlays_whenReopeningAnActiveWorkSession() {
+        launchApp()
+        let carousel = Carousel()
+        
+        sut.playButton.waitAndTap()
+        waitForConditionThenExecute({
+            self.sut.remainingTime.label == "24:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
+        
+        carousel.openAppButton.waitAndTap(timeout: 5)
+        XCTAssertTrue(sut.pauseButton.exists, "Timer should continue playing")
+    }
+    
+    func testTimerDoesNotAutoPlay_whenReopeningAPausedWorkSession() {
+        launchApp()
+        
+        sut.playButton.waitAndTap()
+        sut.pauseButton.waitAndTap()
+        XCUIDevice.shared.press(.home)
+        XCUIApplication().activate()
+        XCTAssertTrue(sut.playButton.exists, "Timer should remain paused")
+    }
+    
+    func testTimer_continuesCountingDown_whenLeavingBreakSession() {
+        launchApp()
+        
+        sut.skipButton.waitAndTap()
+        sut.playButton.waitAndTap()
+        waitForConditionThenExecute({
+            self.sut.remainingTime.label == "04:59"
+        }) {
+            XCUIDevice.shared.press(.home)
+        }
+        
+        // Allow timer to tick down
+        waitFor(seconds: 3)
+        XCUIApplication().activate()
+        
+        // Allow time to update
+        waitFor(seconds: 1)
+        XCTAssertFalse(sut.remainingTime.label == "04:59", "Timer should have continued counting down")
+        XCTAssertTrue(sut.pauseButton.exists, "Timer should continue playing")
+    }
 }

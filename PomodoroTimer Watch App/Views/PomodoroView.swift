@@ -19,6 +19,7 @@ struct PomodoroView: View {
     @State private var lastInactiveTime = Date.now
     @State private var isPulsing = false
     @State private var hapticTimer: Timer?
+    @State private var shouldResumeSession = false
     
     // MARK: - Inits
     init(viewModel: PomodoroViewModel) {
@@ -79,18 +80,21 @@ struct PomodoroView: View {
         
         guard viewModel.isTimerActive || viewModel.hasSessionStarted else { return }
         
+        // TODO: Clean this up
         switch (oldPhase, newPhase) {
         // If user has left in the middle of a work session, pause timer and send a notification
-        case (.inactive, .background) where viewModel.isTimerActive && viewModel.hasSessionStarted:
+        case (.inactive, .background) where viewModel.isWorkSession && viewModel.isTimerActive && viewModel.hasSessionStarted:
             viewModel.pauseSession()
             viewModel.notifyUserToResume()
+            shouldResumeSession = true
         // Record time when user closed app and queue a notification to remind them when break ends
-        case (.active, .inactive) where !viewModel.isWorkSession:
+        case (.active, .inactive) where !viewModel.isWorkSession && viewModel.isTimerActive:
             lastInactiveTime = Date.now
             viewModel.notifyUserWhenBreakOver()
         // Restart the extended session if the user comes back
-        case (.background, .inactive) where viewModel.isWorkSession && viewModel.hasSessionStarted:
+        case (.background, .inactive) where viewModel.isWorkSession && !viewModel.isTimerActive && viewModel.hasSessionStarted && shouldResumeSession:
             viewModel.startSession()
+            shouldResumeSession = false
         // Deduct time from the break session and restart the session if there is still time remaining
         case (.background, .inactive) where !viewModel.isWorkSession:
             let secondsSinceLastInactive = Int(lastInactiveTime.distance(to: Date.now))
